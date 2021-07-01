@@ -1,0 +1,78 @@
+:root {
+  --light: #f8f7f7;
+  --laccent: #97aead;
+  --mid: #7c878c;
+  --daccent: #879d9e;
+  --dark: #2f3236;
+  --sm-pad: 1rem;
+  --md-pad: 2rem;
+  --lg-pad: 4rem;
+}
+
+body {
+  padding: var(--lg-pad);
+  background: var(--light);
+  color: var(--dark);
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00b7ff;
+}
+
+p {
+  line-height: 1.2;
+  font-size: 1.1rem;
+}
+
+.admin__h1 {
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.admin__input {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 0.2rem;
+  border: 1px solid var(--laccent);
+  width: 100%;
+}
+
+.admin__input:hover,
+.admin__input:focus {
+  border-color: var(--dark);
+}
+
+.admin__form {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.admin__form_container {
+  border-radius: 0.2rem;
+  border: 1px solid var(--laccent);
+  margin: 0 auto;
+  max-width: 20rem;
+  padding: var(--lg-pad);
+}
+
+.admin__btn {
+  max-width: 10rem;
+  background: var(--dark);
+  padding: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+  color: var(--light);
+  border: 1px solid var(--dark);
+  border-radius: 0.2rem;
+  outline: none;
+}
+
+.admin__btn:hover,
+.admin__btn:focus {
+  border-color: var(--daccent);
+  background: var(--daccent);
+  cursor: pointer;
+}

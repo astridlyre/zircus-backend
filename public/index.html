@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>Zircus Admin Panel</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+
+  <body>
+    <div class="admin__form_container">
+      <h1 class="admin__h1">Zircus Admin</h1>
+      <p class="admin__p">Please Log In:</p>
+      <form class="admin__form" action="/admin/login" method="POST">
+        <input
+          class="admin__input"
+          type="email"
+          name="email"
+          value=""
+          placeholder="admin@zircus.com"
+        />
+        <input
+          class="admin__input"
+          type="password"
+          name="password"
+          value=""
+          placeholder="Enter password"
+        />
+        <button class="admin__btn" type="submit">Log in</button>
+      </form>
+    </div>
+  </body>
+</html>
