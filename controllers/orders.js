@@ -26,7 +26,7 @@ ordersRouter.post('/', async (req, res) => {
 
         let itemToUpdate = await Underwear.findOne({ type: item.type })
         if (!itemToUpdate)
-            itemToUpdate = { "type": "ff-yellow-sm", quantity: 10 }
+            itemToUpdate = { "type": "ff-yellow-sm", quantity: 10, price: 30 }
         itemToUpdate.quantity = Number(itemToUpdate.quantity) - Number(item.quantity)
         total += Number(item.quantity) * Number(itemToUpdate.price)
         // await itemToUpdate.save()
@@ -43,6 +43,7 @@ ordersRouter.post('/', async (req, res) => {
         items: req.body.items,
         total: total,
     })
+
     await order.save()
     res.status(201).json(order)
 })
