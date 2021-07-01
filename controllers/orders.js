@@ -1,35 +1,46 @@
-const ordersRouter = require('express').Router()
-const { hasValidToken, isValidType } = require('../utils/middleware')
-const Order = require('../models/order')
-const User = require('../models/user')
-const Underwear = require('../models/underwear')
+const ordersRouter = require("express").Router()
+const { hasValidToken, isValidType } = require("../utils/middleware")
+const Order = require("../models/order")
+const Underwear = require("../models/underwear")
 
-ordersRouter.get('/', async (req, res) => {
+ordersRouter.get("/", async (req, res) => {
     if (!hasValidToken(req.token))
-        return res.status(401).json({ error: 'Token missing or invalid' })
+        return res.status(401).json({ error: "Token missing or invalid" })
 
     const orders = await Order.find({})
-    orders.length > 0 ? res.json(orders) : res.status(404).json({ error: 'No orders found' })
+    return orders.length > 0
+        ? res.json(orders)
+        : res.status(404).json({ error: "No orders found" })
 })
 
-ordersRouter.post('/', async (req, res) => {
+ordersRouter.post("/", async (req, res) => {
     if (!hasValidToken(req.token))
-        return res.status(401).json({ error: 'Token missing or invalid' })
+        return res.status(401).json({ error: "Token missing or invalid" })
 
-    let total = 0
     if (!Array.isArray(req.body.items))
-        return res.status(400).json({ error: 'Items are malformed' })
+        return res.status(400).json({ error: "Items are malformed" })
 
+    // Update new inventory items and tally up price
+    let total = 0
     for await (let item of req.body.items) {
         if (!isValidType(item.type))
             return res.status(400).json({ error: `Invalid type ${item.type}` })
 
-        let itemToUpdate = await Underwear.findOne({ type: item.type })
-        if (!itemToUpdate)
-            itemToUpdate = { "type": "ff-yellow-sm", quantity: 10, price: 30 }
-        itemToUpdate.quantity = Number(itemToUpdate.quantity) - Number(item.quantity)
+        const itemToUpdate = await Underwear.findOne({ type: item.type })
+        const newQuantity = itemToUpdate.quantity - Number(item.quantity)
+
+        if (newQuantity < 0)
+            return res.status(400).json({ error: "Invalid item quantities" })
+
+        itemToUpdate.quantity = newQuantity
+
+        try {
+            await itemToUpdate.save()
+        } catch (e) {
+            return res.status(500).json({ error: e.message })
+        }
+
         total += Number(item.quantity) * Number(itemToUpdate.price)
-        // await itemToUpdate.save()
     }
 
     const order = new Order({
@@ -44,8 +55,41 @@ ordersRouter.post('/', async (req, res) => {
         total: total,
     })
 
-    await order.save()
-    res.status(201).json(order)
+    try {
+        const savedOrder = await order.save()
+        return res.status(201).json(savedOrder)
+    } catch (e) {
+        return res.status(500).json({ error: e.message })
+    }
+})
+
+ordersRouter.put("/:id", async (req, res) => {
+    if (!hasValidToken(req.token))
+        return res.status(401).json({ error: "Token missing or invalid" })
+
+    // Requires a json object { updatedAttributes: { ... } }
+    const itemToUpdate = Order.findByIdAndUpdate(req.params.id, {
+        ...req.body.updatedAttributes,
+    })
+
+    try {
+        const savedItem = await itemToUpdate.save()
+        return res.json(savedItem)
+    } catch (e) {
+        return res.status(500).json({ error: e.message })
+    }
+})
+
+ordersRouter.delete("/:id", async (req, res) => {
+    if (!hasValidToken(req.token))
+        return res.status(401).json({ error: "Token missing or invalid" })
+
+    try {
+        await Order.findByIdAndDelete(req.params.id)
+        return res.json({ reponse: "Item deleted" })
+    } catch (e) {
+        return res.status(500).json({ error: e.message })
+    }
 })
 
 module.exports = ordersRouter

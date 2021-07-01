@@ -17,12 +17,32 @@ const underwearSchema = new mongoose.Schema({
     price: {
         type: Number,
         required: true,
+    },
+    name: {
+        type: String,
+        required: true,
+    },
+    prefix: {
+        type: String,
+        required: true,
+    },
+    color: {
+        type: String,
+        required: true,
+    },
+    size: {
+        type: String,
+        required: true,
+    },
+    image: {
+        type: String,
+        required: true
     }
 })
 
 underwearSchema.plugin(uniqueValidator)
 underwearSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
+    transform: (_, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()
         delete returnedObject._id
         delete returnedObject.__v
