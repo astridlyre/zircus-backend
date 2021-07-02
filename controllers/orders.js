@@ -14,9 +14,10 @@ ordersRouter.get("/", async (req, res) => {
 })
 
 ordersRouter.post("/", async (req, res) => {
-    if (!hasValidToken(req.token))
-        return res.status(401).json({ error: "Token missing or invalid" })
+    /* if (!hasValidToken(req.token))
+        return res.status(401).json({ error: "Token missing or invalid" }) */
 
+    console.log(req.headers)
     if (!Array.isArray(req.body.items))
         return res.status(400).json({ error: "Items are malformed" })
 
@@ -68,28 +69,22 @@ ordersRouter.put("/:id", async (req, res) => {
         return res.status(401).json({ error: "Token missing or invalid" })
 
     // Requires a json object { updatedAttributes: { ... } }
-    const itemToUpdate = Order.findByIdAndUpdate(req.params.id, {
+    Order.findByIdAndUpdate(req.params.id, {
         ...req.body.updatedAttributes,
+    }, (err, doc) => {
+        if (err) res.status(500).json({ error: e.message })
+        res.json(doc)
     })
-
-    try {
-        const savedItem = await itemToUpdate.save()
-        return res.json(savedItem)
-    } catch (e) {
-        return res.status(500).json({ error: e.message })
-    }
 })
 
 ordersRouter.delete("/:id", async (req, res) => {
     if (!hasValidToken(req.token))
         return res.status(401).json({ error: "Token missing or invalid" })
 
-    try {
-        await Order.findByIdAndDelete(req.params.id)
-        return res.json({ reponse: "Item deleted" })
-    } catch (e) {
-        return res.status(500).json({ error: e.message })
-    }
+    Order.findByIdAndDelete(req.params.id, (err) => {
+        if (err) res.json({ error: err.message })
+        res.json({ response: 'Item deleted' })
+    })
 })
 
 module.exports = ordersRouter

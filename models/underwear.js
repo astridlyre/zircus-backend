@@ -34,8 +34,8 @@ const underwearSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    image: {
-        type: String,
+    images: {
+        type: Array,
         required: true
     }
 })

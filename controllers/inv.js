@@ -2,8 +2,7 @@ const invRouter = require("express").Router()
 const { hasValidToken, isValidType } = require("../utils/middleware")
 const Underwear = require("../models/underwear")
 
-invRouter.get("/", async (req, res) => {
-    const inv = await Underwear.find({})
+async function initDB(inv) {
     for await (const item of inv) {
         await item.delete()
     }
@@ -39,7 +38,10 @@ invRouter.get("/", async (req, res) => {
             size,
             price: prefix === "cf" ? 38 : 30,
             quantity: 1,
-            image: `/assets/products/masked/${prefix}-${color}-a-1920.png`,
+            images: [
+                `/assets/img/products/masked/${prefix}-${color}-a-1920.png`,
+                `/assets/img/products/masked/${prefix}-${color}-b-1920.png`
+            ]
         })
         console.log(newItem)
         try {
@@ -48,6 +50,12 @@ invRouter.get("/", async (req, res) => {
             console.log(e.message)
         }
     }
+}
+
+invRouter.get("/", async (req, res) => {
+    const inv = await Underwear.find({})
+
+    // initDB(inv)
 
     return inv.length > 0
         ? res.json(inv)
@@ -86,7 +94,10 @@ invRouter.post("/", async (req, res) => {
         prefix,
         color,
         size,
-        image: `/assets/products/masked/${prefix}-${color}-a-1920.png`,
+        images: [
+            `/assets/img/products/masked/${prefix}-${color}-a-1920.png`,
+            `/assets/img/products/masked/${prefix}-${color}-b-1920.png`,
+        ]
     })
 
     try {
@@ -105,19 +116,31 @@ invRouter.put("/", async (req, res) => {
         return res.status(400).json({ error: `Invalid type ${req.body.type}` })
 
     // Requires a json object { type: req.body.type, updatedAttributes: { ... } }
-    const itemToUpdate = Underwear.findOneAndUpdate(
+    Underwear.findOneAndUpdate(
         { type: req.body.type },
         {
-            ...req.body.updatedAttributes,
+            quantity: req.body.quantity,
+            price: req.body.price,
+        },
+        { new: true },
+        (err, doc) => {
+            if (err) res.status(500).json({ error: e.message })
+            res.json(doc)
         }
     )
+})
 
-    try {
-        const savedEntry = await itemToUpdate.save()
-        res.json(savedEntry)
-    } catch (e) {
-        res.status(500).json({ error: e.message })
-    }
+invRouter.delete("/:type", async (req, res) => {
+    if (!hasValidToken(req.token))
+        return res.status(401).json({ error: "Token missing or invalid" })
+
+    if (!isValidType(req.body.type))
+        return res.status(400).json({ error: `Invalid type ${req.params.type}` })
+
+    Underwear.findOneAndDelete({ type: req.params.type }, (err) => {
+        if (err) res.status(500).json({ error: e.message })
+        res.json({ response: "Item deleted" })
+    })
 })
 
 module.exports = invRouter
