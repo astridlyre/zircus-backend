@@ -39,6 +39,8 @@ async function initDB(inv) {
             price: prefix === "cf" ? 38 : 30,
             quantity: 1,
             images: [
+                `/assets/img/products/masked/${prefix}-${color}-a-400.png`,
+                `/assets/img/products/masked/${prefix}-${color}-b-400.png`,
                 `/assets/img/products/masked/${prefix}-${color}-a-1920.png`,
                 `/assets/img/products/masked/${prefix}-${color}-b-1920.png`
             ]
@@ -95,6 +97,8 @@ invRouter.post("/", async (req, res) => {
         color,
         size,
         images: [
+            `/assets/img/products/masked/${prefix}-${color}-a-400.png`,
+            `/assets/img/products/masked/${prefix}-${color}-b-400.png`,
             `/assets/img/products/masked/${prefix}-${color}-a-1920.png`,
             `/assets/img/products/masked/${prefix}-${color}-b-1920.png`,
         ]
