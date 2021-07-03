@@ -29,4 +29,7 @@ countriesRouter.get("/:country", async (req, res) => {
     return res.json(country)
 })
 
-module.exports = countriesRouter
+module.exports = {
+    countriesRouter,
+    countriesDB,
+}
