@@ -12,6 +12,7 @@ const invRouter = require("./controllers/inv")
 const loginRouter = require('./controllers/login')
 const ordersRouter = require('./controllers/orders')
 const usersRouter = require('./controllers/users')
+const countriesRouter = require('./controllers/countries')
 
 // Start logging and connect to Database
 logger.info("connecting to ", config.MONGODB_URI)
@@ -40,6 +41,7 @@ app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/inv', invRouter)
 app.use('/api/orders', ordersRouter)
+app.use('/api/countries', countriesRouter)
 
 // Finally unknownEndpoint middleware and errorHandler
 app.use(middleware.unknownEndpoint)
