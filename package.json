@@ -14,17 +14,24 @@
     "nodemon": "^2.0.9"
   },
   "dependencies": {
+    "@admin-bro/express": "^3.1.0",
+    "@admin-bro/mongoose": "^1.1.0",
+    "admin-bro": "^4.0.1",
     "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "debug": "~2.6.9",
     "dotenv": "^10.0.0",
     "express": "~4.16.1",
     "express-async-errors": "^3.1.1",
+    "express-formidable": "^1.2.0",
+    "express-session": "^1.17.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.0",
     "mongoose-unique-validator": "^2.0.3",
     "stream-json": "^1.7.1",
-    "stripe": "^8.160.0"
+    "stripe": "^8.160.0",
+    "tslib": "^2.3.0"
   }
 }

@@ -11,12 +11,12 @@ require("express-async-errors")
 const invRouter = require("./controllers/inv")
 const loginRouter = require('./controllers/login')
 const ordersRouter = require('./controllers/orders')
-const usersRouter = require('./controllers/users')
 const { countriesRouter } = require('./controllers/countries')
+const adminRouter = require('./controllers/admin')
 
 // Start logging and connect to Database
 logger.info("connecting to ", config.MONGODB_URI)
-mongoose
+const connect = async () => await mongoose
     .connect(config.MONGODB_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -25,7 +25,7 @@ mongoose
         logger.info("connected to Database")
     })
     .catch((e) => logger.error("error connecting to Database: ", e.message))
-
+connect()
 
 // Use cors and json
 app.use(cors())
@@ -38,7 +38,7 @@ app.use(middleware.requestLogger)
 
 // Api Endpoints
 app.use('/api/login', loginRouter)
-app.use('/api/users', usersRouter)
+app.use('/admin', adminRouter)
 app.use('/api/inv', invRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/countries', countriesRouter)
