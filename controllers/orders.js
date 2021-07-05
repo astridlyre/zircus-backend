@@ -75,7 +75,10 @@ ordersRouter.post("/", async (req, res) => {
         }
     }
 
-    const order = new Order(orderToSave)
+    const order = new Order({
+        ...orderToSave,
+        hasPaid: true
+    })
 
     try {
         await order.save()

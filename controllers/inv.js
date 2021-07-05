@@ -3,6 +3,14 @@ const { hasValidToken, isValidType } = require("../utils/middleware")
 const Underwear = require("../models/underwear")
 
 async function initDB(inv) {
+    const getDesc = (pf) => {
+        if (pf === 'pf')
+            return `Pouch front briefs, with a bit more space to hold what you're packing in style. Each pair has a 1.25" wide white-on-black Zircus waistband, black elastic trim, and 95% cotton 5% spandex fabric that is Oeko-Tex Certified`
+        if (pf === 'ff')
+            return `Flat-front briefs, with the close and comfortable fit you've been looking for. Each pair has a 1.25" wide white-on-black Zircus waistband, black elastic trim, and 95% cotton 5% spandex fabric that is Oeko-Tex Certified`
+        else return `Our compression front briefs offer a layer of power-net, in-between 2 layers of stretch cotton fabric: the comfort of cotton and the hold of power-net all in one. With an extra wide (nearly 5" wide at the smallest point) style, your thunder will be safely contained! The end result is a flat look, perfect for smoothing things over. Each pair has a 1.25" wide white-on-black Zircus waistband, black elastic trim, and 95% cotton 5% spandex fabric that is Oeko-Tex Certified`
+    }
+
     for await (const item of inv) {
         await item.delete()
     }
@@ -34,16 +42,24 @@ async function initDB(inv) {
                         ? "Pouch front briefs"
                         : "Compression front briefs",
             prefix,
+            tagLine:
+                prefix === 'pf'
+                    ? 'a little extra space in the front'
+                    : prefix === 'cf'
+                        ? 'a smooth, compressed fit in the front'
+                        : 'close & comfortable',
             color,
             size,
+            active: true,
             price: prefix === "cf" ? 38 : 30,
-            quantity: 1,
-            images: [
-                `/assets/img/products/masked/${prefix}-${color}-a-400.png`,
-                `/assets/img/products/masked/${prefix}-${color}-b-400.png`,
-                `/assets/img/products/masked/${prefix}-${color}-a-1920.png`,
-                `/assets/img/products/masked/${prefix}-${color}-b-1920.png`
-            ]
+            quantity: 8,
+            images: {
+                sm_a: `/assets/img/products/masked/${prefix}-${color}-a-400.png`,
+                sm_b: `/assets/img/products/masked/${prefix}-${color}-b-400.png`,
+                lg_a: `/assets/img/products/masked/${prefix}-${color}-a-1920.png`,
+                lg_b: `/assets/img/products/masked/${prefix}-${color}-b-1920.png`
+            },
+            description: getDesc(prefix)
         })
         console.log(newItem)
         try {
@@ -56,12 +72,17 @@ async function initDB(inv) {
 
 invRouter.get("/", async (req, res) => {
     const inv = await Underwear.find({})
+    if (inv.length <= 0) return res.status(404).json({ error: 'No items found' })
 
-    // initDB(inv)
+    const reply = {}
+    for (const item of inv) {
+        if (!reply.hasOwnProperty(item.prefix))
+            reply[item.prefix] = []
+        reply[item.prefix].push(item)
+    }
 
-    return inv.length > 0
-        ? res.json(inv)
-        : res.status(404).json({ error: "No Inventory Items Found" })
+    initDB(inv)
+    return res.json(reply)
 })
 
 invRouter.get("/:type", async (req, res) => {

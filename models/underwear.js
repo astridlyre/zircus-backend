@@ -12,11 +12,15 @@ const underwearSchema = new mongoose.Schema({
     },
     quantity: {
         type: Number,
-        required: true,
+        default: 0
     },
     price: {
         type: Number,
         required: true,
+    },
+    active: {
+        type: Boolean,
+        default: false
     },
     name: {
         type: String,
@@ -35,9 +39,12 @@ const underwearSchema = new mongoose.Schema({
         required: true,
     },
     images: {
-        type: Array,
-        required: true
-    }
+        sm_a: String,
+        sm_b: String,
+        lg_a: String,
+        lg_b: String
+    },
+    description: String
 })
 
 underwearSchema.plugin(uniqueValidator)

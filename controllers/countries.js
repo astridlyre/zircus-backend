@@ -19,7 +19,17 @@ jsonStream.on("end", () => {
 })
 
 countriesRouter.get("/", async (_, res) => {
-    return res.json([...countriesOnly])
+    const reply = [
+        countriesDB.get('Canada'),
+        countriesDB.get('United States')
+    ]
+
+    for (const country of reply) {
+        for (const state of country.states) {
+            delete state.cities
+        }
+    }
+    return res.json(reply)
 })
 
 countriesRouter.get("/:country", async (req, res) => {
