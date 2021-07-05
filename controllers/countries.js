@@ -19,13 +19,13 @@ jsonStream.on("end", () => {
 })
 
 countriesRouter.get("/", async (_, res) => {
-    const reply = [
-        countriesDB.get('Canada'),
-        countriesDB.get('United States')
-    ]
+    const reply = {
+        canada: countriesDB.get('Canada'),
+        us: countriesDB.get('United States')
+    }
 
-    for (const country of reply) {
-        for (const state of country.states) {
+    for (const country of Object.keys(reply)) {
+        for (const state of reply[country].states) {
             delete state.cities
         }
     }
