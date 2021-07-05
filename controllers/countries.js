@@ -20,8 +20,8 @@ jsonStream.on("end", () => {
 
 countriesRouter.get("/", async (_, res) => {
     const reply = {
-        canada: countriesDB.get('Canada'),
-        us: countriesDB.get('United States')
+        ['Canada']: countriesDB.get('Canada'),
+        ['United States']: countriesDB.get('United States')
     }
 
     for (const country of Object.keys(reply)) {
