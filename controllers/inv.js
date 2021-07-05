@@ -81,7 +81,7 @@ invRouter.get("/", async (req, res) => {
         reply[item.prefix].push(item)
     }
 
-    initDB(inv)
+    // initDB(inv)
     return res.json(reply)
 })
 
