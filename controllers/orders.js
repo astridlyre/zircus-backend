@@ -41,7 +41,7 @@ const calculateOrderAmount = async (items, country, state) => {
         taxRate = 0.07 // US Tax rate?
     }
 
-    return { total: (total + total * taxRate) * 100 }
+    return { total: Math.round((total + total * taxRate) * 100) }
 }
 
 ordersRouter.get('/', async (req, res) => {
@@ -108,6 +108,7 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
     const paymentDetails = {
         amount: calculatedTotal.total, // stripe expects a total they can divide by 100
         currency: req.body.country === 'Canada' ? 'cad' : 'usd',
+        receipt_email: req.body.email,
     }
 
     // orderDetails for creating a pending order
@@ -142,7 +143,7 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
                     email: orderDetails.email,
                 },
             })
-            return res.send({ clientSecret })
+            return res.send({ clientSecret, total: orderDetails.total })
         } catch (e) {
             return res.status(400).json({ error: e.message })
         }
@@ -167,7 +168,10 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
     try {
         // Save new order
         await newOrder.save()
-        return res.send({ clientSecret: paymentIntent.client_secret })
+        return res.send({
+            clientSecret: paymentIntent.client_secret,
+            total: orderDetails.total,
+        })
     } catch (e) {
         return res.status(400).json({ error: e.message })
     }
