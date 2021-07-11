@@ -1,12 +1,9 @@
 const ordersRouter = require('express').Router()
 const { hasValidToken, isValidType } = require('../utils/middleware')
 const { STRIPE_SECRET, STRIPE_PUBLIC } = require('../utils/config')
-const { countriesDB } = require('./countries')
 const stripe = require('stripe')(STRIPE_SECRET)
 const Order = require('../models/order')
 const Underwear = require('../models/underwear')
-
-let pendingOrders = []
 
 const calculateOrderAmount = async (items, country, state) => {
     const inv = await Underwear.find({})
@@ -59,13 +56,13 @@ ordersRouter.get('/', async (req, res) => {
 
 // Update order post-payment
 ordersRouter.post('/', async (req, res) => {
-    const id = req.body.id
-    const orderToSave = pendingOrders.find(
-        order => order.paymentIntent.id === id
-    )
-    if (!orderToSave) return res.status(400).json({ error: 'Invalid order' })
+    const event = req.body
+    const id = event.data.object.id
+    const orderToUpdate = await Order.findOne({ orderId: id })
+    if (!orderToUpdate)
+        return res.status(400).json({ error: 'Invalid order id' })
 
-    for await (const item of orderToSave.items) {
+    for await (const item of orderToUpdate.items) {
         const itemToUpdate = await Underwear.findOne({ type: item.type })
         const newQuantity = itemToUpdate.quantity - Number(item.quantity)
         itemToUpdate.quantity = newQuantity
@@ -77,19 +74,14 @@ ordersRouter.post('/', async (req, res) => {
         }
     }
 
-    const order = new Order({
-        ...orderToSave,
-        hasPaid: true,
-    })
+    // Set paid to true
+    orderToUpdate.hasPaid = true
 
     try {
-        await order.save()
-        pendingOrders = pendingOrders.filter(
-            order => order.paymentIntent.id !== id
-        )
-        return res.json(order)
+        await orderToUpdate.save()
+        console.log(orderToUpdate)
+        return res.json(orderToUpdate)
     } catch (e) {
-        console.log(e.message)
         return res.status(400).json({ error: e.message })
     }
 })
@@ -134,29 +126,22 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
     // If updating a paymentIntent
     if (req.body.update) {
         const clientSecret = req.body.update.clientSecret
-        const order = pendingOrders.find(
-            order => order.paymentIntent.client_secret === clientSecret
+        const orderToUpdate = await Order.findOneAndUpdate(
+            { clientSecret },
+            orderDetails,
+            e => e && res.status(400).json({ error: e.message })
         )
-        console.log(order)
-        if (!order)
+        if (!orderToUpdate)
             return res.status(400).json({ error: 'Payment intent not found' })
 
         try {
-            const paymentIntent = order.paymentIntent
-            await stripe.paymentIntents.update(paymentIntent.id, {
+            await stripe.paymentIntents.update(orderToUpdate.orderId, {
                 ...paymentDetails,
                 metadata: {
                     name: orderDetails.name,
                     email: orderDetails.email,
                 },
             })
-
-            // Update pending orders
-            pendingOrders = pendingOrders.map(order =>
-                paymentIntent.client_secret === clientSecret
-                    ? { ...orderDetails, paymentIntent }
-                    : order
-            )
             return res.send({ clientSecret })
         } catch (e) {
             return res.status(400).json({ error: e.message })
@@ -173,12 +158,19 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
     })
 
     // Create a new pending order
-    pendingOrders.push({
-        paymentIntent,
+    const newOrder = new Order({
         ...orderDetails,
+        clientSecret: paymentIntent.client_secret,
+        orderId: paymentIntent.id,
     })
 
-    return res.send({ clientSecret: paymentIntent.client_secret })
+    try {
+        // Save new order
+        await newOrder.save()
+        return res.send({ clientSecret: paymentIntent.client_secret })
+    } catch (e) {
+        return res.status(400).json({ error: e.message })
+    }
 })
 
 ordersRouter.put('/:id', async (req, res) => {

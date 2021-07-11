@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
@@ -39,12 +40,12 @@ const orderSchema = new mongoose.Schema({
     hasPaid: {
         type: Boolean,
         required: true,
-        default: false
+        default: false,
     },
     hasShipped: {
         type: Boolean,
         required: true,
-        default: false
+        default: false,
     },
     createdOn: {
         type: Date,
@@ -54,9 +55,20 @@ const orderSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-    }
+    },
+    orderId: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    clientSecret: {
+        type: String,
+        required: true,
+        unique: true,
+    },
 })
 
+orderSchema.plugin(uniqueValidator)
 orderSchema.set('toJSON', {
     transform: (_, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()
