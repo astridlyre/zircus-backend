@@ -1,12 +1,12 @@
-const ordersRouter = require("express").Router()
-const { hasValidToken, isValidType } = require("../utils/middleware")
-const { STRIPE_SECRET, STRIPE_PUBLIC } = require("../utils/config")
-const { countriesDB } = require("./countries")
-const stripe = require("stripe")(STRIPE_SECRET)
-const Order = require("../models/order")
-const Underwear = require("../models/underwear")
+const ordersRouter = require('express').Router()
+const { hasValidToken, isValidType } = require('../utils/middleware')
+const { STRIPE_SECRET, STRIPE_PUBLIC } = require('../utils/config')
+const { countriesDB } = require('./countries')
+const stripe = require('stripe')(STRIPE_SECRET)
+const Order = require('../models/order')
+const Underwear = require('../models/underwear')
 
-const pendingOrders = new Map()
+let pendingOrders = []
 
 const calculateOrderAmount = async (items, country, state) => {
     const inv = await Underwear.find({})
@@ -14,9 +14,10 @@ const calculateOrderAmount = async (items, country, state) => {
     let total = 0
     for (const item of items) {
         // If it isn't valid, return error
-        if (!isValidType(item.type)) return { error: `Invalid type ${item.type}` }
+        if (!isValidType(item.type))
+            return { error: `Invalid type ${item.type}` }
 
-        const invItem = inv.find((i) => i.type === item.type)
+        const invItem = inv.find(i => i.type === item.type)
         const newQuantity = invItem.quantity - Number(item.quantity)
         // Make sure there is enough stock
         if (newQuantity < 0) return { error: `Invalid item quantities` }
@@ -25,15 +26,15 @@ const calculateOrderAmount = async (items, country, state) => {
     }
 
     let taxRate = 0
-    if (country === "Canada") {
+    if (country === 'Canada') {
         switch (state) {
-            case "New Brunswick":
-            case "Newfoundland and Labrador":
-            case "Nova Scotia":
-            case "Prince Edward Island":
+            case 'New Brunswick':
+            case 'Newfoundland and Labrador':
+            case 'Nova Scotia':
+            case 'Prince Edward Island':
                 taxrate = 0.15
                 break
-            case "Ontario":
+            case 'Ontario':
                 taxRate = 0.13
                 break
             default:
@@ -46,22 +47,23 @@ const calculateOrderAmount = async (items, country, state) => {
     return { total: (total + total * taxRate) * 100 }
 }
 
-ordersRouter.get("/", async (req, res) => {
+ordersRouter.get('/', async (req, res) => {
     if (!hasValidToken(req.token))
-        return res.status(401).json({ error: "Token missing or invalid" })
+        return res.status(401).json({ error: 'Token missing or invalid' })
 
     const orders = await Order.find({})
     return orders.length > 0
         ? res.json(orders)
-        : res.status(404).json({ error: "No orders found" })
+        : res.status(404).json({ error: 'No orders found' })
 })
 
 // Update order post-payment
-ordersRouter.post("/", async (req, res) => {
+ordersRouter.post('/', async (req, res) => {
     const id = req.body.id
-    const orderToSave = pendingOrders.get(id)
-    console.log(req.body)
-    if (!orderToSave) return res.status(400).json({ error: "Invalid order" })
+    const orderToSave = pendingOrders.find(
+        order => order.paymentIntent.id === id
+    )
+    if (!orderToSave) return res.status(400).json({ error: 'Invalid order' })
 
     for await (const item of orderToSave.items) {
         const itemToUpdate = await Underwear.findOne({ type: item.type })
@@ -77,12 +79,14 @@ ordersRouter.post("/", async (req, res) => {
 
     const order = new Order({
         ...orderToSave,
-        hasPaid: true
+        hasPaid: true,
     })
 
     try {
         await order.save()
-        pendingOrders.delete(id)
+        pendingOrders = pendingOrders.filter(
+            order => order.paymentIntent.id !== id
+        )
         return res.json(order)
     } catch (e) {
         console.log(e.message)
@@ -90,33 +94,24 @@ ordersRouter.post("/", async (req, res) => {
     }
 })
 
-ordersRouter.post("/create-payment-intent", async (req, res) => {
-    const { country, state } = req.body
-
-    // validate country
-    const foundCountry = countriesDB.get(country)
-    if (!foundCountry)
-        return res.status(400).json({ error: `Invalid country ${country} ` })
-
-    // validate city
-    const foundState = foundCountry.states.find((s) => s.name === state)
-    if (!foundState)
-        return res.status(400).json({ error: `Invalid state ${state}` })
-
+ordersRouter.post('/create-payment-intent', async (req, res) => {
     // Make sure items are an array
     if (!Array.isArray(req.body.items))
-        return res.status(400).json({ error: "Items are malformed" })
+        return res.status(400).json({ error: 'Items are malformed' })
 
-    const total = await calculateOrderAmount(req.body.items, country, state)
-
+    const total = await calculateOrderAmount(
+        req.body.items,
+        req.body.country,
+        req.body.state
+    )
     if (total.error) return res.status(400).json({ error: total.error })
 
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentDetails = {
         amount: total.total,
-        currency: "cad",
-    })
+        currency: req.body.country === 'Canada' ? 'cad' : 'usd',
+    }
 
-    pendingOrders.set(paymentIntent.id, {
+    const orderDetails = {
         streetAddress: req.body.streetAddress,
         city: req.body.city,
         state: req.body.state,
@@ -126,14 +121,44 @@ ordersRouter.post("/create-payment-intent", async (req, res) => {
         email: req.body.email,
         items: req.body.items,
         total: total.total / 100,
+    }
+
+    // If updating a paymentIntent
+    if (req.body.update) {
+        const order = pendingOrders.find(
+            order =>
+                order.paymentIntent.client_secret ===
+                req.body.update.clientSecret
+        )
+        if (!order)
+            return res.status(400).json({ error: 'Payment intent not found' })
+
+        await stripe.paymentIntents.update(
+            order.paymentIntent.id,
+            paymentDetails
+        )
+        pendingOrders = pendingOrders.map(order =>
+            order.paymentIntent.client_secret === req.body.update.clientSecret
+                ? { ...order, ...orderDetails }
+                : order
+        )
+        console.log(pendingOrders)
+        return res.send({ clientSecret: req.body.update.clientSecret })
+    }
+
+    // Else create a new paymentIntent
+    const paymentIntent = await stripe.paymentIntents.create(paymentDetails)
+    pendingOrders.push({
+        paymentIntent,
+        ...orderDetails,
     })
 
     return res.send({ clientSecret: paymentIntent.client_secret })
 })
 
-ordersRouter.put("/:id", async (req, res) => {
+ordersRouter.put('/:id', async (req, res) => {
     if (!hasValidToken(req.token))
-        return res.status(401).json({ error: "Token missing or invalid" })
+        return res.status(401).json({ error: 'Token missing or invalid' })
 
     // Requires a json object { updatedAttributes: { ... } }
     Order.findByIdAndUpdate(
@@ -148,13 +173,13 @@ ordersRouter.put("/:id", async (req, res) => {
     )
 })
 
-ordersRouter.delete("/:id", async (req, res) => {
+ordersRouter.delete('/:id', async (req, res) => {
     if (!hasValidToken(req.token))
-        return res.status(401).json({ error: "Token missing or invalid" })
+        return res.status(401).json({ error: 'Token missing or invalid' })
 
-    Order.findByIdAndDelete(req.params.id, (err) => {
+    Order.findByIdAndDelete(req.params.id, err => {
         if (err) res.json({ error: err.message })
-        res.json({ response: "Item deleted" })
+        res.json({ response: 'Item deleted' })
     })
 })
 
