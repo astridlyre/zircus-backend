@@ -95,22 +95,30 @@ ordersRouter.post('/', async (req, res) => {
 })
 
 ordersRouter.post('/create-payment-intent', async (req, res) => {
+    // Make sure have country and state
+    if (!req.body.country || !req.body.state)
+        return res.status(400).json({ error: 'Missing country or state' })
+
     // Make sure items are an array
     if (!Array.isArray(req.body.items))
         return res.status(400).json({ error: 'Items are malformed' })
 
-    const total = await calculateOrderAmount(
+    // Calculate the total for the order
+    const calculatedTotal = await calculateOrderAmount(
         req.body.items,
         req.body.country,
         req.body.state
     )
-    if (total.error) return res.status(400).json({ error: total.error })
+    if (calculatedTotal.error)
+        return res.status(400).json({ error: calculatedTotal.error })
 
+    // paymentDetails for creating a paymentIntent
     const paymentDetails = {
-        amount: total.total,
+        amount: calculatedTotal.total, // stripe expects a total they can divide by 100
         currency: req.body.country === 'Canada' ? 'cad' : 'usd',
     }
 
+    // orderDetails for creating a pending order
     const orderDetails = {
         streetAddress: req.body.streetAddress,
         city: req.body.city,
@@ -120,34 +128,51 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
         name: req.body.name,
         email: req.body.email,
         items: req.body.items,
-        total: total.total / 100,
+        total: calculatedTotal.total / 100,
     }
 
     // If updating a paymentIntent
     if (req.body.update) {
+        const clientSecret = req.body.update.clientSecret
         const order = pendingOrders.find(
-            order =>
-                order.paymentIntent.client_secret ===
-                req.body.update.clientSecret
+            order => order.paymentIntent.client_secret === clientSecret
         )
+        console.log(order)
         if (!order)
             return res.status(400).json({ error: 'Payment intent not found' })
 
-        await stripe.paymentIntents.update(
-            order.paymentIntent.id,
-            paymentDetails
-        )
-        pendingOrders = pendingOrders.map(order =>
-            order.paymentIntent.client_secret === req.body.update.clientSecret
-                ? { ...order, ...orderDetails }
-                : order
-        )
-        console.log(pendingOrders)
-        return res.send({ clientSecret: req.body.update.clientSecret })
+        try {
+            const paymentIntent = order.paymentIntent
+            await stripe.paymentIntents.update(paymentIntent.id, {
+                ...paymentDetails,
+                metadata: {
+                    name: orderDetails.name,
+                    email: orderDetails.email,
+                },
+            })
+
+            // Update pending orders
+            pendingOrders = pendingOrders.map(order =>
+                paymentIntent.client_secret === clientSecret
+                    ? { ...orderDetails, paymentIntent }
+                    : order
+            )
+            return res.send({ clientSecret })
+        } catch (e) {
+            return res.status(400).json({ error: e.message })
+        }
     }
 
     // Else create a new paymentIntent
-    const paymentIntent = await stripe.paymentIntents.create(paymentDetails)
+    const paymentIntent = await stripe.paymentIntents.create({
+        ...paymentDetails,
+        metadata: {
+            name: orderDetails.name,
+            email: orderDetails.email,
+        },
+    })
+
+    // Create a new pending order
     pendingOrders.push({
         paymentIntent,
         ...orderDetails,
