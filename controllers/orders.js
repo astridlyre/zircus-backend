@@ -125,8 +125,8 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
     }
 
     // If updating a paymentIntent
-    if (req.body.update) {
-        const clientSecret = req.body.update.clientSecret
+    if (req.body.update !== null) {
+        const clientSecret = req.body.update
         const orderToUpdate = await Order.findOneAndUpdate(
             { clientSecret },
             orderDetails,
