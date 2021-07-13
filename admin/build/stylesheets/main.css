@@ -1,0 +1,338 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap");
+:root {
+  --llight: #fff8f8;
+  --light: #f0efef;
+  --purple: #9579b1;
+  --mid: #373d56;
+  --red: #bf4c58;
+  --dark: #272436;
+  --grey: #6a6871;
+  --lgrey: #dfdddd;
+  --mgrey: #bfbdbd;
+  --mf: "Noto Sans JP", sans-serif;
+  --btn-padding: 0.5rem 1.5rem;
+  --input-padding: 0.5rem;
+  --radius: 0.25rem;
+  --sm-padding: 1rem;
+  --md-padding: 2rem;
+  --lg-padding: 4rem;
+  --header-height: 4rem;
+}
+
+p {
+  font-family: var(--mf);
+  line-height: 1.5;
+  color: var(--mid);
+}
+
+em, strong {
+  color: var(--dark);
+}
+
+span {
+  font-family: var(--mf);
+}
+
+.light {
+  color: var(--light) !important;
+}
+
+.dark {
+  color: var(--dark) !important;
+}
+
+.grey {
+  color: var(--grey) !important;
+}
+
+.lgrey {
+  color: var(--lgrey) !important;
+}
+
+.purple {
+  color: var(--purple) !important;
+}
+
+.red {
+  color: var(--red) !important;
+}
+
+.mid {
+  color: var(--mid) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--mf);
+  color: var(--red);
+}
+
+body {
+  background: linear-gradient(-45deg, var(--lgrey), var(--light));
+  color: var(--dark);
+  box-sizing: border-box;
+  min-height: 100vh;
+  margin: 0;
+}
+
+* {
+  box-sizing: inherit;
+}
+
+input, select {
+  border-radius: var(--radius);
+  border: 2px solid var(--lgrey);
+  padding: var(--input-padding);
+  font-family: var(--mf);
+  font-size: 0.8rem;
+  color: var(--dark);
+  outline: none;
+  background-color: var(--llight);
+}
+input:focus, input:hover, select:focus, select:hover {
+  border-color: var(--red);
+}
+input::placeholder, select::placeholder {
+  color: var(--grey);
+}
+input:disabled, select:disabled {
+  background-color: var(--lgrey);
+  color: var(--mgrey);
+  cursor: not-allowed;
+}
+input:disabled:hover, input:disabled:focus, select:disabled:hover, select:disabled:focus {
+  border-color: var(--lgrey);
+}
+
+button {
+  padding: var(--btn-padding);
+  background: transparent;
+  border: 2px solid var(--mgrey);
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-family: var(--mf);
+  font-size: 0.8rem;
+  outline: none;
+  color: var(--mid);
+}
+button:hover, button:focus {
+  border-color: var(--red);
+  cursor: pointer;
+}
+button:disabled {
+  background-color: var(--lgrey);
+  color: var(--mgrey);
+}
+button:disabled:hover, button:disabled:focus {
+  border-color: var(--mgrey);
+  cursor: not-allowed;
+}
+button.primary {
+  background: var(--dark);
+  color: var(--llight);
+  border-color: var(--dark);
+}
+button.primary:hover, button.primary:focus {
+  background: var(--purple);
+  border-color: var(--purple);
+}
+
+.login {
+  margin-top: 4rem;
+  padding: var(--md-padding);
+  border-radius: var(--radius);
+  -webkit-box-shadow: 6px 7px 35px 6px rgba(106, 104, 113, 0.2);
+  -moz-box-shadow: 6px 7px 35px 6px rgba(106, 104, 113, 0.2);
+  box-shadow: 6px 7px 35px 6px rgba(106, 104, 113, 0.2);
+}
+.login__body {
+  align-items: center;
+}
+.login h1 {
+  color: var(--dark);
+}
+.login p {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--grey);
+}
+.login form {
+  margin-top: 2rem;
+  gap: 0.5rem;
+}
+.login form label {
+  display: flex;
+  flex-flow: column nowrap;
+}
+.login form label span {
+  font-size: 0.8rem;
+}
+
+.dashboard {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  padding-top: var(--header-height);
+}
+.dashboard__main {
+  width: 100%;
+  overflow-y: scroll;
+  height: calc(100vh - var(--header-height));
+}
+.dashboard__header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--header-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--sm-padding);
+}
+.dashboard__header button {
+  border-color: var(--lgrey);
+}
+.dashboard__header button:hover, .dashboard__header button:focus {
+  border-color: var(--red);
+}
+.dashboard__nav {
+  padding: var(--md-padding);
+}
+.dashboard__nav__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+.dashboard__nav__links__link {
+  color: var(--mid);
+}
+.dashboard__nav__links__link a {
+  text-decoration: none;
+  color: inherit;
+  padding: 0.5rem 0;
+  display: inline-block;
+  position: relative;
+  outline: none;
+}
+.dashboard__nav__links__link a::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  border-bottom: 2px solid var(--red);
+}
+.dashboard__nav__links__link a:hover, .dashboard__nav__links__link a:focus {
+  color: var(--dark);
+}
+.dashboard__nav__links__link a:hover::after, .dashboard__nav__links__link a:focus::after {
+  transition: width 0.1s ease-out;
+  width: 100%;
+}
+
+.inventory__filters {
+  padding: 1rem var(--lg-padding);
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.inventory__filters button {
+  border-color: var(--lgrey);
+}
+.inventory__filters .active {
+  background-color: var(--lgrey);
+}
+.inventory__items {
+  margin: 0;
+  width: 100%;
+  padding-left: var(--md-padding);
+  padding-right: var(--sm-padding);
+}
+.inventory__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  border-top: 2px solid var(--lgrey);
+}
+.inventory__item__img {
+  height: 2.5rem;
+}
+.inventory__item__desc {
+  display: flex;
+  gap: 1rem;
+  flex-grow: 1;
+}
+.inventory__item__size, .inventory__item__color {
+  font-size: 1rem;
+}
+.inventory__item label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.inventory__item input[type=number] {
+  width: 4rem;
+}
+.inventory__item button {
+  border-color: transparent;
+  padding: var(--input-padding);
+  display: flex;
+  align-content: center;
+}
+.inventory__item button:hover, .inventory__item button:focus {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.icon {
+  height: 1.25rem;
+}
+
+.spinner {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: var(--lg-padding);
+}
+.spinner .icon {
+  height: 4rem;
+  animation: 2s infinite rotateSpinner;
+}
+
+@keyframes rotateSpinner {
+  0% {
+    transform: rotate(0);
+    color: var(--lgrey);
+  }
+  100% {
+    transform: rotate(360deg);
+    color: var(--mgrey);
+  }
+}
+.p-sm {
+  padding: var(--sm-padding);
+}
+
+.p-md {
+  padding: var(--md-padding);
+}
+
+.p-lg {
+  padding: var(--lg-padding);
+}
+
+.flex-col {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.hidden {
+  display: none;
+}
+
+/*# sourceMappingURL=main.css.map */

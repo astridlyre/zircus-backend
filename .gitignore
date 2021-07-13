@@ -1,2 +1,10 @@
 .env
 node_modules
+admin/node_modules
+admin/src
+admin/public
+admin/sass
+admin/.gitignore
+admin/README.md
+admin/package.json
+admin/package-lock.json

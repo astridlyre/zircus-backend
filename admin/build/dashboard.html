@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Zircus Dashboard</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="stylesheets/main.css" rel="stylesheet" />
+    <script src="script.js" defer type="module"></script>
+  </head>
+  <body class="dashboard">
+    <header class="dashboard__header">
+      <h3>Zircus Admin Dashboard</h3>
+      <button type="button">logout</button>
+    </header>
+    <nav class="dashboard__nav">
+      <ul class="dashboard__nav__links">
+        <li class="dashboard__nav__links__link">
+          <a href="/inventory">Inventory</a>
+        </li>
+        <li class="dashboard__nav__links__link">
+          <a href="/orders">Orders</a>
+        </li>
+        <li class="dashboard__nav__links__link">
+          <a href="/metrics">Metrics</a>
+        </li>
+      </ul>
+    </nav>
+    <main class="dashboard__main">
+      <div id="inventory-items-filters" class="inventory__filters">
+        <template id="inventory-items-filters-template">
+          <button type="button" class=""></button>
+        </template>
+      </div>
+      <ul class="inventory__items" id="inventory-items">
+        <li id="spinner" class="spinner">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="icon"
+          >
+            <line x1="12" y1="2" x2="12" y2="6"></line>
+            <line x1="12" y1="18" x2="12" y2="22"></line>
+            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+            <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+            <line x1="2" y1="12" x2="6" y2="12"></line>
+            <line x1="18" y1="12" x2="22" y2="12"></line>
+            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+            <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+          </svg>
+        </li>
+        <template id="inventory-item-template">
+          <li class="inventory__item">
+            <img src="" alt="" class="inventory__item__img" />
+            <h4 class="inventory__item__name"></h4>
+            <div class="inventory__item__desc">
+              <span class="inventory__item__size"></span>
+              <span class="inventory__item__color"></span>
+            </div>
+            <label for="item-quantity">
+              <span class="item-quantity-label">quantity</span>
+              <input
+                type="number"
+                name="item-quantity"
+                value="1"
+                min="0"
+                step="1"
+                size="3"
+                class="item-quantity-input"
+              />
+            </label>
+            <label for="active">
+              <span class="active-label">active</span>
+              <input
+                type="checkbox"
+                name="active"
+                value="active"
+                class="item-isactive-input"
+              />
+            </label>
+            <button type="button" class="remove-button">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon"
+              >
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path
+                  d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                ></path>
+              </svg>
+            </button>
+          </li>
+        </template>
+      </ul>
+    </main>
+  </body>
+</html>
