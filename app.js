@@ -34,7 +34,7 @@ connect()
 app.use(cors())
 app.use(session({ secret: 'ilovecats' }))
 app.use(express.json())
-app.use(express.static('public'))
+app.use(express.static('admin/build'))
 
 // Use custom middleware to extra jwt and log reqs
 app.use(middleware.tokenExtractor)
