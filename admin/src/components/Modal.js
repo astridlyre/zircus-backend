@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 const StyledBlur = styled.div`
@@ -19,8 +20,8 @@ const StyledModal = styled.section`
     gap: 1rem;
     backgroud-color: var(--gray-90);
     top: calc(25%);
-    left: calc(50% - 25vw);
-    width: 50vw;
+    left: calc(50% - 15rem);
+    width: 30rem;
     min-height: 15rem;
     background-color: var(--gray-10);
     border-radius: var(--big-radius);
@@ -44,6 +45,8 @@ const StyledButton = styled.button`
 `
 
 export default function Modal({ children, showModal, setShowModal }) {
+    const cancelBtn = useRef()
+
     const ok = () => {
         showModal.ok(true)
         setShowModal(null)
@@ -52,6 +55,11 @@ export default function Modal({ children, showModal, setShowModal }) {
         showModal.ok(false)
         setShowModal(null)
     }
+
+    useEffect(() => {
+        showModal && cancelBtn.current.focus()
+    })
+
     return (
         <div>
             <StyledBlur showModal={showModal}>
@@ -64,16 +72,17 @@ export default function Modal({ children, showModal, setShowModal }) {
                     <StyledText>{showModal.text}</StyledText>
                     <StyledButtons>
                         <StyledButton
-                            className="button"
+                            className={`${showModal.color} button`}
                             type="button"
                             onClick={ok}
                         >
-                            Ok
+                            {showModal.btnText || 'Ok'}
                         </StyledButton>
                         <StyledButton
                             className="button outline"
                             type="button"
                             onClick={cancel}
+                            ref={cancelBtn}
                         >
                             Cancel
                         </StyledButton>

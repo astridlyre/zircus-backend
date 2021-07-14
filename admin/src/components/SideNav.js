@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import styled from 'styled-components'
 import RightIcon from './RightIcon.js'
 import LeftIcon from './LeftIcon.js'

@@ -7,6 +7,10 @@ const StyledContainer = styled.div`
     margin-top: var(--base-spacing);
 `
 
+const StyledH1 = styled.h1`
+    width: 100%;
+`
+
 const StyledBubble = styled.div`
     background-color: var(--gray-20);
     border-radius: var(--big-radius);
@@ -35,7 +39,7 @@ export default function Metrics({ orders, setShowModal, inv }) {
     const invFlat = (inv && Object.values(inv).flat()) || []
     return (
         <Page pad={true}>
-            <h1>Metrics</h1>
+            <StyledH1>Metrics</StyledH1>
             <StyledContainer>
                 <StyledBubble>
                     <h2>total orders</h2>
@@ -47,7 +51,7 @@ export default function Metrics({ orders, setShowModal, inv }) {
                         {invFlat.map(
                             item =>
                                 item.quantity < 5 && (
-                                    <li>
+                                    <li key={item.type}>
                                         <span>{item.type}</span>
                                         <span>{item.quantity}</span>
                                     </li>

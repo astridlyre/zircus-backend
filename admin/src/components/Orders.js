@@ -8,6 +8,7 @@ const StyledUl = styled.ul`
     display: flex;
     flex-flow: column nowrap;
     gap: var(--base-spacing);
+    max-width: var(--screen-lg);
 `
 
 export default function Orders({ orders, token, setShowModal, setOrders }) {

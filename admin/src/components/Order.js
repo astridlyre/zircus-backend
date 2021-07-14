@@ -11,7 +11,6 @@ const StyledLi = styled.li`
     display: flex;
     gap: var(--base-spacing);
     padding: var(--base-spacing);
-    max-width: var(--screen-lg);
     width: 100%;
     border-left: 0.5rem solid;
     border-right: 0.5rem solid;
@@ -62,6 +61,8 @@ export default function Order({ order, token, setShowModal, setOrders }) {
         setShowModal({
             heading: 'Confirm deletion',
             text: `Delete ${order.name}'s order?'`,
+            color: 'danger',
+            btnText: 'Delete',
             ok: choice => {
                 if (choice)
                     deleteOrder(order.id, token)

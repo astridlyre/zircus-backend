@@ -3,6 +3,7 @@ import InventoryItem from './InventoryItem.js'
 import Spinner from './Spinner.js'
 import Filter from './Filter.js'
 import Page from './Page.js'
+import List from './List.js'
 
 export default function Inventory({ inv, token, setShowModal, setInv }) {
     const [showFF, setShowFF] = useState(true)
@@ -30,7 +31,7 @@ export default function Inventory({ inv, token, setShowModal, setInv }) {
     return (
         <Page>
             <Filter filters={filters} />
-            <ul className="inv">
+            <List>
                 {inv &&
                     showFF &&
                     inv.ff.map(item => (
@@ -69,7 +70,7 @@ export default function Inventory({ inv, token, setShowModal, setInv }) {
                         <Spinner />
                     </li>
                 )}
-            </ul>
+            </List>
         </Page>
     )
 }

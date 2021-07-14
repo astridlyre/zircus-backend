@@ -12,6 +12,8 @@ const StyledLi = styled.li`
         gap: 3rem;
     }
     border-top: 2px solid var(--gray-20);
+    border-left: 2px solid var(--gray-20);
+    border-right: 2px solid var(--gray-20);
     padding: 1rem;
 
     &:hover {
@@ -37,6 +39,8 @@ export default function InventoryItem({ item, token, setShowModal, setInv }) {
         setShowModal({
             heading: 'Confirm deletion',
             text: `Delete inventory item ${item.type}?`,
+            color: 'danger',
+            btnText: 'Delete',
             ok: reply => {
                 if (reply) setInv(inv => inv.filter(i => i.type !== item.type))
             },

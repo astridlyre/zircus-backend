@@ -11,7 +11,7 @@ const StyledLogin = styled.main`
 `
 
 const StyledForm = styled.form`
-    margin-top: var(--base-spacing);
+    margin-top: var(--lg-spacing);
     padding: var(--md-spacing);
     background-color: var(--gray-20);
     border-radius: var(--big-radius);
