@@ -1,0 +1,119 @@
+.button,
+a.button {
+  @include button-state();
+
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: block;
+  font-weight: bold;
+  font-size: var(--small-font-size);
+  min-height: 1.5rem;
+  padding: var(--btn-padding);
+  text-decoration: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
+}
+
+.outline,
+a.outline {
+  @include outline-button-state(
+    $border-color: var(--dgray-90),
+    $text-hover-color: var(--gray-10)
+  );
+}
+
+.danger,
+a.danger {
+  @include button-state($bg-color: var(--red), $bg-hover-color: var(--dark-red));
+
+  &.outline {
+    @include outline-button-state(
+      $border-color: var(--red),
+      $bg-hover-color: var(--dark-red),
+      $bg-active-color: var(--red),
+      $text-hover-color: var(--dark-red)
+    );
+  }
+}
+
+.positive,
+a.positive {
+  @include button-state(
+    $bg-color: var(--green),
+    $bg-hover-color: var(--dark-green)
+  );
+
+  &.outline {
+    @include outline-button-state(
+      $border-color: var(--green),
+      $bg-hover-color: var(--dark-green),
+      $bg-active-color: var(--green),
+      $text-hover-color: var(--dark-green)
+    );
+  }
+}
+
+.light,
+a.light {
+  @include button-state(
+    $bg-color: var(--gray-10),
+    $bg-hover-color: var(--gray-30),
+    $text-color: var(--dgray-90)
+  );
+
+  &.outline {
+    @include outline-button-state(
+      $bg-color: transparent,
+      $border-color: var(--gray-10),
+      $bg-hover-color: var(--gray-10),
+      $bg-active-color: var(--gray-10),
+      $text-color: var(--gray-10),
+      $text-hover-color: var(--dgray-90)
+    );
+  }
+}
+
+.inactive,
+a.inactive {
+  @include button-state(
+    $bg-color: var(--gray-50),
+    $bg-hover-color: var(--gray-50),
+    $text-color: var(--gray-80)
+  );
+  cursor: default;
+
+  &:hover,
+  &:focus {
+    color: var(--gray-80);
+    text-decoration: none;
+  }
+}
+
+.minimal,
+a.minimal {
+  display: inline-block;
+  font-size: var(--small-font-size);
+  font-weight: normal;
+  min-height: inherit;
+  padding: var(--btn-padding);
+
+  @media screen and (min-width: 901px) {
+    padding: var(--btn-padding);
+  }
+}
+
+.icon-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--input-padding);
+
+  svg {
+    fill: currentColor;
+    height: 1rem;
+  }
+}

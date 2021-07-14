@@ -1,0 +1,79 @@
+@mixin set-heading-font-family() {
+  font-family: var(--heading-font-family);
+}
+
+@mixin set-site-font-family() {
+  font-family: var(--site-font-family);
+  letter-spacing: -0.0027777778rem;
+}
+
+@mixin headings-common-base() {
+  @include set-heading-font-family();
+  letter-spacing: 0.1rem;
+  font-weight: 500;
+  line-height: var(--heading-line-height);
+}
+
+@mixin heading-1() {
+  font-size: var(--xxl-font-size-mobile);
+
+  @media screen and (min-width: 901px) {
+    font-size: var(--xxl-font-size);
+  }
+}
+
+@mixin heading-2() {
+  font-size: var(--xl-font-size-mobile);
+
+  @media screen and (min-width: 901px) {
+    font-size: var(--xl-font-size);
+  }
+}
+
+@mixin heading-3() {
+  font-size: var(--lg-font-size-mobile);
+
+  @media screen and (min-width: 901px) {
+    font-size: var(--lg-font-size);
+  }
+}
+
+@mixin heading-4() {
+  font-size: var(--md-font-size-mobile);
+
+  @media screen and (min-width: 901px) {
+    font-size: var(--md-font-size);
+  }
+}
+
+@mixin heading-5() {
+  font-size: var(--sm-font-size-mobile);
+
+  @media screen and (min-width: 901px) {
+    font-size: var(--sm-font-size);
+  }
+}
+
+@mixin blockquote() {
+  @include readable-line-length();
+  font-size: var(--sm-font-size-mobile);
+
+  @media screen and (min-width: 901px) {
+    font-size: var(--sm-font-size);
+  }
+}
+
+@mixin font-smoothing() {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@mixin slab-highlight() {
+  background-color: var(--gray-90);
+  color: var(--gray-05);
+  font-family: var(--heading-font-family);
+  font-weight: normal;
+  max-width: max-content;
+  padding: 0 var(--base-unit);
+}
+

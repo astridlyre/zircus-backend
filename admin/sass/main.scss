@@ -1,0 +1,175 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,300;1,400;1,600;1,700;1,800;1,900&display=swap");
+
+:root {
+  // Greys
+  --gray-05: #ffffff;
+  --gray-10: #f9f8fa;
+  --gray-20: #f3f0f4;
+  --gray-30: #e4e0e6;
+  --gray-40: #d6cfd8;
+  --gray-50: #c6bfc9;
+  --gray-60: #b8afba;
+  --gray-70: #b8afba;
+  --gray-80: #9a8f9e;
+  --gray-90: #8b808f;
+  --dgray-10: #5a525e;
+  --dgray-20: #514a55;
+  --dgray-30: #4b414d;
+  --dgray-40: #413944;
+  --dgray-50: #39313c;
+  --dgray-60: #302a33;
+  --dgray-70: #29222b;
+  --dgray-80: #211b22;
+  --dgray-90: #19141a;
+
+  // Basic Colors
+  --black: #000000;
+  --white: #ffffff;
+  --text-color: #211b22;
+  --invert-text-color: var(--white);
+
+  // Links
+  --link: #45576e;
+  --link-hover: #283341;
+  --link-visited: #553a7b;
+  --link-visited-hover: #491845;
+
+  //Brand
+  --teal: #82dbd7;
+  --purple: #553a7b;
+  --yellow: #f6cb5a;
+  --dark-yellow: #c5a249;
+  --green: #589959;
+  --dark-green: #3d6b3e;
+  --red: #8f3342;
+  --dark-red: #5b2538;
+
+  // Breakpoints
+  --content-xs: 304px;
+  --content-sm: 432px;
+  --content-md: 688px;
+  --content-lg: 928px;
+  --content-xl: 1152px;
+  --content-max: 1440px;
+
+  // Screens
+  --screen-xs: 320px;
+  --screen-sm: 480px;
+  --screen-md: 768px;
+  --screen-lg: 1024px;
+  --screen-xl: 1312px;
+
+  // Gradients
+  --gradient-warm: linear-gradient(
+    45deg,
+    #f5156c,
+    #ff3750,
+    #ff4f5e,
+    #ff7139,
+    #ff980e
+  );
+  --gradient-cool: linear-gradient(90deg, #3a8ee6, #9059ff, #c139e6);
+  --gradient-highlight: linear-gradient(90deg, #ffffff, #fff44f);
+  --blockquote-gradient: linear-gradient(
+    to right,
+    var(--gray-30),
+    var(--gray-20)
+  );
+
+  // Spacing
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --layout-2xs: 16px;
+  --layout-xs: 24px;
+  --layout-sm: 32px;
+  --layout-md: 48px;
+  --layout-lg: 64px;
+  --layout-xl: 96px;
+  --layout-2xl: 192px;
+
+  // Radi
+  --border-radius-xs: 2px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+
+  // Box shadows
+  --box-shadow-sm: 0 8px 12px 1px rgba(29, 17, 51, 0.04),
+    0 3px 16px 2px rgba(9, 32, 77, 0.12), 0 5px 10px -3px rgba(29, 17, 51, 0.12);
+  --box-shadow-md: 0 16px 24px 2px rgba(29, 17, 51, 0.04),
+    0 6px 32px 4px rgba(9, 32, 77, 0.12), 0 8px 12px -5px rgba(29, 17, 51, 0.12);
+  --box-shadow-lg: 0 24px 38px 3px rgba(29, 17, 51, 0.04),
+    0 10px 48px 8px rgba(9, 32, 77, 0.12),
+    0 12px 16px -6px rgba(29, 17, 51, 0.12);
+
+  // Borders
+  --std-lborder: 2px solid var(--gray-05);
+  --std-pborder: 2px solid var(--dgray-90);
+  --thin-lborder: 1px solid var(--gray-05);
+  --thin-pborder: 1px solid var(--dgray-90);
+  --code-border: 0.5rem solid var(--gray-90);
+  --default-border-radius: 6px;
+  --radius: 0.325rem;
+  --big-radius: 1.25rem;
+
+  // Font
+  --heading-font-family: "Nunito", sans-serif;
+  --site-font-family: "Nunito Sans", sans-serif;
+  --code-font-family: "Fira Code", monospace;
+  --base-font-size: 100%;
+  --doc-line-height: 1.75;
+  --code-line-height: 1.4;
+  --heading-line-height: 1.2;
+
+  // Desktop Typescale
+  --xxl-font-size: 3.052rem;
+  --xl-font-size: 2.441rem;
+  --lg-font-size: 1.953rem;
+  --md-font-size: 1.563rem;
+  --sm-font-size: 1.25rem;
+
+  // Mobile Typescale
+  --xxl-font-size-mobile: 1.802rem;
+  --xl-font-size-mobile: 1.602rem;
+  --lg-font-size-mobile: 1.424rem;
+  --md-font-size-mobile: 1.266rem;
+  --sm-font-size-mobile: 1.125rem;
+
+  --default-font-size: 1rem;
+  --small-font-size: 0.85rem;
+  --tiny-text: 0.75rem;
+
+  --max-line-length-fallback: 45rem;
+
+  // Layout
+  --base-unit: 6px;
+  --base-spacing: calc(var(--base-unit) * 4);
+  --md-spacing: calc(var(--base-spacing) * 2);
+  --lg-spacing: calc(var(--md-spacing) * 2);
+  --base-section-spacing: calc(var(--base-spacing) * 2) var(--base-spacing);
+  --btn-padding: 8px 16px;
+  --input-padding: 8px;
+}
+
+@import "lib/reset";
+@import "mixins/typography";
+@import "mixins/links";
+@import "mixins/utils";
+@import "mixins/buttons";
+@import "atoms/typography";
+@import "atoms/blockquote";
+@import "atoms/buttons";
+@import "atoms/forms";
+@import "atoms/icons";
+@import "atoms/kbd";
+@import "atoms/links";
+@import "atoms/lists";
+@import "atoms/pre";
+@import "atoms/tables";
+@import "atoms/utils";
+@import "atoms/details";
+@import "atoms/code";

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Zircus Admin Panel</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="/stylesheets/main.css" rel="stylesheet" />
+    <script src="login.js" defer type="module"></script>
+  </head>
+
+  <body class="flex-col login__body">
+    <main class="login">
+      <h1 class="page__heading">Zircus Admin</h1>
+      <p class="page__subheading" id="login-message">Please Log In:</p>
+      <form class="flex-col" id="login-form">
+        <label for="username"
+          ><span>Username</span>
+          <input
+            class=""
+            type="text"
+            name="username"
+            value=""
+            placeholder="Enter username"
+          />
+        </label>
+        <label for="password"
+          ><span>Password</span>
+          <input
+            class=""
+            type="password"
+            name="password"
+            value=""
+            placeholder="Enter password"
+          />
+        </label>
+        <button type="submit">Log in</button>
+      </form>
+    </main>
+  </body>
+</html>

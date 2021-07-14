@@ -1,0 +1,21 @@
+html {
+  background-color: var(--gray-10);
+  box-sizing: border-box;
+  color: var(--text-color);
+}
+
+body {
+  @include set-site-font-family();
+  @include font-smoothing();
+  font-size: var(--base-font-size);
+  line-height: var(--doc-line-height);
+}
+
+img {
+  height: auto;
+}
+
+mark {
+  background-color: var(--yellow);
+  color: var(--black);
+}

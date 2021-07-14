@@ -1,0 +1,28 @@
+code {
+  background-color: var(--gray-20);
+  box-decoration-break: clone;
+  font-family: var(--code-font-family);
+  padding: 0 calc(var(base-unit) / 2);
+  white-space: nowrap;
+  word-wrap: break-word;
+}
+
+pre code {
+  white-space: pre;
+}
+
+.notranslate {
+  code {
+    background-color: transparent;
+  }
+}
+
+.example-bad {
+  background-color: var(--red);
+  border-color: var(--red);
+}
+
+.example-good {
+  background-color: var(--green);
+  border-color: var(--green);
+}

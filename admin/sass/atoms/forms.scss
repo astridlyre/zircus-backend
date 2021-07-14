@@ -1,0 +1,280 @@
+form {
+  .field-group {
+    margin-bottom: 20px;
+
+    &.inline {
+      display: inline-block;
+      margin-right: 20px;
+    }
+  }
+
+  .field-note {
+    color: var(--gray-80);
+    font-size: var(--small-font-size);
+  }
+}
+
+fieldset {
+  border: none;
+  margin: 20px 0;
+  padding-bottom: 0;
+}
+
+fieldset.bordered {
+  border: 2px solid var(--gray-30);
+}
+
+legend.highlighted {
+  background-color: var(--gray-80);
+  color: var(--white);
+  padding: 10px 4px;
+
+  code {
+    background-color: transparent;
+  }
+}
+
+legend.emphasized {
+  font-weight: bold;
+  padding: 10px 0;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+label.inline {
+  display: inline-block;
+}
+
+[type="search"] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+  border-radius: var(--radius);
+}
+
+[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+[type="checkbox"],
+[type="radio"] {
+  border-radius: 4px;
+}
+
+[type="radio"] {
+  border-radius: 100%;
+}
+
+textarea[cols],
+input[size] {
+  min-width: 0;
+}
+
+input[size="2"] {
+  max-width: calc(2.5ch + 16px);
+}
+
+input[size="3"] {
+  max-width: calc(3.5ch + 16px);
+}
+
+input[type="search"] {
+  background-image: url("data:image/svg+xml,%3Csvg width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg transform='translate(3.000000, 3.000000)' stroke='%239595a3' stroke-width='2'%3E%3Ccircle cx='7' cy='7' r='7'%3E%3C/circle%3E%3Cpath d='M12,12 L18,18' stroke-linecap='round'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 8px top 50%;
+  padding: 8px 8px 8px calc(1.5em + 16px);
+}
+input[type="search"]:hover {
+  background-image: url("data:image/svg+xml,%3Csvg width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg transform='translate(3.000000, 3.000000)' stroke='%230250bb' stroke-width='2'%3E%3Ccircle cx='7' cy='7' r='7'%3E%3C/circle%3E%3Cpath d='M12,12 L18,18' stroke-linecap='round'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+input[type="search"]:focus {
+  background-image: url("data:image/svg+xml,%3Csvg width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg transform='translate(3.000000, 3.000000)' stroke='%230060df' stroke-width='2'%3E%3Ccircle cx='7' cy='7' r='7'%3E%3C/circle%3E%3Cpath d='M12,12 L18,18' stroke-linecap='round'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+[dir="rtl"] input[type="search"] {
+  background-position: right 8px top 50%;
+  padding: 8px calc(1.5em + 16px) 8px 8px;
+}
+
+input[size="4"] {
+  max-width: calc(4.5ch + 16px);
+}
+
+input[size="5"] {
+  max-width: calc(5.5ch + 16px);
+}
+
+select,
+[type="tel"],
+[type="number"],
+[type="text"],
+[type="email"],
+[type="url"],
+[type="password"],
+textarea {
+  border: 2px solid var(--dgray-90);
+  border-radius: var(--radius);
+  padding: var(--input-padding);
+  font-size: var(--small-font-size);
+}
+
+select,
+[type="tel"],
+[type="text"],
+[type="number"],
+[type="email"],
+[type="url"],
+[type="password"] {
+  &:focus,
+  &:active {
+    border-color: var(--link);
+    outline: 0;
+  }
+
+  &.valid {
+    border-color: var(--green);
+    outline: 2px dashed var(--green);
+    outline-offset: 3px;
+  }
+
+  &.invalid {
+    border-color: var(--red);
+    outline: 2px dashed var(--red);
+    outline-offset: 3px;
+  }
+}
+
+textarea {
+  min-height: 120px;
+  min-width: 350px;
+}
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+
+input[type="color"],
+input[type="file"] {
+  background: var(--white);
+  border-radius: 4px;
+  border: 2px solid var(--gray-50);
+  line-height: 1.25;
+  margin: 0 0 24px;
+}
+input[type="color"]:hover,
+input[type="file"]:hover {
+  border-color: var(--link);
+}
+input[type="color"]:focus,
+input[type="file"]:focus {
+  border-color: var(--link);
+  outline: none;
+}
+.mzp-is-error input[type="color"],
+.mzp-is-error input[type="file"] {
+  border-color: var(--red);
+  box-shadow: none;
+}
+.mzp-is-error input[type="color"]:hover,
+.mzp-is-error input[type="file"]:hover {
+  border-color: var(--red);
+}
+.mzp-is-error input[type="color"]:focus,
+.mzp-is-error input[type="file"]:focus {
+  border-color: var(--red);
+}
+input[type="color"]:disabled,
+input[type="color"][aria-disabled="true"],
+input[type="file"]:disabled,
+input[type="file"][aria-disabled="true"] {
+  background: var(--gray-20);
+  border-color: var(--gray-20);
+  color: var(--gray-60);
+}
+input[type="color"]:disabled:focus,
+input[type="color"][aria-disabled="true"]:focus,
+input[type="file"]:disabled:focus,
+input[type="file"][aria-disabled="true"]:focus {
+  border-color: var(--gray-80);
+}
+input[type="file"] {
+  padding: var(--input-padding);
+}
+
+textarea {
+  height: auto;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.5;
+  background-color: var(--white);
+  line-height: 1.25;
+  margin: 0 0 24px;
+  padding: var(--input-padding);
+  background-image: url("data:image/svg+xml,%3Csvg width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline stroke='%239595a3' stroke-width='2' points='5 9 12 16 19 9'%3E%3C/polyline%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(to bottom, var(--white) 0%, var(--white) 100%);
+  background-repeat: no-repeat, repeat;
+  background-size: 1.5em auto, 100%;
+  display: block;
+  font-weight: normal;
+  max-width: 100%;
+  min-width: 256px;
+  text-overflow: ellipsis;
+}
+select {
+  background-position: right 8px top 50%;
+  padding: 8px calc(1.5em + 16px) 8px 8px;
+}
+[dir="rtl"] select {
+  background-position: left 8px top 50%;
+  padding: 8px 8px 8px calc(1.5em + 16px);
+}
+select[multiple],
+select[multiple]:hover,
+select[multiple]:focus {
+  background: var(--white);
+  padding: var(--input-padding);
+}
+select::-ms-expand {
+  display: none;
+}
+select:hover {
+  border-color: var(--link);
+  background-image: url("data:image/svg+xml,%3Csvg width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline stroke='%230250bb' stroke-width='2' points='5 9 12 16 19 9'%3E%3C/polyline%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(to bottom, var(--white) 0%, var(--white) 100%);
+}
+select:focus {
+  border-color: var(--link);
+  background-image: url("data:image/svg+xml,%3Csvg width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline stroke='%230060df' stroke-width='2' points='5 9 12 16 19 9'%3E%3C/polyline%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(to bottom, var(--white) 0%, var(--white) 100%);
+  box-shadow: 0 0 0 2px rgba(0, 144, 237, 0.5);
+  color: var(--gray-90);
+  outline: none;
+}
+
+select:disabled,
+select[aria-disabled="true"] {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"),
+    linear-gradient(to bottom, var(--gray-20) 0%, var(--gray-20) 100%);
+}
+select option {
+  font-weight: normal;
+}

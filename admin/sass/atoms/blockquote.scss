@@ -1,0 +1,28 @@
+blockquote {
+  @include blockquote();
+  font-family: var(--heading-font-family);
+  font-weight: normal;
+  margin-bottom: var(--base-spacing);
+
+  &::before,
+  &::after {
+    background-image: var(--blockquote-gradient);
+    content: "";
+    display: block;
+    height: 2px;
+    margin-bottom: calc(var(--base-spacing) / 2);
+  }
+
+  &::after {
+    margin-top: calc(var(--base-spacing) / 2);
+  }
+
+  /*
+   * Turn off bottom margins on the last paragraph element inside
+   * a blockquote. This also conveniently works for instances where
+   * there is only a single paragraph element.
+   */
+  p:last-of-type {
+    margin-bottom: 0;
+  }
+}

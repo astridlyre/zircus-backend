@@ -1,0 +1,4 @@
+@mixin highlighted-link-state() {
+  background-color: var(--dark-blue);
+  color: var(--gray-05);
+}

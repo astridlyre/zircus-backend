@@ -1,0 +1,11 @@
+pre {
+  background-color: var(--gray-20);
+  border-left: var(--code-border);
+  font-size: var(--code-base-font-size);
+  line-height: var(--code-line-height);
+  margin: 0 0 var(--base-spacing);
+  max-width: 100%;
+  overflow: auto;
+  padding: var(--base-spacing);
+  width: 100%;
+}

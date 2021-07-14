@@ -1,0 +1,24 @@
+/* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd */
+kbd {
+  background: var(--gray-10);
+  background-color: var(--gray-20);
+  border: 1px solid var(--gray-20);
+  border-radius: var(--default-border-radius);
+  font-family: var(--code-font-family);
+  font-size: var(--small-font-size);
+  font-weight: bold;
+  line-height: 1;
+  margin: calc(var(--base-unit) / 2);
+  padding: calc(var(--base-spacing) / 6) calc(var(--base-spacing) / 4);
+  white-space: nowrap;
+}
+
+/*
+ * When used inside a table, give it a little more margin
+ * see: https://developer.mozilla.org/en-US/docs/Tools/Page_Inspector/Keyboard_shortcuts
+ */
+table {
+  kbd {
+    margin: calc(var(--base-spacing) / 4);
+  }
+}

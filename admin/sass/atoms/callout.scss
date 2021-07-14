@@ -1,0 +1,32 @@
+.callout {
+  background-color: var(--gray-20);
+  border-radius: var(--default-border-radius);
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  margin-bottom: var(--base-spacing);
+  max-width: max-content;
+  padding: var(--base-spacing);
+  padding-bottom: 0;
+
+  p {
+    @include readable-line-length();
+  }
+
+  h4 {
+    @include set-heading-font-family();
+
+    background-color: transparent;
+    color: var(--gray-90);
+  }
+
+  .button {
+    max-width: inherit;
+    width: 100%;
+
+    @media screen and (min-width: 901px) {
+      max-width: max-content;
+      width: inherit;
+    }
+  }
+}

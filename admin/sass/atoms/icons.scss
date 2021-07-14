@@ -1,0 +1,35 @@
+.icon {
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: 21px;
+  content: "";
+  display: inline-block;
+  height: 21px;
+  margin-right: calc(var(--base-spacing) / 4);
+  vertical-align: sub;
+  width: 21px;
+}
+
+h2,
+h3,
+h4 {
+  .icon {
+    margin-left: calc(var(--base-spacing) / 4);
+    vertical-align: middle;
+  }
+}
+
+/* icon color styles to be applied to SVG elements */
+.experimental,
+.non-standard {
+  fill: var(--link);
+}
+
+.warning,
+.deprecated {
+  fill: var(--yellow);
+}
+
+.obsolete {
+  fill: var(--red);
+}
