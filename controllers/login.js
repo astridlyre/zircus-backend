@@ -2,6 +2,21 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const loginRouter = require('express').Router()
 const User = require('../models/user')
+const { RateLimiterMemory } = require('rate-limiter-flexible')
+
+const opts = {
+    points: 6,
+    duration: 1,
+}
+
+const rateLimiter = new RateLimiterMemory(opts)
+
+loginRouter.all('/', (req, res, next) => {
+    rateLimiter
+        .consume(req.ip)
+        .then(() => next())
+        .catch(() => res.status(400).json({ error: 'Too many requests' }))
+})
 
 loginRouter.post('/', async (req, res) => {
     console.log(req)

@@ -1,4 +1,5 @@
 const express = require('express')
+const helmet = require('helmet')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
@@ -31,6 +32,8 @@ connect()
 
 // Use cors and json
 app.use(cors())
+app.use(helmet())
+app.use(helmet.hidePoweredBy())
 app.use(express.json())
 app.use(express.static('admin/build'))
 
