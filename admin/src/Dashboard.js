@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Header from './components/Header.js'
 import SideNav from './components/SideNav.js'
 import Inventory from './components/Inventory.js'
+import Orders from './components/Orders.js'
 
 const StyledDashboard = styled.div`
     display: flex;
@@ -13,7 +14,7 @@ const StyledDashboard = styled.div`
     overflow: hidden;
 `
 
-export default function Dashboard({ inv, token, logout }) {
+export default function Dashboard({ inv, orders, token, logout }) {
     const [page, setPage] = useState('inventory')
 
     return (
@@ -21,6 +22,7 @@ export default function Dashboard({ inv, token, logout }) {
             <Header text="Zircus Admin Dashboard" logout={logout} />
             <SideNav page={page} setPage={setPage} />
             {page === 'inventory' && <Inventory inv={inv} token={token} />}
+            {page === 'orders' && <Orders orders={orders} token={token} />}
         </StyledDashboard>
     )
 }

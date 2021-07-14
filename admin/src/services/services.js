@@ -14,6 +14,22 @@ export async function getInv() {
     return await axios.get(`${API_ENDPOINT}/inv`)
 }
 
+export async function getOrders(token) {
+    return await axios.get(`${API_ENDPOINT}/orders`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+}
+
+export async function updateOrder(order, token) {
+    return await axios.put(`${API_ENDPOINT}/orders/${order.id}`, order, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+}
+
 export async function updateItem(item, token) {
     return await axios.put(`${API_ENDPOINT}/inv`, item, {
         headers: {
