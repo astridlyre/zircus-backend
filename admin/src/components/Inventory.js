@@ -1,13 +1,8 @@
-import styled from 'styled-components'
 import { useState } from 'react'
 import InventoryItem from './InventoryItem.js'
 import Spinner from './Spinner.js'
 import Filter from './Filter.js'
-
-const StyledPage = styled.main`
-    overflow-y: scroll;
-    padding-top: calc(4rem + var(--base-unit) * 2);
-`
+import Page from './Page.js'
 
 export default function Inventory({ inv, token, setShowModal, setInv }) {
     const [showFF, setShowFF] = useState(true)
@@ -17,23 +12,23 @@ export default function Inventory({ inv, token, setShowModal, setInv }) {
     const filters = [
         {
             active: showFF,
-            text: 'Flat front',
+            text: 'flat front',
             setActive: () => setShowFF(!showFF),
         },
         {
             active: showPF,
-            text: 'Pouch front',
+            text: 'pouch front',
             setActive: () => setShowPF(!showPF),
         },
         {
             active: showCF,
-            text: 'Compression front',
+            text: 'compression front',
             setActive: () => setShowCF(!showCF),
         },
     ]
 
     return (
-        <StyledPage>
+        <Page>
             <Filter filters={filters} />
             <ul className="inv">
                 {inv &&
@@ -44,8 +39,7 @@ export default function Inventory({ inv, token, setShowModal, setInv }) {
                             key={item.id}
                             token={token}
                             setShowModal={setShowModal}
-                            setInv={ff => setInv({ ...inv, ff })}
-                            inv={inv.ff}
+                            setInv={setInv}
                         />
                     ))}
                 {inv &&
@@ -56,8 +50,7 @@ export default function Inventory({ inv, token, setShowModal, setInv }) {
                             key={item.id}
                             token={token}
                             setShowModal={setShowModal}
-                            setInv={pf => setInv({ ...inv, pf })}
-                            inv={inv.pf}
+                            setInv={setInv}
                         />
                     ))}
                 {inv &&
@@ -68,8 +61,7 @@ export default function Inventory({ inv, token, setShowModal, setInv }) {
                             key={item.id}
                             token={token}
                             setShowModal={setShowModal}
-                            setInv={cf => setInv({ ...inv, cf })}
-                            inv={inv.cf}
+                            setInv={setInv}
                         />
                     ))}
                 {!inv && (
@@ -78,6 +70,6 @@ export default function Inventory({ inv, token, setShowModal, setInv }) {
                     </li>
                 )}
             </ul>
-        </StyledPage>
+        </Page>
     )
 }

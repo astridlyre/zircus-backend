@@ -2,56 +2,44 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import Order from './Order.js'
 import Filter from './Filter.js'
-
-const StyledPage = styled.main`
-    overflow-y: scroll;
-    padding-top: calc(4rem + var(--base-unit) * 2);
-`
+import Page from './Page.js'
 
 const StyledUl = styled.ul`
     display: flex;
     flex-flow: column nowrap;
+    gap: var(--base-spacing);
 `
 
 export default function Orders({ orders, token, setShowModal, setOrders }) {
-    const [filter, setFilter] = useState({
-        hasPaid: true,
-        hasShipped: false,
-    })
-    const [showAll, setShowAll] = useState(false)
+    const [filter, setFilter] = useState(['hasPaid'])
     const filters = [
         {
-            active: filter.hasShipped && !showAll,
-            text: 'Has Shipped',
+            active: filter.includes('hasShipped'),
+            text: 'shipped',
             setActive: () =>
-                filter.hasShipped
-                    ? setFilter({ ...filter, hasShipped: false })
-                    : setFilter({ ...filter, hasShipped: true }),
+                filter.includes('hasShipped')
+                    ? setFilter(filter =>
+                          filter.filter(f => f !== 'hasShipped')
+                      )
+                    : setFilter(filter => filter.concat('hasShipped')),
         },
         {
-            active: filter.hasPaid && !showAll,
-            text: 'Has Paid',
+            active: filter.includes('hasPaid'),
+            text: 'paid',
             setActive: () =>
-                filter.hasPaid
-                    ? setFilter({ ...filter, hasPaid: false })
-                    : setFilter({ ...filter, hasPaid: true }),
-        },
-        {
-            active: showAll,
-            text: 'All',
-            setActive: () => setShowAll(!showAll),
+                filter.includes('hasPaid')
+                    ? setFilter(filter => filter.filter(f => f !== 'hasPaid'))
+                    : setFilter(filter => filter.concat('hasPaid')),
         },
     ]
-    const ordersToShow =
-        orders && showAll
-            ? orders
-            : orders.filter(order => {
-                  for (const [key, val] of Object.entries(filter))
-                      if (order[key] !== val) return false
-                  return true
-              })
+    const filterOrder = order => {
+        if (!filter.length) return true
+        for (const f of filter) if (!order[f]) return false
+        return true
+    }
+    const ordersToShow = orders && orders.filter(filterOrder)
     return (
-        <StyledPage>
+        <Page padTop={true}>
             <Filter filters={filters} />
             <StyledUl>
                 {orders &&
@@ -61,10 +49,10 @@ export default function Orders({ orders, token, setShowModal, setOrders }) {
                             order={order}
                             key={order.id}
                             setShowModal={setShowModal}
-                            setOrders={() => orders => setOrders(orders)}
+                            setOrders={setOrders}
                         />
                     ))}
             </StyledUl>
-        </StyledPage>
+        </Page>
     )
 }

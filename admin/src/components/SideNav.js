@@ -5,6 +5,7 @@ import LeftIcon from './LeftIcon.js'
 import InventoryIcon from './InventoryIcon.js'
 import OrdersIcon from './OrdersIcon.js'
 import MetricsIcon from './MetricsIcon.js'
+import SideNavButton from './SideNavButton.js'
 
 const StyledNav = styled.nav`
     position: fixed;
@@ -26,19 +27,6 @@ const StyledUl = styled.ul`
 const StyledLi = styled.li`
     width: 100%;
     display: flex;
-`
-
-const StyledButton = styled.button`
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-    ${props => props.showFull && 'gap: calc(var(--base-unit) * 1.5);'}
-    justify-content: ${props => (props.showFull ? 'left' : 'center')};
-    ${props => !props.showFull && 'padding: var(--input-padding);'}
-
-    svg {
-        height: 1.25rem;
-    }
 `
 
 const StyledNavButton = styled.button`
@@ -81,40 +69,36 @@ export default function SideNav({
             </StyledNavButton>
             <StyledUl>
                 <StyledLi>
-                    <StyledButton
+                    <SideNavButton
                         showFull={showFull}
-                        className={
-                            page === 'inventory' ? 'button' : 'button outline'
-                        }
-                        onClick={() => setPage('inventory')}
-                    >
-                        <InventoryIcon />
-                        {showFull && `Inventory (${inv})`}
-                    </StyledButton>
-                </StyledLi>
-                <StyledLi>
-                    <StyledButton
-                        showFull={showFull}
-                        className={
-                            page === 'orders' ? 'button' : 'button outline'
-                        }
-                        onClick={() => setPage('orders')}
-                    >
-                        <OrdersIcon />
-                        {showFull && `Orders (${orders})`}
-                    </StyledButton>
-                </StyledLi>
-                <StyledLi>
-                    <StyledButton
-                        showFull={showFull}
-                        className={
-                            page === 'metrics' ? 'button' : 'button outline'
-                        }
-                        onClick={() => setPage('metrics')}
+                        page={page}
+                        active="metrics"
+                        setPage={setPage}
                     >
                         <MetricsIcon />
-                        {showFull && 'Metrics'}
-                    </StyledButton>
+                    </SideNavButton>
+                </StyledLi>
+                <StyledLi>
+                    <SideNavButton
+                        showFull={showFull}
+                        page={page}
+                        active="orders"
+                        num={orders}
+                        setPage={setPage}
+                    >
+                        <OrdersIcon />
+                    </SideNavButton>
+                </StyledLi>
+                <StyledLi>
+                    <SideNavButton
+                        active="inventory"
+                        page={page}
+                        showFull={showFull}
+                        num={inv}
+                        setPage={setPage}
+                    >
+                        <InventoryIcon />
+                    </SideNavButton>
                 </StyledLi>
             </StyledUl>
         </StyledNav>

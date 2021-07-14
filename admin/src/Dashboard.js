@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Header from './components/Header.js'
 import SideNav from './components/SideNav.js'
 import Inventory from './components/Inventory.js'
+import Metrics from './components/Metrics.js'
 import Orders from './components/Orders.js'
 
 const StyledDashboard = styled.div`
@@ -24,10 +25,21 @@ export default function Dashboard({
     setInv,
     user,
 }) {
-    const [page, setPage] = useState('inventory')
+    const [page, setPage] = useState('metrics')
     const [showFull, setShowFull] = useState(true)
     const numOrders = orders ? orders.length : 0
-    const numInv = inv ? [...inv.ff, ...inv.pf, ...inv.cf].length : 0
+    const reduceFn = (inv, fn) => inv.reduce((acc, item) => acc + fn(item), 0)
+    const qty = item => item.quantity
+    const numInv = inv
+        ? reduceFn(
+              [
+                  reduceFn(inv.ff, qty),
+                  reduceFn(inv.pf, qty),
+                  reduceFn(inv.cf, qty),
+              ],
+              x => x
+          )
+        : 0
 
     return (
         <StyledDashboard showFull={showFull}>
@@ -54,6 +66,13 @@ export default function Dashboard({
                     token={token}
                     setShowModal={setShowModal}
                     setOrders={setOrders}
+                />
+            )}
+            {page === 'metrics' && (
+                <Metrics
+                    orders={orders}
+                    setShowModal={setShowModal}
+                    inv={inv}
                 />
             )}
         </StyledDashboard>

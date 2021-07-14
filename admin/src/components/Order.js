@@ -1,45 +1,45 @@
-import { useState } from 'react'
 import styled from 'styled-components'
 import { updateOrder, deleteOrder } from '../services/services.js'
+import OrderAddress from './OrderAddress.js'
+import OrderHeader from './OrderHeader.js'
+import OrderItems from './OrderItems.js'
+import Label from './Label.js'
+import DeleteButton from './DeleteButton.js'
 
 const StyledLi = styled.li`
+    margin: 0 auto;
     display: flex;
-    gap: 2rem;
-    @media screen and (min-width: 1281px) {
-        gap: 4rem;
-    }
+    gap: var(--base-spacing);
     padding: var(--base-spacing);
+    max-width: var(--screen-lg);
     width: 100%;
-    border-left: 0.5rem solid
-        ${props =>
-            props.hasPaid && props.hasShipped
-                ? 'var(--green)'
-                : props.hasPaid
-                ? 'var(--yellow)'
-                : 'var(--gray-20)'};
+    border-left: 0.5rem solid;
+    border-right: 0.5rem solid;
+    border-bottom: 1px solid;
+    border-top: 1px solid;
+    border-color: ${props =>
+        props.hasPaid && props.hasShipped
+            ? 'var(--green)'
+            : props.hasPaid
+            ? 'var(--yellow)'
+            : 'var(--gray-30)'};
 
     &:hover {
         background-color: var(--gray-20);
     }
 `
 
-const StyledAddress = styled.address`
-    flex-grow: 1;
-`
-
-const StyledItems = styled.div``
-
-const StyledDate = styled.span`
-    font-size: 1.125rem;
-    font-weight: 500;
-    display: block;
-    margin-bottom: var(--base-unit);
-`
-
-const StyledDiv = styled.div`
+const StyledActions = styled.div`
     display: flex;
     flex-flow: column nowrap;
-    gap: 1rem;
+`
+
+const StyledBtnContainer = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-grow: 1;
 `
 
 export default function Order({ order, token, setShowModal, setOrders }) {
@@ -48,7 +48,7 @@ export default function Order({ order, token, setShowModal, setOrders }) {
             heading: 'Success',
             text: data.response,
             ok: () =>
-                setOrders()(orders => orders.filter(o => o.id !== order.id)),
+                setOrders(orders => orders.filter(o => o.id !== order.id)),
         })
     }
     const handleDeleteFailure = ({ data }) => {
@@ -71,7 +71,12 @@ export default function Order({ order, token, setShowModal, setOrders }) {
         })
     }
 
-    const updatePaid = () =>
+    const updatePaid = () => {
+        setOrders(orders =>
+            orders.map(o =>
+                o.id === order.id ? { ...o, hasPaid: !o.hasPaid } : o
+            )
+        )
         updateOrder(
             {
                 id: order.id,
@@ -80,17 +85,15 @@ export default function Order({ order, token, setShowModal, setOrders }) {
                 },
             },
             token
-        )
-            .then(() =>
-                setOrders()(orders =>
-                    orders.map(o =>
-                        o.id === order.id ? { ...o, hasPaid: !o.hasPaid } : o
-                    )
-                )
-            )
-            .catch(e => console.log(e))
+        ).catch(e => console.log(e))
+    }
 
-    const updateShipped = () =>
+    const updateShipped = () => {
+        setOrders(orders =>
+            orders.map(o =>
+                o.id === order.id ? { ...o, hasShipped: !o.hasShipped } : o
+            )
+        )
         updateOrder(
             {
                 id: order.id,
@@ -99,83 +102,37 @@ export default function Order({ order, token, setShowModal, setOrders }) {
                 },
             },
             token
-        )
-            .then(() =>
-                setOrders()(orders =>
-                    orders.map(o =>
-                        o.id === order.id
-                            ? { ...o, hasShipped: !o.hasShipped }
-                            : o
-                    )
-                )
-            )
-            .catch(e => console.log(e))
+        ).catch(e => console.log(e))
+    }
 
     return (
         <StyledLi hasPaid={order.hasPaid} hasShipped={order.hasShipped}>
-            <div>
-                <StyledDate>
+            <OrderItems order={order} />
+            <OrderAddress order={order} />
+            <StyledActions>
+                <OrderHeader>
                     {new Date(order.createdOn).toLocaleString('en-US')}
-                </StyledDate>
-                <ul>
-                    <li>
-                        Has paid:{' '}
-                        <strong>{order.hasPaid ? 'Yes' : 'No'}</strong>
-                    </li>
-                    <li>
-                        Has shipped:{' '}
-                        <strong>{order.hasShipped ? 'Yes' : 'No'}</strong>
-                    </li>
-                    <li>
-                        <strong>${order.total}</strong>
-                    </li>
-                </ul>
-            </div>
-            <StyledItems>
-                <StyledDate>Items</StyledDate>
-                <ul>
-                    {order.items.map(item => (
-                        <li key={item.type}>
-                            {item.type} x {item.quantity}
-                        </li>
-                    ))}
-                </ul>
-            </StyledItems>
-            <StyledAddress>
-                <strong>{order.name}</strong>
-                <br />
-                <a href={`mailto:${order.email}`}>{order.email}</a>
-                <br />
-                {order.streetAddress}
-                <br />
-                {order.city} {order.state}
-                <br />
-                {order.zip.toUpperCase()} {order.country}
-                <br />
-            </StyledAddress>
-            <StyledDiv>
-                <button
-                    className="button outline"
-                    type="button"
-                    onClick={updatePaid}
-                >
-                    {order.hasPaid ? 'Set Not Paid' : 'Set Paid'}
-                </button>
-                <button
-                    className="button positive outline"
-                    type="button"
-                    onClick={updateShipped}
-                >
-                    {order.hasShipped ? 'Set Not Shipped' : 'Set Shipped'}
-                </button>
-                <button
-                    className="button danger outline"
-                    type="button"
-                    onClick={handleDelete}
-                >
-                    Delete Order
-                </button>
-            </StyledDiv>
+                </OrderHeader>
+                <Label>
+                    paid:
+                    <input
+                        type="checkbox"
+                        checked={order.hasPaid}
+                        onChange={updatePaid}
+                    />
+                </Label>
+                <Label>
+                    shipped:
+                    <input
+                        type="checkbox"
+                        checked={order.hasShipped}
+                        onChange={updateShipped}
+                    />
+                </Label>
+                <StyledBtnContainer>
+                    <DeleteButton onClick={handleDelete} />
+                </StyledBtnContainer>
+            </StyledActions>
         </StyledLi>
     )
 }

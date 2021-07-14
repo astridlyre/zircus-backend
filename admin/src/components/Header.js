@@ -16,6 +16,7 @@ const StyledHeader = styled.header`
 
 const StyledH3 = styled.h3`
     color: var(--invert-text-color);
+    font-size: 1.25rem;
     flex-grow: 1;
 `
 
