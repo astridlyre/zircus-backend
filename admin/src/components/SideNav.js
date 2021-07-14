@@ -43,7 +43,7 @@ export default function SideNav({ setPage, page }) {
                 <StyledLi>
                     <StyledButton
                         className={
-                            page === 'order' ? 'button' : 'button outline'
+                            page === 'orders' ? 'button' : 'button outline'
                         }
                         onClick={() => setPage('orders')}
                     >

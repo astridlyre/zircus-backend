@@ -30,6 +30,14 @@ export async function updateOrder(order, token) {
     })
 }
 
+export async function deleteOrder(id, token) {
+    return await axios.delete(`${API_ENDPOINT}/orders/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+}
+
 export async function updateItem(item, token) {
     return await axios.put(`${API_ENDPOINT}/inv`, item, {
         headers: {

@@ -14,15 +14,37 @@ const StyledDashboard = styled.div`
     overflow: hidden;
 `
 
-export default function Dashboard({ inv, orders, token, logout }) {
+export default function Dashboard({
+    inv,
+    orders,
+    token,
+    setShowModal,
+    logout,
+    setOrders,
+    setInv,
+}) {
     const [page, setPage] = useState('inventory')
 
     return (
         <StyledDashboard>
             <Header text="Zircus Admin Dashboard" logout={logout} />
             <SideNav page={page} setPage={setPage} />
-            {page === 'inventory' && <Inventory inv={inv} token={token} />}
-            {page === 'orders' && <Orders orders={orders} token={token} />}
+            {page === 'inventory' && (
+                <Inventory
+                    inv={inv}
+                    token={token}
+                    setShowModal={setShowModal}
+                    setInv={setInv}
+                />
+            )}
+            {page === 'orders' && (
+                <Orders
+                    orders={orders}
+                    token={token}
+                    setShowModal={setShowModal}
+                    setOrders={setOrders}
+                />
+            )}
         </StyledDashboard>
     )
 }

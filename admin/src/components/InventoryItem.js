@@ -37,10 +37,26 @@ const StyledLabel = styled.label`
     gap: 0.5rem;
 `
 
-export default function InventoryItem({ item, token }) {
+export default function InventoryItem({
+    item,
+    token,
+    setShowModal,
+    setInv,
+    inv,
+}) {
     const [quantity, setQuantity] = useState(item.quantity)
     const [active, setActive] = useState(item.active)
     const [price, setPrice] = useState(item.price)
+
+    const handleDelete = () => {
+        setShowModal({
+            heading: 'Confirm deletion',
+            text: `Delete inventory item ${item.type}?`,
+            ok: reply => {
+                if (reply) setInv(inv.filter(i => i.type !== item.type))
+            },
+        })
+    }
 
     const handler = (key, setter) => event => {
         setter(event.target.value)
@@ -95,7 +111,11 @@ export default function InventoryItem({ item, token }) {
                     onChange={handleActive}
                 />
             </StyledLabel>
-            <button type="button" className="button danger icon-button">
+            <button
+                type="button"
+                className="button danger icon-button"
+                onClick={handleDelete}
+            >
                 <Trash />
             </button>
         </StyledLi>
