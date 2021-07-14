@@ -23,7 +23,6 @@ const StyledForm = styled.form`
 const StyledLabel = styled.label`
     display: flex;
     flex-flow: column nowrap;
-    gap: 0.325rem;
 `
 
 const StyledMessage = styled.p`
@@ -33,7 +32,7 @@ const StyledMessage = styled.p`
 `
 
 const StyledButton = styled.button`
-    margin-top: 1.625rem;
+    margin-top: 0.5rem;
 `
 
 export default function Login({ setToken, setUser }) {

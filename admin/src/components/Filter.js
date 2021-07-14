@@ -2,26 +2,25 @@ import styled from 'styled-components'
 
 const StyledFiltersContainer = styled.div`
     position: fixed;
-    right: var(--base-spacing);
-    top: calc(3.5rem + var(--base-spacing));
-    height: 6rem;
-    margin-left: var(--base-spacing);
-    padding: var(--base-spacing);
+    right: calc(var(--base-unit) + 15px);
+    top: calc(4rem + var(--base-unit));
+    height: 4rem;
+    padding: var(--base-unit) calc(var(--base-unit) * 2);
     background-color: var(--gray-10);
-    border-radius: var(--big-radius);
+    border-radius: var(--radius);
     border: 2px solid var(--gray-20);
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--base-unit);
 `
 
 const StyledFilters = styled.div`
     display: flex;
-    gap: 1rem;
+    gap: var(--base-unit);
 `
 
 const StyledH3 = styled.h3`
-    font-size: 1.125rem;
+    font-size: 1rem;
 `
 
 const StyledButton = styled.button`

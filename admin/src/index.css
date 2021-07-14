@@ -421,7 +421,7 @@ a.outline {
   .outline:hover, .outline:focus,
   a.outline:hover,
   a.outline:focus {
-    color: var(--gray-10); }
+    color: var(--gray-05); }
 
 .danger,
 a.danger {
@@ -447,7 +447,7 @@ a.danger {
     a.danger.outline:focus {
       background-color: var(--dark-red);
       border-color: var(--dark-red);
-      color: var(--dark-red); }
+      color: var(--gray-05); }
     .danger.outline:active,
     a.danger.outline:active {
       background-color: var(--red);
@@ -477,7 +477,7 @@ a.positive {
     a.positive.outline:focus {
       background-color: var(--dark-green);
       border-color: var(--dark-green);
-      color: var(--dark-green); }
+      color: var(--gray-05); }
     .positive.outline:active,
     a.positive.outline:active {
       background-color: var(--green);

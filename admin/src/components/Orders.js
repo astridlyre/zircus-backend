@@ -5,7 +5,7 @@ import Filter from './Filter.js'
 
 const StyledPage = styled.main`
     overflow-y: scroll;
-    padding-top: 8rem;
+    padding-top: calc(4rem + var(--base-unit) * 2);
 `
 
 const StyledUl = styled.ul`
@@ -14,10 +14,14 @@ const StyledUl = styled.ul`
 `
 
 export default function Orders({ orders, token, setShowModal, setOrders }) {
-    const [filter, setFilter] = useState({ hasPaid: true, hasShipped: false })
+    const [filter, setFilter] = useState({
+        hasPaid: true,
+        hasShipped: false,
+    })
+    const [showAll, setShowAll] = useState(false)
     const filters = [
         {
-            active: filter.hasShipped,
+            active: filter.hasShipped && !showAll,
             text: 'Has Shipped',
             setActive: () =>
                 filter.hasShipped
@@ -25,21 +29,27 @@ export default function Orders({ orders, token, setShowModal, setOrders }) {
                     : setFilter({ ...filter, hasShipped: true }),
         },
         {
-            active: filter.hasPaid,
+            active: filter.hasPaid && !showAll,
             text: 'Has Paid',
             setActive: () =>
                 filter.hasPaid
                     ? setFilter({ ...filter, hasPaid: false })
                     : setFilter({ ...filter, hasPaid: true }),
         },
+        {
+            active: showAll,
+            text: 'All',
+            setActive: () => setShowAll(!showAll),
+        },
     ]
     const ordersToShow =
-        orders &&
-        orders.filter(order => {
-            for (const [key, val] of Object.entries(filter))
-                if (order[key] !== val) return false
-            return true
-        })
+        orders && showAll
+            ? orders
+            : orders.filter(order => {
+                  for (const [key, val] of Object.entries(filter))
+                      if (order[key] !== val) return false
+                  return true
+              })
     return (
         <StyledPage>
             <Filter filters={filters} />

@@ -5,6 +5,9 @@ import { updateOrder, deleteOrder } from '../services/services.js'
 const StyledLi = styled.li`
     display: flex;
     gap: 2rem;
+    @media screen and (min-width: 1281px) {
+        gap: 4rem;
+    }
     padding: var(--base-spacing);
     width: 100%;
     border-left: 0.5rem solid
@@ -24,11 +27,13 @@ const StyledAddress = styled.address`
     flex-grow: 1;
 `
 
+const StyledItems = styled.div``
+
 const StyledDate = styled.span`
     font-size: 1.125rem;
     font-weight: 500;
     display: block;
-    margin-bottom: var(--base-spacing);
+    margin-bottom: var(--base-unit);
 `
 
 const StyledDiv = styled.div`
@@ -113,20 +118,29 @@ export default function Order({ order, token, setShowModal, setOrders }) {
                     {new Date(order.createdOn).toLocaleString('en-US')}
                 </StyledDate>
                 <ul>
-                    <li>Has paid: {order.hasPaid ? 'Yes' : 'No'}</li>
-                    <li>Has shipped: {order.hasShipped ? 'Yes' : 'No'}</li>
+                    <li>
+                        Has paid:{' '}
+                        <strong>{order.hasPaid ? 'Yes' : 'No'}</strong>
+                    </li>
+                    <li>
+                        Has shipped:{' '}
+                        <strong>{order.hasShipped ? 'Yes' : 'No'}</strong>
+                    </li>
                     <li>
                         <strong>${order.total}</strong>
                     </li>
                 </ul>
             </div>
-            <ul>
-                {order.items.map(item => (
-                    <li key={item.type}>
-                        {item.type} x {item.quantity}
-                    </li>
-                ))}
-            </ul>
+            <StyledItems>
+                <StyledDate>Items</StyledDate>
+                <ul>
+                    {order.items.map(item => (
+                        <li key={item.type}>
+                            {item.type} x {item.quantity}
+                        </li>
+                    ))}
+                </ul>
+            </StyledItems>
             <StyledAddress>
                 <strong>{order.name}</strong>
                 <br />
@@ -140,18 +154,22 @@ export default function Order({ order, token, setShowModal, setOrders }) {
                 <br />
             </StyledAddress>
             <StyledDiv>
-                <button className="button" type="button" onClick={updatePaid}>
-                    Toggle Paid
+                <button
+                    className="button outline"
+                    type="button"
+                    onClick={updatePaid}
+                >
+                    {order.hasPaid ? 'Set Not Paid' : 'Set Paid'}
                 </button>
                 <button
-                    className="button positive"
+                    className="button positive outline"
                     type="button"
                     onClick={updateShipped}
                 >
-                    Toggle Shipped
+                    {order.hasShipped ? 'Set Not Shipped' : 'Set Shipped'}
                 </button>
                 <button
-                    className="button danger"
+                    className="button danger outline"
                     type="button"
                     onClick={handleDelete}
                 >

@@ -6,7 +6,7 @@ import Filter from './Filter.js'
 
 const StyledPage = styled.main`
     overflow-y: scroll;
-    padding-top: 8rem;
+    padding-top: calc(4rem + var(--base-unit) * 2);
 `
 
 export default function Inventory({ inv, token, setShowModal, setInv }) {

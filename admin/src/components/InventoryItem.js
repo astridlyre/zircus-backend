@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { useState } from 'react'
-import { useField } from '../hooks/hooks.js'
 import Trash from './Trash.js'
 import { updateItem } from '../services/services.js'
 
@@ -9,6 +8,9 @@ const StyledLi = styled.li`
     width: 100%;
     align-items: center;
     gap: 2rem;
+    @media screen and (min-width: 1281px) {
+        gap: 3rem;
+    }
     border-top: 2px solid var(--gray-20);
     padding: 1rem;
 
@@ -22,12 +24,12 @@ const StyledImg = styled.img`
 `
 
 const StyledName = styled.p`
-    font-size: 1.125rem;
-    flex-grow: 1;
+    font-size: 1rem;
 `
 
 const StyledAttr = styled.p`
     font-weight: 500;
+    ${props => props.grow && 'flex-grow: 1;'}
 `
 
 const StyledLabel = styled.label`
@@ -78,7 +80,7 @@ export default function InventoryItem({
             />
             <StyledName>{item.name}</StyledName>
             <StyledAttr>{item.size}</StyledAttr>
-            <StyledAttr>{item.color}</StyledAttr>
+            <StyledAttr grow={true}>{item.color}</StyledAttr>
             <StyledLabel htmlFor={`${item.id}-price`}>
                 <StyledAttr>price</StyledAttr>
                 <input
