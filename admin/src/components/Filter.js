@@ -45,6 +45,7 @@ export default function Filter({ filters }) {
                             className="button outline"
                             active={filter.active}
                             onClick={filter.setActive}
+                            key={filter.text}
                         >
                             {filter.text}
                         </StyledButton>

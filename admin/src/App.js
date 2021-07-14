@@ -22,9 +22,10 @@ function App() {
         getInv()
             .then(reply => setInv(reply.data))
             .catch(() => setInv(null))
-        getOrders(token)
-            .then(reply => setOrders(reply.data))
-            .catch(() => setOrders(null))
+        token &&
+            getOrders(token)
+                .then(reply => setOrders(reply.data))
+                .catch(() => setOrders(null))
     }, [setInv, token])
 
     return (
@@ -38,6 +39,7 @@ function App() {
                     setShowModal={setShowModal}
                     setOrders={setOrders}
                     setInv={setInv}
+                    user={user}
                 />
             ) : (
                 <Login setUser={setUser} setToken={setToken} />

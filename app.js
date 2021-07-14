@@ -32,8 +32,7 @@ connect()
 
 // Use cors and json
 app.use(cors())
-app.use(helmet())
-app.use(helmet.hidePoweredBy())
+app.use(helmet({ contentSecurityPolicy: false }))
 app.use(express.json())
 app.use(express.static('admin/build'))
 

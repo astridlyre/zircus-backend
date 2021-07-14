@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import UserIcon from './UserIcon.js'
 
 const StyledHeader = styled.header`
     display: flex;
@@ -15,12 +16,28 @@ const StyledHeader = styled.header`
 
 const StyledH3 = styled.h3`
     color: var(--invert-text-color);
+    flex-grow: 1;
 `
 
-export default function Header({ text, logout }) {
+const StyledName = styled.span`
+    display: flex;
+    align-items: center;
+    gap: var(--base-unit);
+    color: var(--gray-10);
+    margin-right: var(--base-spacing);
+
+    svg {
+        height: 1rem;
+    }
+`
+
+export default function Header({ text, logout, user }) {
     return (
         <StyledHeader>
             <StyledH3>{text}</StyledH3>
+            <StyledName>
+                <UserIcon /> {user.split(' ')[0]}
+            </StyledName>
             <button
                 className="button light outline"
                 type="button"

@@ -22,6 +22,7 @@ export default function Dashboard({
     logout,
     setOrders,
     setInv,
+    user,
 }) {
     const [page, setPage] = useState('inventory')
     const [showFull, setShowFull] = useState(true)
@@ -30,7 +31,7 @@ export default function Dashboard({
 
     return (
         <StyledDashboard showFull={showFull}>
-            <Header text="Zircus Admin Dashboard" logout={logout} />
+            <Header text="Zircus Admin Dashboard" logout={logout} user={user} />
             <SideNav
                 page={page}
                 setPage={setPage}
