@@ -1,4 +1,4 @@
-import Trash from './Trash.js'
+import Trash from '../Icons/Trash.js'
 
 export default function DeleteButton({ onClick }) {
     return (

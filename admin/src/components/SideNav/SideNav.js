@@ -1,9 +1,9 @@
 import styled from 'styled-components'
-import RightIcon from './RightIcon.js'
-import LeftIcon from './LeftIcon.js'
-import InventoryIcon from './InventoryIcon.js'
-import OrdersIcon from './OrdersIcon.js'
-import MetricsIcon from './MetricsIcon.js'
+import RightIcon from '../Icons/RightIcon.js'
+import LeftIcon from '../Icons/LeftIcon.js'
+import InventoryIcon from '../Icons/InventoryIcon.js'
+import OrdersIcon from '../Icons/OrdersIcon.js'
+import MetricsIcon from '../Icons/MetricsIcon.js'
 import SideNavButton from './SideNavButton.js'
 
 const StyledNav = styled.nav`

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 import Order from './Order.js'
-import Filter from './Filter.js'
-import Page from './Page.js'
+import Filter from '../Filter/Filter.js'
+import Page from '../Containers/Page.js'
 
 const StyledUl = styled.ul`
     display: flex;

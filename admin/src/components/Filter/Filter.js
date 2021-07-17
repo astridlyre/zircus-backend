@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import Label from './Label.js'
+import Label from '../Text/Label.js'
 
 const StyledFiltersContainer = styled.div`
     position: fixed;

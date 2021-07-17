@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import UserIcon from './UserIcon.js'
+import UserIcon from '../Icons/UserIcon.js'
 
 const StyledHeader = styled.header`
     display: flex;

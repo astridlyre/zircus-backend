@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import Page from './Page.js'
+import Page from '../Containers/Page.js'
+import OrdersChart from './OrdersChart.js'
 
 const StyledContainer = styled.div`
     display: flex;
@@ -59,6 +60,7 @@ export default function Metrics({ orders, setShowModal, inv }) {
                         )}
                     </StyledItems>
                 </StyledBubble>
+                <OrdersChart />
             </StyledContainer>
         </Page>
     )

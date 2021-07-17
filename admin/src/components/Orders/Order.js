@@ -1,10 +1,10 @@
 import styled from 'styled-components'
-import { updateOrder, deleteOrder } from '../services/services.js'
+import { updateOrder, deleteOrder } from '../../services/services.js'
 import OrderAddress from './OrderAddress.js'
 import OrderHeader from './OrderHeader.js'
 import OrderItems from './OrderItems.js'
-import Label from './Label.js'
-import DeleteButton from './DeleteButton.js'
+import Label from '../Text/Label.js'
+import DeleteButton from '../Buttons/DeleteButton.js'
 
 const StyledLi = styled.li`
     margin: 0 auto;

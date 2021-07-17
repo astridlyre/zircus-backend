@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import InventoryItem from './InventoryItem.js'
-import Spinner from './Spinner.js'
-import Filter from './Filter.js'
-import Page from './Page.js'
-import List from './List.js'
+import Spinner from '../Icons/Spinner.js'
+import Filter from '../Filter/Filter.js'
+import Page from '../Containers/Page.js'
+import List from '../Containers/List.js'
 
 export default function Inventory({ inv, token, setShowModal, setInv }) {
     const [showFF, setShowFF] = useState(true)

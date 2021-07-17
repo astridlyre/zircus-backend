@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { useState } from 'react'
-import Header from './components/Header.js'
-import SideNav from './components/SideNav.js'
-import Inventory from './components/Inventory.js'
-import Metrics from './components/Metrics.js'
-import Orders from './components/Orders.js'
+import Header from './components/Header/Header.js'
+import SideNav from './components/SideNav/SideNav.js'
+import Inventory from './components/Inventory/Inventory.js'
+import Metrics from './components/Metrics/Metrics.js'
+import Orders from './components/Orders/Orders.js'
 
 const StyledDashboard = styled.div`
     display: flex;

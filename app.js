@@ -13,7 +13,6 @@ const invRouter = require('./controllers/inv')
 const loginRouter = require('./controllers/login')
 const ordersRouter = require('./controllers/orders')
 const tagLinesRouter = require('./controllers/tagline')
-const { countriesRouter } = require('./controllers/countries')
 const adminRouter = require('./controllers/admin')
 
 // Start logging and connect to Database
@@ -45,7 +44,6 @@ app.use('/api/login', loginRouter)
 app.use('/admin', adminRouter)
 app.use('/api/inv', invRouter)
 app.use('/api/orders', ordersRouter)
-app.use('/api/countries', countriesRouter)
 app.use('/api/taglines', tagLinesRouter)
 
 // Finally unknownEndpoint middleware and errorHandler

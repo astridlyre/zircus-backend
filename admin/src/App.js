@@ -1,6 +1,6 @@
 import Login from './Login.js'
 import Dashboard from './Dashboard.js'
-import Modal from './components/Modal.js'
+import Modal from './components/Modal/Modal.js'
 import { useEffect, useState } from 'react'
 import { getInv, getOrders } from './services/services.js'
 

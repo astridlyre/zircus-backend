@@ -1,7 +1,7 @@
 import styled from 'styled-components'
-import Label from './Label.js'
-import DeleteButton from './DeleteButton.js'
-import { updateItem } from '../services/services.js'
+import Label from '../Text/Label.js'
+import DeleteButton from '../Buttons/DeleteButton.js'
+import { updateItem } from '../../services/services.js'
 
 const StyledLi = styled.li`
     display: flex;
