@@ -168,10 +168,7 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
     try {
         // Save new order
         await newOrder.save()
-        return res.send({
-            clientSecret: paymentIntent.client_secret,
-            total: orderDetails.total,
-        })
+        return res.json(newOrder)
     } catch (e) {
         return res.status(400).json({ error: e.message })
     }
