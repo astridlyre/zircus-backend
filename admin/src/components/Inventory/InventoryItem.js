@@ -70,7 +70,7 @@ export default function InventoryItem({ item, token, setShowModal, setInv }) {
                 alt={item.name}
                 className="inventory__item__img"
             />
-            <StyledName>{item.name}</StyledName>
+            <StyledName>{item.name.en}</StyledName>
             <StyledAttr>{item.size}</StyledAttr>
             <StyledAttr grow={true}>{item.color}</StyledAttr>
             <Label htmlFor={`${item.id}-price`}>
