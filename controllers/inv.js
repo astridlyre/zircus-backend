@@ -36,12 +36,20 @@ async function initDB(inv) {
         const [prefix, color, size] = type.split('-')
         const newItem = new Underwear({
             type,
-            name:
-                prefix === 'ff'
-                    ? 'Flat front briefs'
-                    : prefix === 'pf'
-                    ? 'Pouch front briefs'
-                    : 'Compression front briefs',
+            name: {
+                en:
+                    prefix === 'ff'
+                        ? 'Flat front briefs'
+                        : prefix === 'pf'
+                        ? 'Pouch front briefs'
+                        : 'Compression front briefs',
+                fr:
+                    prefix === 'ff'
+                        ? 'Culottes avant-plates'
+                        : prefix === 'pf'
+                        ? 'Culottes avant-poche'
+                        : 'Culottes avant de compression',
+            },
             prefix,
             tagLine:
                 prefix === 'pf'

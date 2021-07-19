@@ -8,11 +8,11 @@ const underwearSchema = new mongoose.Schema({
     type: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
     quantity: {
         type: Number,
-        default: 0
+        default: 0,
     },
     price: {
         type: Number,
@@ -20,11 +20,11 @@ const underwearSchema = new mongoose.Schema({
     },
     active: {
         type: Boolean,
-        default: false
+        default: false,
     },
     name: {
-        type: String,
-        required: true,
+        en: String,
+        fr: String,
     },
     prefix: {
         type: String,
@@ -42,9 +42,9 @@ const underwearSchema = new mongoose.Schema({
         sm_a: String,
         sm_b: String,
         lg_a: String,
-        lg_b: String
+        lg_b: String,
     },
-    description: String
+    description: String,
 })
 
 underwearSchema.plugin(uniqueValidator)
