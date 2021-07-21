@@ -15,6 +15,7 @@ const ordersRouter = require('./controllers/orders')
 const tagLinesRouter = require('./controllers/tagline')
 const adminRouter = require('./controllers/admin')
 const messageRouter = require('./controllers/message')
+const order = require('./templates/order')
 
 // Start logging and connect to Database
 logger.info('connecting to ', config.MONGODB_URI)
@@ -47,6 +48,9 @@ app.use('/api/inv', invRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/taglines', tagLinesRouter)
 app.use('/api/message', messageRouter)
+app.use('/test', (req, res) => {
+    return res.send(order())
+})
 
 // Finally unknownEndpoint middleware and errorHandler
 app.use(middleware.unknownEndpoint)
