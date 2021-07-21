@@ -104,7 +104,19 @@ module.exports = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
-  <style>
+    <div style="
+        color: #211b22;
+        background-color: #f9f8fa;
+        font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+          Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+          sans-serif;
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 24px;
+        padding: 12px;
+        ">
+    <style>
     
     @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&family=Nunito:ital,wght@0,400;0,600;1,600&display=swap");
     @font-face {
@@ -141,6 +153,7 @@ module.exports = {
         sans-serif;
       letter-spacing: -2px;
       font-size: 2.5rem;
+      line-height: 0.9;
     }
 
     h3 {
@@ -198,18 +211,6 @@ module.exports = {
     }
 
     </style>
-    <div style="
-        color: #211b22;
-        background-color: #f9f8fa;
-        font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-          Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
-          sans-serif;
-        max-width: 720px;
-        margin-left: auto;
-        margin-right: auto;
-        border-radius: 24px;
-        padding: 12px;
-        ">
       <header style="
           padding: 12px;
           color: #211b22;
@@ -221,7 +222,7 @@ module.exports = {
         props.siteName
     }</h3></a>
       </header>
-      <main role="main" style="padding: 12px;">
+      <main role="main" style="padding: 8px;">
         <h1>${props.heading[order.lang]}</h1>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
           <address>
@@ -256,7 +257,7 @@ module.exports = {
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    gap: 12px;
+                    gap: 4px;
                     width: 100%;
                     text-decoration: none;
                     color: #211b22;
@@ -264,6 +265,7 @@ module.exports = {
                 <img
                 src="${props.siteUrl}${item.images['sm_a']}"
                 alt="${item.name[order.lang]}"
+                style="max-width: 24px; object-fit: contain;"
                 />
                 <p>
                 <span>${item.name[order.lang]}</span><span> ${
