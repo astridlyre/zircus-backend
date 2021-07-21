@@ -195,11 +195,6 @@ module.exports = {
       color: #491845;
     }
 
-    img {
-      max-width: 50px;
-      object-fit: contain;
-    }
-
     kbd {
       padding: 4px;
       background-color: #e4e0e6;
@@ -244,16 +239,17 @@ module.exports = {
           </div>
         </div>
         <div>
-            ${order.items.map(item => {
-                return `<a href="${props.siteUrl}/products/${item.name.en
-                    .toLowerCase()
-                    .split(' ')
-                    .join('-')}${
-                    order.lang !== 'en' ? `-${order.lang}` : ''
-                }.html" style="
+            ${order.items
+                .map(item => {
+                    return `<a href="${props.siteUrl}/products/${item.name.en
+                        .toLowerCase()
+                        .split(' ')
+                        .join('-')}${
+                        order.lang !== 'en' ? `-${order.lang}` : ''
+                    }.html" style="
                     border-top: 2px solid #e4e0e6;
                     box-sizing: border-box;
-                    padding: 12px 0;
+                    padding: 4px 0;
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
@@ -265,17 +261,18 @@ module.exports = {
                 <img
                 src="${props.siteUrl}${item.images['sm_a']}"
                 alt="${item.name[order.lang]}"
-                style="max-width: 24px; object-fit: contain;"
+                style="object-fit: contain; height: 48px;"
                 />
                 <p>
                 <span>${item.name[order.lang]}</span><span> ${
-                    props.colors[item.color][order.lang]
-                }</span>
+                        props.colors[item.color][order.lang]
+                    }</span>
                 <span> ${item.size}</span>
                 <span> ${item.quantity}</span>
                 </p>
             </a>`
-            })}
+                })
+                .join('\n')}
         </div>
       </main>
     </div>
