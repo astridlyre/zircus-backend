@@ -103,96 +103,56 @@ module.exports = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
+  <body>
   <style>
+    
     @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&family=Nunito:ital,wght@0,400;0,600;1,600&display=swap");
     @font-face {
       font-family: "Virgo 01";
-      src: url("${props.siteUrl}/font/virgo.woff2") format("woff2");
-    }
-    :root {
-      --light: #f9f8fa;
-      --dark: #211b22;
-      --gray-30: #e4e0e6;
-      --teal: #82dbd7;
-      --link: #45576e;
-      --link-hover: #283341;
-      --link-visited: #553a7b;
-      --link-visited-hover: #491845;
-      --heading-font-family: "Nunito", sans-serif;
-      --site-font-family: "Nunito Sans", sans-serif;
-      --accent-font-family: "Virgo 01", sans-serif;
-      --doc-line-height: 1.75;
-      --heading-line-height: 1.1;
-      --base-unit: 0.325rem;
-      --base-spacing: calc(var(--base-unit) * 4);
-      --md-spacing: calc(var(--base-spacing) * 2);
-      --lg-spacing: calc(var(--md-spacing) * 2);
-      --big-radius: 1.25rem;
-      --radius: 0.325rem;
-      --letter-spacing: 0.1rem;
-    }
-
-    body {
-      background-color: var(--dark);
-      font-family: var(--site-font-family);
-      padding: var(--base-spacing);
-      width: 100vw;
-      min-height: 100vh;
-      margin: 0;
-      box-sizing: border-box;
-    }
-
-    main {
-      border-radius: var(--big-radius);
-      background-color: var(--light);
-      padding: var(--md-spacing);
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      margin: var(--md-spacing) 0;
+      src: url("https://zircus.netlify.app/font/virgo.woff2") format("woff2");
     }
 
     header a {
       text-decoration: none !important;
       border: 2px solid transparent;
-      border-radius: var(--radius);
-      padding: var(--base-unit);
+      border-radius: 4px;
+      padding: 4px;
       outline: none;
     }
 
     header a:focus,
     header a:hover {
-      border-color: var(--teal);
+      border-color: #82dbd7;
     }
 
     h3::after {
       content: "·";
       position: absolute;
-      bottom: -3.65rem;
+      bottom: -3.75rem;
       right: -2.25rem;
-      font-family: var(--heading-font-family);
+      font-family: "Nunito";
       font-size: 8rem;
-      color: var(--teal);
+      color: #82dbd7;
     }
 
     h1 {
-      font-family: var(--heading-font-family);
-      letter-spacing: -0.1rem;
-      font-size: 3rem;
+      font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+        sans-serif;
+      letter-spacing: -2px;
+      font-size: 2.5rem;
     }
 
     h3 {
-      font-family: var(--accent-font-family);
+      font-family: "Virgo 01", "Nunito", sans-serif;
       position: relative;
-      color: var(--light);
-      font-size: 2rem;
+      color: #211b22;
+      font-size: 1.75rem;
       margin: 0;
     }
 
     address {
-      margin-bottom: var(--base-spacing);
+      margin-bottom: 12px;
     }
 
     ul {
@@ -202,84 +162,68 @@ module.exports = {
     }
 
     a {
-      color: var(--link);
+      color: #45576e;
       text-decoration: none;
       outline-color: var(--teal);
     }
 
     a:hover,
     a:focus {
-      color: var(--link-hover);
+      color: #283341;
       text-decoration: underline;
     }
 
     a:visited {
-      color: var(--link-visited);
+      color: #553a7b;
     }
 
     a:visited:hover,
     a:visited:focus {
-      color: var(--link-visited-hover);
+      color: #491845;
     }
 
     img {
-      max-width: var(--lg-spacing);
+      max-width: 50px;
       object-fit: contain;
     }
 
     kbd {
-      padding: var(--base-unit);
-      background-color: var(--gray-30);
-      border-radius: var(--radius);
+      padding: 4px;
+      background-color: #e4e0e6;
+      border-radius: 4px;
     }
 
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    span {
+      padding: 4px;
     }
 
-    .details {
-      text-align: right;
-    }
-
-    .total {
-      width: 100%;
-      font-weight: 600;
-      letter-spacing: var(--letter-spacing);
-      margin-bottom: var(--base-spacing);
-    }
-
-    .products a {
-      box-sizing: border-box;
-      padding: var(--base-spacing);
-      border-top: 2px solid var(--gray-30);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--base-spacing);
-      width: 100%;
-      text-decoration: none;
-      color: var(--dark);
-    }
-
-    .product span {
-      padding: var(--base-unit);
-    }
-
-    .container {
-      max-width: 720px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  </style>
-  <body>
-    <div class="container">
-      <header>
-        <a href="${props.siteUrl}"><h3>${props.siteName}</h3></a>
+    </style>
+    <div style="
+        color: #211b22;
+        background-color: #f9f8fa;
+        font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+          Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+          sans-serif;
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 24px;
+        padding: 12px;
+        ">
+      <header style="
+          padding: 12px;
+          color: #211b22;
+          display: flex;
+          align-items: center;
+          padding: 4px;
+        ">
+        <a href="${props.siteUrl}" style="color: #211b22;"><h3>${
+        props.siteName
+    }</h3></a>
       </header>
-      <main role="main">
+      <main role="main" style="padding: 12px;">
         <h1>${props.heading[order.lang]}</h1>
-        <div class="two-col">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
           <address>
             <strong>${order.name}</strong><br />
             <a href="mailto:${order.email}">${order.email}</a
@@ -288,26 +232,40 @@ module.exports = {
             ${order.city}, ${order.state}<br />
             ${order.country} ${order.zip}<br />
           </address>
-          <div class="details">
-            <p class="total">${props.total[order.lang]}: $${order.total.toFixed(
-        2
-    )}</p>
+          <div>
+            <p style="
+                width: 100%;
+                font-weight: 600;
+                letter-spacing: 2px;
+                margin-bottom: 4px;
+            ">${props.total[order.lang]}: $${order.total.toFixed(2)}</p>
             <p>${props.orderId[order.lang]}: <kbd>${order.id}</kbd></p>
           </div>
         </div>
-        <div class="products">
+        <div>
             ${order.items.map(item => {
                 return `<a href="${props.siteUrl}/products/${item.name.en
                     .toLowerCase()
                     .split(' ')
                     .join('-')}${
                     order.lang !== 'en' ? `-${order.lang}` : ''
-                }.html">
+                }.html" style="
+                    border-top: 2px solid #e4e0e6;
+                    box-sizing: border-box;
+                    padding: 12px 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+                    width: 100%;
+                    text-decoration: none;
+                    color: #211b22;
+                ">
                 <img
                 src="${props.siteUrl}${item.images['sm_a']}"
                 alt="${item.name[order.lang]}"
                 />
-                <p class="product">
+                <p>
                 <span>${item.name[order.lang]}</span><span> ${
                     props.colors[item.color][order.lang]
                 }</span>

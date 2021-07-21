@@ -109,7 +109,7 @@ ordersRouter.post('/', async (req, res) => {
             text: orderTemplateText(orderToUpdate),
             html: orderTemplate(orderToUpdate),
         })
-        return res.json({ ...orderToUpdate, info })
+        return res.json({ order: orderToUpdate, info })
     } catch (e) {
         return res.status(400).json({ error: e.message })
     }
