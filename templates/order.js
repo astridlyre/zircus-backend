@@ -77,7 +77,25 @@ const order = {
     ],
 }
 
-module.exports = order => `
+module.exports = {
+    orderTemplateText: order => `
+    ${props.siteName}
+
+    ${props.heading[order.lang]}
+
+    ${props.orderId[order.lang]}: ${order.id}
+    ${props.total[order.lang]}: ${order.total}
+
+    ${order.name}
+    ${order.email}
+    ${order.streetAddress}
+    ${order.city}, ${order.state}
+    ${order.country} ${order.zip}
+    
+    ---------------
+    ${order.items.map(item => item.name[order.lang]).join('\n')}
+    `,
+    orderTemplate: order => `
 <!DOCTYPE html>
 <html lang="${order.lang}">
   <head>
@@ -272,8 +290,8 @@ module.exports = order => `
           </address>
           <div class="details">
             <p class="total">${props.total[order.lang]}: $${order.total.toFixed(
-    2
-)}</p>
+        2
+    )}</p>
             <p>${props.orderId[order.lang]}: <kbd>${order.id}</kbd></p>
           </div>
         </div>
@@ -303,4 +321,5 @@ module.exports = order => `
     </div>
   </body>
 </html>
-`
+`,
+}

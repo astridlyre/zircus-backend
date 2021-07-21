@@ -11,11 +11,13 @@ const {
 const stripe = require('stripe')(STRIPE_SECRET)
 const Order = require('../models/order')
 const Underwear = require('../models/underwear')
-const orderTemplate = require('../templates/order')
+const { orderTemplate, orderTemplateText } = require('../templates/order')
 const nodemailer = require('nodemailer')
-/*
+
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         type: 'OAuth2',
         user: MAIL_USERNAME,
@@ -23,17 +25,8 @@ const transporter = nodemailer.createTransport({
         clientId: MAIL_ID,
         clientSecret: MAIL_SECRET,
         refreshToken: MAIL_REFRESH_TOKEN,
-        accessToken:
-            'ya29.a0ARrdaM_0NKk_Lqmp7z7XjURBznmNrSz8zYkGWDmsoQkWyII1kmlb8miJRrQh4AKTSjjmB-OR0Db_qfHIghqIUd2qzDZ-MONMOZrHDCxqIgtGLgq3bU0AwZjdomSmH3dexExT9P7E8ZrRrywUXc5Qjvn_ea_T',
     },
 })
-
-const mailOptions = order => ({
-    from: 'Zircus <erin.danger.burton@gmail.com>',
-    to: order.email,
-    subject: order.lang === 'fr' ? 'Votre order' : 'Your order',
-    html: orderTemplate(order),
-}) */
 
 const calculateOrderAmount = async (items, country, state) => {
     const inv = await Underwear.find({})
@@ -109,7 +102,14 @@ ordersRouter.post('/', async (req, res) => {
 
     try {
         await orderToUpdate.save()
-        return res.json(orderToUpdate)
+        const info = await transporter.sendMail({
+            from: 'Zircus <erin.danger.burton@gmail.com>',
+            to: orderToUpdate.email,
+            subject: orderToUpdate.lang === 'fr' ? 'Votre order' : 'Your order',
+            text: orderTemplateText(orderToUpdate),
+            html: orderTemplate(orderToUpdate),
+        })
+        return res.json({ ...orderToUpdate, info })
     } catch (e) {
         return res.status(400).json({ error: e.message })
     }
