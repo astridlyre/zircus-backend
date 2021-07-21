@@ -77,7 +77,7 @@ const order = {
     ],
 }
 
-module.exports = () => `
+module.exports = order => `
 <!DOCTYPE html>
 <html lang="${order.lang}">
   <head>

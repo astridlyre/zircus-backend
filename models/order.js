@@ -5,6 +5,10 @@ mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
 
 const orderSchema = new mongoose.Schema({
+    lang: {
+        type: String,
+        default: 'en',
+    },
     items: {
         type: Array,
         required: true,

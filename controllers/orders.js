@@ -1,9 +1,39 @@
 const ordersRouter = require('express').Router()
 const { hasValidToken, isValidType } = require('../utils/middleware')
-const { STRIPE_SECRET, STRIPE_PUBLIC } = require('../utils/config')
+const {
+    STRIPE_SECRET,
+    MAIL_USERNAME,
+    MAIL_PASSWORD,
+    MAIL_ID,
+    MAIL_SECRET,
+    MAIL_REFRESH_TOKEN,
+} = require('../utils/config')
 const stripe = require('stripe')(STRIPE_SECRET)
 const Order = require('../models/order')
 const Underwear = require('../models/underwear')
+const orderTemplate = require('../templates/order')
+const nodemailer = require('nodemailer')
+/*
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        type: 'OAuth2',
+        user: MAIL_USERNAME,
+        pass: MAIL_PASSWORD,
+        clientId: MAIL_ID,
+        clientSecret: MAIL_SECRET,
+        refreshToken: MAIL_REFRESH_TOKEN,
+        accessToken:
+            'ya29.a0ARrdaM_0NKk_Lqmp7z7XjURBznmNrSz8zYkGWDmsoQkWyII1kmlb8miJRrQh4AKTSjjmB-OR0Db_qfHIghqIUd2qzDZ-MONMOZrHDCxqIgtGLgq3bU0AwZjdomSmH3dexExT9P7E8ZrRrywUXc5Qjvn_ea_T',
+    },
+})
+
+const mailOptions = order => ({
+    from: 'Zircus <erin.danger.burton@gmail.com>',
+    to: order.email,
+    subject: order.lang === 'fr' ? 'Votre order' : 'Your order',
+    html: orderTemplate(order),
+}) */
 
 const calculateOrderAmount = async (items, country, state) => {
     const inv = await Underwear.find({})
@@ -79,11 +109,16 @@ ordersRouter.post('/', async (req, res) => {
 
     try {
         await orderToUpdate.save()
-        console.log(orderToUpdate)
         return res.json(orderToUpdate)
     } catch (e) {
         return res.status(400).json({ error: e.message })
     }
+})
+
+ordersRouter.get('/:id', async (req, res) => {
+    const order = await Order.findById(req.params.id)
+    if (!order) return res.status(404).json({ error: 'Order not found' })
+    return res.send(orderTemplate(order))
 })
 
 ordersRouter.post('/create-payment-intent', async (req, res) => {
