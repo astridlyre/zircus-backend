@@ -1,5 +1,20 @@
 const messageRouter = require('express').Router()
 const Message = require('../models/message')
+const { RateLimiterMemory } = require('rate-limiter-flexible')
+
+const opts = {
+    points: 6,
+    duration: 1,
+}
+
+const rateLimiter = new RateLimiterMemory(opts)
+
+messageRouter.all('/', (req, res, next) => {
+    rateLimiter
+        .consume(req.ip)
+        .then(() => next())
+        .catch(() => res.status(400).json({ error: 'Too many requests' }))
+})
 
 messageRouter.post('/', async (req, res) => {
     const newMessage = new Message({
