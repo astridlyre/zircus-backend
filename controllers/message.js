@@ -16,4 +16,10 @@ messageRouter.post('/', async (req, res) => {
     }
 })
 
+messageRouter.get('/', async (_, res) => {
+    const messages = await Message.find({})
+    if (!messages) return res.json({ error: 'No messages' })
+    return res.json({ messages: messages })
+})
+
 module.exports = messageRouter
