@@ -267,13 +267,16 @@ module.exports = {
                 alt="${item.name[order.lang]}"
                 style="object-fit: contain; height: 48px;"
                 />
-                <p>
-                <span>${item.name[order.lang]}</span><span> ${
-                        props.colors[item.color][order.lang]
-                    }</span>
-                <span> ${item.size}</span>
-                <span> ${item.quantity}</span>
-                </p>
+                <ul>
+                <li><strong style="padding: 4px;">${
+                    item.name[order.lang]
+                }</strong></li>
+                <li>
+                    <span>${props.colors[item.color][order.lang]}</span>
+                    <span>(${item.size})</span>
+                    <span>-</span><span>x${item.quantity}</span>
+                </li>
+                </ul>
             </a>`
                 })
                 .join('\n')}
