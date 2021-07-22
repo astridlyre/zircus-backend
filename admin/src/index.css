@@ -61,6 +61,7 @@
     var(--gray-30),
     var(--gray-20)
   );
+  --letter-spacing: 0.1rem;
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
@@ -1304,4 +1305,16 @@ pre code {
 .example-good {
   background-color: var(--green);
   border-color: var(--green);
+}
+
+@keyframes fadeDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

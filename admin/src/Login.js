@@ -2,6 +2,8 @@ import styled from 'styled-components'
 import { useEffect, useState } from 'react'
 import { login } from './services/services.js'
 import { useField } from './hooks/hooks.js'
+import { WebsocketContext } from './services/Websocket.js'
+import { useContext } from 'react'
 
 const StyledLogin = styled.main`
     width: 100%;
@@ -39,6 +41,7 @@ export default function Login({ setToken, setUser }) {
     const [failedLogin, setFailedLogin] = useState(false)
     const [usernameInput] = useField('text', '')
     const [passwordInput] = useField('password', '')
+    const { initializeWebSocket } = useContext(WebsocketContext)
 
     const handleFailedLogin = () => {
         setFailedLogin(true)
@@ -52,6 +55,7 @@ export default function Login({ setToken, setUser }) {
         setToken(data.token)
         localStorage.setItem('user', data.name)
         localStorage.setItem('token', data.token)
+        initializeWebSocket()
     }
 
     const handleSubmit = async e => {
@@ -66,7 +70,8 @@ export default function Login({ setToken, setUser }) {
         const storedUser = localStorage.getItem('user')
         if (storedToken) setToken(storedToken)
         if (storedUser) setUser(storedUser)
-    }, [setToken, setUser])
+        if (storedToken && storedUser) initializeWebSocket()
+    }, [setToken, setUser, initializeWebSocket])
 
     return (
         <StyledLogin>

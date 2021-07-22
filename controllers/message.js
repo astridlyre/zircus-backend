@@ -2,6 +2,7 @@ const messageRouter = require('express').Router()
 const Message = require('../models/message')
 const { hasValidToken } = require('../utils/middleware.js')
 const { RateLimiterMemory } = require('rate-limiter-flexible')
+const { broadcast } = require('./subscribe')
 
 const opts = {
     points: 6,
@@ -18,11 +19,14 @@ messageRouter.all('/', (req, res, next) => {
 })
 
 messageRouter.post('/', async (req, res) => {
-    const newMessage = new Message({
+    const msg = {
         name: req.body.name,
         email: req.body.email,
         message: req.body.message,
-    })
+    }
+    const newMessage = new Message(msg)
+
+    broadcast(JSON.stringify({ type: 'message', data: msg }))
 
     try {
         const savedEntry = await newMessage.save()

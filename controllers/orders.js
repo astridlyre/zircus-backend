@@ -12,6 +12,7 @@ const stripe = require('stripe')(STRIPE_SECRET)
 const Order = require('../models/order')
 const Underwear = require('../models/underwear')
 const { orderTemplate, orderTemplateText } = require('../templates/order')
+const { broadcast } = require('../controllers/subscribe')
 const nodemailer = require('nodemailer')
 
 const transporter = nodemailer.createTransport({
@@ -102,6 +103,12 @@ ordersRouter.post('/', async (req, res) => {
 
     try {
         await orderToUpdate.save()
+        broadcast(
+            JSON.stringify({
+                type: 'order',
+                data: { name: orderToUpdate.name },
+            })
+        )
         const info = await transporter.sendMail({
             from: 'Zircus <erin.danger.burton@gmail.com>',
             to: orderToUpdate.email,

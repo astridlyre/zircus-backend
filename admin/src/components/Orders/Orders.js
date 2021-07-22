@@ -4,7 +4,13 @@ import Filter from '../Filter/Filter.js'
 import Page from '../Containers/Page.js'
 import List from '../Containers/List.js'
 
-export default function Orders({ orders, token, setShowModal, setOrders }) {
+export default function Orders({
+    orders,
+    token,
+    setShowModal,
+    setOrders,
+    notify,
+}) {
     const [filter, setFilter] = useState(['hasPaid'])
     const filters = [
         {
@@ -39,6 +45,7 @@ export default function Orders({ orders, token, setShowModal, setOrders }) {
                 {orders &&
                     ordersToShow.map(order => (
                         <Order
+                            notify={notify}
                             token={token}
                             order={order}
                             key={order.id}

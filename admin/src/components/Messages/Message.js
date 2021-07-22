@@ -50,25 +50,19 @@ const StyledA = styled.a`
     }
 `
 
-export default function Message({ message, setShowModal, setMessages, token }) {
+export default function Message({
+    message,
+    setShowModal,
+    setMessages,
+    token,
+    notify,
+}) {
     const [showFull, setShowFull] = useState(false)
     const handleDeleteSuccess = ({ data }) => {
-        setShowModal({
-            heading: 'Success',
-            text: data.response,
-            ok: () =>
-                setMessages(messages =>
-                    messages.filter(m => m.id !== message.id)
-                ),
-        })
+        setMessages(messages => messages.filter(m => m.id !== message.id))
+        notify(`${data.response}: Deleted ${message.name}'s message`, 'red')
     }
-    const handleDeleteFailure = ({ data }) => {
-        setShowModal({
-            heading: 'Error',
-            text: data.error,
-            ok: () => {},
-        })
-    }
+    const handleDeleteFailure = ({ data }) => notify(`${data.error}`, 'red')
     const handleDelete = () => {
         setShowModal({
             heading: 'Confirm deletion',

@@ -6,6 +6,7 @@ import Inventory from './components/Inventory/Inventory.js'
 import Metrics from './components/Metrics/Metrics.js'
 import Orders from './components/Orders/Orders.js'
 import Messages from './components/Messages/Messages.js'
+import Notification from './components/Notification/Notification.js'
 
 const StyledDashboard = styled.div`
     display: flex;
@@ -27,6 +28,8 @@ export default function Dashboard({
     user,
     messages,
     setMessages,
+    notify,
+    notification,
 }) {
     const [page, setPage] = useState('metrics')
     const [showFull, setShowFull] = useState(true)
@@ -57,6 +60,7 @@ export default function Dashboard({
                 setShowFull={setShowFull}
                 messages={numMessages}
             />
+            {notification && <Notification notification={notification} />}
             {page === 'inventory' && (
                 <Inventory
                     inv={inv}
@@ -71,6 +75,7 @@ export default function Dashboard({
                     token={token}
                     setShowModal={setShowModal}
                     setOrders={setOrders}
+                    notify={notify}
                 />
             )}
             {page === 'metrics' && (
@@ -86,6 +91,7 @@ export default function Dashboard({
                     setMessages={setMessages}
                     setShowModal={setShowModal}
                     token={token}
+                    notify={notify}
                 />
             )}
         </StyledDashboard>

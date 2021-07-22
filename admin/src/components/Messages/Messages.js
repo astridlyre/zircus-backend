@@ -7,6 +7,7 @@ export default function Messages({
     setShowModal,
     setMessages,
     token,
+    notify,
 }) {
     return (
         <Page>
@@ -14,6 +15,7 @@ export default function Messages({
                 {messages &&
                     messages.map(message => (
                         <Message
+                            notify={notify}
                             token={token}
                             setMessages={setMessages}
                             key={message.id}

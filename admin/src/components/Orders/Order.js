@@ -41,22 +41,19 @@ const StyledBtnContainer = styled.div`
     flex-grow: 1;
 `
 
-export default function Order({ order, token, setShowModal, setOrders }) {
+export default function Order({
+    order,
+    token,
+    setShowModal,
+    setOrders,
+    notify,
+}) {
     const handleDeleteSuccess = ({ data }) => {
-        setShowModal({
-            heading: 'Success',
-            text: data.response,
-            ok: () =>
-                setOrders(orders => orders.filter(o => o.id !== order.id)),
-        })
+        setOrders(orders => orders.filter(o => o.id !== order.id))
+        notify(`${data.response}: Deleted ${order.name}'s order`, 'red')
     }
-    const handleDeleteFailure = ({ data }) => {
-        setShowModal({
-            heading: 'Error',
-            text: data.error,
-            ok: () => {},
-        })
-    }
+    const handleDeleteFailure = ({ data }) =>
+        notify(`Error: ${data?.error}`, 'red') && console.log(data)
     const handleDelete = () => {
         setShowModal({
             heading: 'Confirm deletion',
