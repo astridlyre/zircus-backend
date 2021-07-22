@@ -1,5 +1,8 @@
 import React, { useRef } from 'react'
 
+const WS_ENDPOINT = 'ws://zircus.herokuapp.com'
+// const WS_ENDPOINT = 'ws://localhost:3000'
+
 let listeners = []
 
 const WebsocketContext = React.createContext()
@@ -9,7 +12,7 @@ const WebsocketProvider = ({ children }) => {
     let autoReconnectInterval = 250
 
     const initializeWebSocket = () => {
-        websocket.current = new WebSocket(`ws://localhost:3000`)
+        websocket.current = new WebSocket(WS_ENDPOINT)
         websocket.current.onopen = () => {
             console.debug('Websocket connection open')
             autoReconnectInterval = 250
