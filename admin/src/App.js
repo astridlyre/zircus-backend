@@ -46,6 +46,7 @@ function App() {
                     setInv={setInv}
                     user={user}
                     messages={messages}
+                    setMessages={setMessages}
                 />
             ) : (
                 <Login setUser={setUser} setToken={setToken} />

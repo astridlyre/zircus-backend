@@ -26,6 +26,7 @@ export default function Dashboard({
     setInv,
     user,
     messages,
+    setMessages,
 }) {
     const [page, setPage] = useState('metrics')
     const [showFull, setShowFull] = useState(true)
@@ -80,7 +81,12 @@ export default function Dashboard({
                 />
             )}
             {page === 'messages' && (
-                <Messages messages={messages} setShowModal={setShowModal} />
+                <Messages
+                    messages={messages}
+                    setMessages={setMessages}
+                    setShowModal={setShowModal}
+                    token={token}
+                />
             )}
         </StyledDashboard>
     )

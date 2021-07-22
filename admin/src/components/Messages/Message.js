@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import MediumHeader from '../Text/MediumHeader.js'
 import DeleteButton from '../Buttons/DeleteButton.js'
 import { useState } from 'react'
+import { deleteMessage } from '../../services/services.js'
 
 const StyledLi = styled.li`
     margin: 0 auto;
@@ -49,8 +50,39 @@ const StyledA = styled.a`
     }
 `
 
-export default function Message({ message, setShowModal }) {
+export default function Message({ message, setShowModal, setMessages, token }) {
     const [showFull, setShowFull] = useState(false)
+    const handleDeleteSuccess = ({ data }) => {
+        setShowModal({
+            heading: 'Success',
+            text: data.response,
+            ok: () =>
+                setMessages(messages =>
+                    messages.filter(m => m.id !== message.id)
+                ),
+        })
+    }
+    const handleDeleteFailure = ({ data }) => {
+        setShowModal({
+            heading: 'Error',
+            text: data.error,
+            ok: () => {},
+        })
+    }
+    const handleDelete = () => {
+        setShowModal({
+            heading: 'Confirm deletion',
+            text: `Delete ${message.name}'s message?'`,
+            color: 'danger',
+            btnText: 'Delete',
+            ok: choice => {
+                if (choice)
+                    deleteMessage(message.id, token)
+                        .then(handleDeleteSuccess)
+                        .catch(handleDeleteFailure)
+            },
+        })
+    }
 
     return (
         <StyledLi>
@@ -70,7 +102,7 @@ export default function Message({ message, setShowModal }) {
                 )}
             </StyledText>
             <StyledActions>
-                <DeleteButton />
+                <DeleteButton onClick={() => handleDelete()} />
             </StyledActions>
         </StyledLi>
     )
