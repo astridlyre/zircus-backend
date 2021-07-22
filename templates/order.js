@@ -148,16 +148,6 @@ module.exports = {
       border-color: #82dbd7;
     }
 
-    h3::after {
-      content: "·";
-      position: absolute;
-      bottom: -3.75rem;
-      right: -2.25rem;
-      font-family: "Nunito";
-      font-size: 8rem;
-      color: #82dbd7;
-    }
-
     h1 {
       font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI",
         Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
@@ -165,14 +155,6 @@ module.exports = {
       letter-spacing: -2px;
       font-size: 2.5rem;
       line-height: 0.9;
-    }
-
-    h3 {
-      font-family: "Virgo 01", "Nunito", sans-serif;
-      position: relative;
-      color: #211b22;
-      font-size: 1.75rem;
-      margin: 0;
     }
 
     address {
@@ -224,13 +206,13 @@ module.exports = {
           align-items: center;
           padding: 4px;
         ">
-        <a href="${props.siteUrl}" style="color: #211b22;" aria-label="${
+      <a href="${props.siteUrl}" style="color: #211b22;" aria-label="${
         props.homeLink[order.lang]
-    }"><h3>
+    }">
         <img src="${
             props.siteUrl
         }/logo.png" alt="Zircus Logo" style="height: 32px; object-fit: contain;" />
-    </h3></a>
+      </a>
       </header>
       <main role="main" style="padding: 8px;">
         <h1>${props.heading[order.lang]}</h1>
