@@ -107,8 +107,8 @@ module.exports = {
         .join('\n')}
     ---------------
 
-    ${siteName}
-    ${siteUrl} 
+    ${props.siteName}
+    ${props.siteUrl} 
     `,
     orderTemplate: order => `
 <!DOCTYPE html>
