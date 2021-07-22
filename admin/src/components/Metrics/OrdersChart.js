@@ -1,20 +1,17 @@
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts'
 
-const data = [
-    {
-        name: 'Order 1',
-        date: Date.now(),
-    },
-    {
-        name: 'Order 2',
-        date: Date.now(),
-    },
-]
+export default function OrdersChart({ orders }) {
+    const data = orders
+        ? orders.map(order => ({
+              name: order.name,
+              date: new Date(order.createdOn).toLocaleDateString(),
+              total: order.total,
+          }))
+        : []
 
-export default function OrdersChart() {
     return (
-        <LineChart width={400} height={400} data={data}>
-            <Line type="monotone" dataKey="name" stroke="#888888" />
+        <LineChart width={500} height={400} data={data}>
+            <Line type="monotone" dataKey="total" stroke="#888888" />
             <CartesianGrid stroke="#cccccc" />
             <XAxis dataKey="date" />
             <YAxis />

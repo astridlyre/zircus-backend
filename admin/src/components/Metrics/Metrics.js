@@ -3,13 +3,10 @@ import Page from '../Containers/Page.js'
 import OrdersChart from './OrdersChart.js'
 
 const StyledContainer = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--base-spacing);
     margin-top: var(--base-spacing);
-`
-
-const StyledH1 = styled.h1`
-    width: 100%;
 `
 
 const StyledBubble = styled.div`
@@ -36,11 +33,10 @@ const StyledItems = styled.ul`
     }
 `
 
-export default function Metrics({ orders, setShowModal, inv }) {
+export default function Metrics({ orders, inv }) {
     const invFlat = (inv && Object.values(inv).flat()) || []
     return (
         <Page pad={true}>
-            <StyledH1>Metrics</StyledH1>
             <StyledContainer>
                 <StyledBubble>
                     <h2>total orders</h2>
@@ -60,7 +56,7 @@ export default function Metrics({ orders, setShowModal, inv }) {
                         )}
                     </StyledItems>
                 </StyledBubble>
-                <OrdersChart />
+                <OrdersChart orders={orders} />
             </StyledContainer>
         </Page>
     )
