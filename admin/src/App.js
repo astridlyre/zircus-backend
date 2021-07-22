@@ -25,6 +25,9 @@ function App() {
 
     const updateOrders = data => {
         notify(`New order from ${data.name}`, 'green')
+        getInv()
+            .then(reply => setInv(reply.data))
+            .catch(() => setInv(null))
         getOrders(token)
             .then(reply => setOrders(reply.data))
             .catch(() => setOrders(null))
