@@ -2,6 +2,10 @@ const props = {
     title: 'order · zircus',
     siteUrl: 'https://zircus.netlify.app',
     siteName: 'zircus',
+    homeLink: {
+        en: 'Go to Zircus Home Page',
+        fr: "Page d'accueil Zircus",
+    },
     orderId: {
         en: 'Order Id',
         fr: 'Id de commande',
@@ -119,10 +123,6 @@ module.exports = {
     <style>
     
     @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&family=Nunito:ital,wght@0,400;0,600;1,600&display=swap");
-    @font-face {
-      font-family: "Virgo 01";
-      src: url("https://zircus.netlify.app/font/virgo.woff2") format("woff2");
-    }
 
     header a {
       text-decoration: none !important;
@@ -213,9 +213,13 @@ module.exports = {
           align-items: center;
           padding: 4px;
         ">
-        <a href="${props.siteUrl}" style="color: #211b22;"><h3>${
-        props.siteName
-    }</h3></a>
+        <a href="${props.siteUrl}" style="color: #211b22;" aria-label="${
+        props.homeLink[order.lang]
+    }"><h3>
+        <img src="${
+            props.siteUrl
+        }/logo.png" alt="Zircus Logo" style="height: 32px; object-fit: contain;" />
+    </h3></a>
       </header>
       <main role="main" style="padding: 8px;">
         <h1>${props.heading[order.lang]}</h1>
