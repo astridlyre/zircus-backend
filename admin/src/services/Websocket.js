@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 
-const WS_ENDPOINT = 'ws://zircus.herokuapp.com'
+const WS_ENDPOINT = 'wss://zircus.herokuapp.com'
 // const WS_ENDPOINT = 'ws://localhost:3000'
 
 let listeners = []
