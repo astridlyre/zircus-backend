@@ -5,6 +5,7 @@ import SideNav from './components/SideNav/SideNav.js'
 import Inventory from './components/Inventory/Inventory.js'
 import Metrics from './components/Metrics/Metrics.js'
 import Orders from './components/Orders/Orders.js'
+import Messages from './components/Messages/Messages.js'
 
 const StyledDashboard = styled.div`
     display: flex;
@@ -24,10 +25,12 @@ export default function Dashboard({
     setOrders,
     setInv,
     user,
+    messages,
 }) {
     const [page, setPage] = useState('metrics')
     const [showFull, setShowFull] = useState(true)
     const numOrders = orders ? orders.length : 0
+    const numMessages = messages ? messages.length : 0
     const reduceFn = (inv, fn) => inv.reduce((acc, item) => acc + fn(item), 0)
     const qty = item => item.quantity
     const numInv = inv
@@ -51,6 +54,7 @@ export default function Dashboard({
                 inv={numInv}
                 showFull={showFull}
                 setShowFull={setShowFull}
+                messages={numMessages}
             />
             {page === 'inventory' && (
                 <Inventory
@@ -74,6 +78,9 @@ export default function Dashboard({
                     setShowModal={setShowModal}
                     inv={inv}
                 />
+            )}
+            {page === 'messages' && (
+                <Messages messages={messages} setShowModal={setShowModal} />
             )}
         </StyledDashboard>
     )

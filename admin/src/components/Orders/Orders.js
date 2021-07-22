@@ -1,15 +1,8 @@
 import { useState } from 'react'
-import styled from 'styled-components'
 import Order from './Order.js'
 import Filter from '../Filter/Filter.js'
 import Page from '../Containers/Page.js'
-
-const StyledUl = styled.ul`
-    display: flex;
-    flex-flow: column nowrap;
-    gap: var(--base-spacing);
-    max-width: var(--screen-lg);
-`
+import List from '../Containers/List.js'
 
 export default function Orders({ orders, token, setShowModal, setOrders }) {
     const [filter, setFilter] = useState(['hasPaid'])
@@ -42,7 +35,7 @@ export default function Orders({ orders, token, setShowModal, setOrders }) {
     return (
         <Page padTop={true}>
             <Filter filters={filters} />
-            <StyledUl>
+            <List gap={true}>
                 {orders &&
                     ordersToShow.map(order => (
                         <Order
@@ -53,7 +46,7 @@ export default function Orders({ orders, token, setShowModal, setOrders }) {
                             setOrders={setOrders}
                         />
                     ))}
-            </StyledUl>
+            </List>
         </Page>
     )
 }

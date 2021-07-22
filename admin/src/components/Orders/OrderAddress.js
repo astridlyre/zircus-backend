@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import OrderHeader from './OrderHeader.js'
+import MediumHeader from '../Text/MediumHeader.js'
 
 const StyledAddress = styled.address`
     flex-grow: 1;
@@ -8,7 +8,7 @@ const StyledAddress = styled.address`
 export default function OrderAddress({ order }) {
     return (
         <StyledAddress>
-            <OrderHeader>{order.name}</OrderHeader>
+            <MediumHeader>{order.name}</MediumHeader>
             <a href={`mailto:${order.email}`}>{order.email}</a>
             <br />
             {order.streetAddress}

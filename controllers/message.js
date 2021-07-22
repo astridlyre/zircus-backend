@@ -1,5 +1,6 @@
 const messageRouter = require('express').Router()
 const Message = require('../models/message')
+const { hasValidToken } = require('../utils/middleware.js')
 const { RateLimiterMemory } = require('rate-limiter-flexible')
 
 const opts = {
@@ -31,10 +32,22 @@ messageRouter.post('/', async (req, res) => {
     }
 })
 
-messageRouter.get('/', async (_, res) => {
+messageRouter.get('/', async (req, res) => {
+    if (!hasValidToken(req.token))
+        return res.status(500).json({ error: 'Token missing or invalid' })
     const messages = await Message.find({})
     if (!messages) return res.json({ error: 'No messages' })
     return res.json({ messages: messages })
+})
+
+messageRouter.delete('/:id', async (req, res) => {
+    if (!hasValidToken(req.token))
+        return res.status(500).json({ error: 'Token missing or invalid' })
+
+    Message.findByIdAndDelete(req.params.id, err => {
+        if (err) res.json({ error: err.message })
+        else res.json({ response: 'Message deleted' })
+    })
 })
 
 module.exports = messageRouter

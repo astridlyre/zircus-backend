@@ -232,7 +232,7 @@ ordersRouter.delete('/:id', async (req, res) => {
 
     Order.findByIdAndDelete(req.params.id, err => {
         if (err) res.json({ error: err.message })
-        res.json({ response: 'Item deleted' })
+        else res.json({ response: 'Item deleted' })
     })
 })
 

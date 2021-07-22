@@ -7,7 +7,9 @@ const StyledPage = styled.main`
     flex-flow: column nowrap;
     align-items: center;
     ${props => props.padTop && 'padding-top: var(--base-spacing);'}
-    ${props => props.pad && `padding: var(--base-spacing);`}
+    ${props => props.pad && `padding-left: var(--base-spacing);`}
+    ${props => props.pad && `padding-right: var(--base-spacing);`}
+    padding-bottom: var(--lg-spacing);
 `
 
 export default function Page({ children, padTop, pad }) {

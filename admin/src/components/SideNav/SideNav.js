@@ -4,6 +4,7 @@ import LeftIcon from '../Icons/LeftIcon.js'
 import InventoryIcon from '../Icons/InventoryIcon.js'
 import OrdersIcon from '../Icons/OrdersIcon.js'
 import MetricsIcon from '../Icons/MetricsIcon.js'
+import MessagesIcon from '../Icons/MessagesIcon.js'
 import SideNavButton from './SideNavButton.js'
 
 const StyledNav = styled.nav`
@@ -56,6 +57,7 @@ export default function SideNav({
     orders,
     showFull,
     setShowFull,
+    messages,
 }) {
     return (
         <StyledNav showFull={showFull}>
@@ -97,6 +99,17 @@ export default function SideNav({
                         setPage={setPage}
                     >
                         <InventoryIcon />
+                    </SideNavButton>
+                </StyledLi>
+                <StyledLi>
+                    <SideNavButton
+                        active="messages"
+                        page={page}
+                        showFull={showFull}
+                        num={messages}
+                        setPage={setPage}
+                    >
+                        <MessagesIcon />
                     </SideNavButton>
                 </StyledLi>
             </StyledUl>

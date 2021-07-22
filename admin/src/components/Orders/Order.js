@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { updateOrder, deleteOrder } from '../../services/services.js'
 import OrderAddress from './OrderAddress.js'
-import OrderHeader from './OrderHeader.js'
+import MediumHeader from '../Text/MediumHeader.js'
 import OrderItems from './OrderItems.js'
 import Label from '../Text/Label.js'
 import DeleteButton from '../Buttons/DeleteButton.js'
@@ -111,9 +111,9 @@ export default function Order({ order, token, setShowModal, setOrders }) {
             <OrderItems order={order} />
             <OrderAddress order={order} />
             <StyledActions>
-                <OrderHeader>
+                <MediumHeader>
                     {new Date(order.createdOn).toLocaleString('en-US')}
-                </OrderHeader>
+                </MediumHeader>
                 <Label>
                     paid:
                     <input

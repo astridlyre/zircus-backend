@@ -2,12 +2,13 @@ import Login from './Login.js'
 import Dashboard from './Dashboard.js'
 import Modal from './components/Modal/Modal.js'
 import { useEffect, useState } from 'react'
-import { getInv, getOrders } from './services/services.js'
+import { getInv, getMessages, getOrders } from './services/services.js'
 
 function App() {
     const [user, setUser] = useState(null)
     const [token, setToken] = useState(null)
     const [inv, setInv] = useState(null)
+    const [messages, setMessages] = useState(null)
     const [orders, setOrders] = useState(null)
     const [showModal, setShowModal] = useState(null)
 
@@ -22,10 +23,14 @@ function App() {
         getInv()
             .then(reply => setInv(reply.data))
             .catch(() => setInv(null))
-        token &&
+        if (token !== null) {
             getOrders(token)
                 .then(reply => setOrders(reply.data))
                 .catch(() => setOrders(null))
+            getMessages(token)
+                .then(reply => setMessages(reply.data.messages))
+                .catch(() => setMessages(null))
+        }
     }, [setInv, token])
 
     return (
@@ -40,6 +45,7 @@ function App() {
                     setOrders={setOrders}
                     setInv={setInv}
                     user={user}
+                    messages={messages}
                 />
             ) : (
                 <Login setUser={setUser} setToken={setToken} />
