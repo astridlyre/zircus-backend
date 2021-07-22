@@ -260,7 +260,7 @@ module.exports = {
                 alt="${item.name[order.lang]}"
                 style="object-fit: contain; height: 48px;"
                 />
-                <ul>
+                <ul style="margin-left: auto;">
                 <li><strong style="padding: 4px;">${
                     item.name[order.lang]
                 }</strong></li>
