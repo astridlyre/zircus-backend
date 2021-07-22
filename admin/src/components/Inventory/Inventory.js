@@ -5,7 +5,7 @@ import Filter from '../Filter/Filter.js'
 import Page from '../Containers/Page.js'
 import List from '../Containers/List.js'
 
-export default function Inventory({ inv, token, setShowModal, setInv }) {
+export default function Inventory({ inv, token, setInv }) {
     const [showFF, setShowFF] = useState(true)
     const [showPF, setShowPF] = useState(true)
     const [showCF, setShowCF] = useState(true)
@@ -39,7 +39,6 @@ export default function Inventory({ inv, token, setShowModal, setInv }) {
                             item={item}
                             key={item.id}
                             token={token}
-                            setShowModal={setShowModal}
                             setInv={setInv}
                         />
                     ))}
@@ -50,7 +49,6 @@ export default function Inventory({ inv, token, setShowModal, setInv }) {
                             item={item}
                             key={item.id}
                             token={token}
-                            setShowModal={setShowModal}
                             setInv={setInv}
                         />
                     ))}
@@ -61,7 +59,6 @@ export default function Inventory({ inv, token, setShowModal, setInv }) {
                             item={item}
                             key={item.id}
                             token={token}
-                            setShowModal={setShowModal}
                             setInv={setInv}
                         />
                     ))}

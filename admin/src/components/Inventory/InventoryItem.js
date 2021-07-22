@@ -34,19 +34,7 @@ const StyledAttr = styled.p`
     ${props => props.grow && 'flex-grow: 1;'}
 `
 
-export default function InventoryItem({ item, token, setShowModal, setInv }) {
-    const handleDelete = () => {
-        setShowModal({
-            heading: 'Confirm deletion',
-            text: `Delete inventory item ${item.type}?`,
-            color: 'danger',
-            btnText: 'Delete',
-            ok: reply => {
-                if (reply) setInv(inv => inv.filter(i => i.type !== item.type))
-            },
-        })
-    }
-
+export default function InventoryItem({ item, token, setInv }) {
     const handler = (key, fn) => event => {
         setInv(inv => ({
             ...inv,
@@ -105,7 +93,6 @@ export default function InventoryItem({ item, token, setShowModal, setInv }) {
                     onChange={handleActive}
                 />
             </Label>
-            <DeleteButton onClick={handleDelete} />
         </StyledLi>
     )
 }
