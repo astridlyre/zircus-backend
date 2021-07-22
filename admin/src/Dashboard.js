@@ -83,6 +83,7 @@ export default function Dashboard({
                     orders={orders}
                     setShowModal={setShowModal}
                     inv={inv}
+                    messages={messages}
                 />
             )}
             {page === 'messages' && (
