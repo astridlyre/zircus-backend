@@ -97,7 +97,18 @@ module.exports = {
     ${order.country} ${order.zip}
     
     ---------------
-    ${order.items.map(item => item.name[order.lang]).join('\n')}
+    ${order.items
+        .map(
+            item =>
+                `${item.name[order.lang]} - ${
+                    props.colors[item.color][order.lang]
+                } (${item.size}) - x${item.quantity}`
+        )
+        .join('\n')}
+    ---------------
+
+    ${siteName}
+    ${siteUrl} 
     `,
     orderTemplate: order => `
 <!DOCTYPE html>
