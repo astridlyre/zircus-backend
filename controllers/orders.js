@@ -30,20 +30,24 @@ const transporter = nodemailer.createTransport({
 })
 
 const calculateOrderAmount = async (items, country, state) => {
-    const inv = await Underwear.find({})
     // Update new inventory items and tally up price
     let total = 0
-    for (const item of items) {
-        // If it isn't valid, return error
-        if (!isValidType(item.type))
-            return { error: `Invalid type ${item.type}` }
 
-        const invItem = inv.find(i => i.type === item.type)
-        const newQuantity = invItem.quantity - Number(item.quantity)
-        // Make sure there is enough stock
-        if (newQuantity < 0) return { error: `Invalid item quantities` }
+    for await (const item of items) {
+        const itemToUpdate = await Underwear.findOne({ type: item.type })
+        const newQuantity = itemToUpdate.quantity - Number(item.quantity)
+        if (newQuantity < 0)
+            return { error: `Insufficient stock of ${item.type}` }
+        itemToUpdate.quantity = newQuantity
 
-        total += Number(item.quantity) * Number(invItem.price)
+        // update total
+        total += Number(item.quantity) * Number(itemToUpdate.price)
+
+        try {
+            await itemToUpdate.save()
+        } catch (e) {
+            return res.status(400).json({ error: e.message })
+        }
     }
 
     let taxRate = 0
@@ -86,18 +90,6 @@ ordersRouter.post('/', async (req, res) => {
     if (!orderToUpdate)
         return res.status(400).json({ error: 'Invalid order id' })
 
-    for await (const item of orderToUpdate.items) {
-        const itemToUpdate = await Underwear.findOne({ type: item.type })
-        const newQuantity = itemToUpdate.quantity - Number(item.quantity)
-        itemToUpdate.quantity = newQuantity
-
-        try {
-            await itemToUpdate.save()
-        } catch (e) {
-            return res.status(400).json({ error: e.message })
-        }
-    }
-
     // Set paid to true
     orderToUpdate.hasPaid = true
 
@@ -105,7 +97,7 @@ ordersRouter.post('/', async (req, res) => {
         await orderToUpdate.save()
         broadcast(
             JSON.stringify({
-                type: 'order',
+                type: 'paid order',
                 data: { name: orderToUpdate.name },
             })
         )
@@ -210,6 +202,13 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
     try {
         // Save new order
         await newOrder.save()
+        // Notify dashboard of pending order
+        broadcast(
+            JSON.stringify({
+                type: 'pending order',
+                data: { name: orderDetails.name },
+            })
+        )
         return res.json(newOrder)
     } catch (e) {
         return res.status(400).json({ error: e.message })
@@ -237,10 +236,26 @@ ordersRouter.delete('/:id', async (req, res) => {
     if (!hasValidToken(req.token))
         return res.status(401).json({ error: 'Token missing or invalid' })
 
-    Order.findByIdAndDelete(req.params.id, err => {
-        if (err) res.json({ error: err.message })
-        else res.json({ response: 'Item deleted' })
-    })
+    const order = await Order.findById(req.params.id)
+    if (!order) return res.json({ error: 'Order not found' })
+
+    // Re-add order items to inv stock
+    for await (const item of order.items) {
+        const itemToUpdate = Underwear.findOne({ type: item.type })
+        itemToUpdate.quantity += item.quantity
+        try {
+            await itemToUpdate.save()
+        } catch (e) {
+            return res.json({ error: e.message })
+        }
+    }
+
+    try {
+        await order.delete()
+        return res.json({ response: 'Item deleted' })
+    } catch (e) {
+        return res.json({ error: e.message })
+    }
 })
 
 module.exports = ordersRouter

@@ -23,8 +23,8 @@ function App() {
             .catch(() => setMessages(null))
     }
 
-    const updateOrders = data => {
-        notify(`New order from ${data.name}`, 'green')
+    const updateOrders = (data, { text, color }) => {
+        notify(`${text} ${data.name}`, color)
         getInv()
             .then(reply => setInv(reply.data))
             .catch(() => setInv(null))
@@ -39,8 +39,16 @@ function App() {
             switch (msg.type) {
                 case 'message':
                     return updateMessages(msg.data)
-                case 'order':
-                    return updateOrders(msg.data)
+                case 'pending order':
+                    return updateOrders(msg.data, {
+                        text: 'Pending order from',
+                        color: 'gray',
+                    })
+                case 'paid order':
+                    return updateOrders(msg.data, {
+                        text: 'New paid order from',
+                        color: 'green',
+                    })
             }
         })
         setWebsocketId(websocketListenerId)
