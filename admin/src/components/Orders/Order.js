@@ -48,10 +48,6 @@ export default function Order({
     setOrders,
     notify,
 }) {
-    const handleDeleteSuccess = ({ data }) => {
-        setOrders(orders => orders.filter(o => o.id !== order.id))
-        notify(`${data.response}: Deleted ${order.name}'s order`, 'red')
-    }
     const handleDeleteFailure = ({ data }) =>
         notify(`Error: ${data?.error}`, 'red') && console.log(data)
     const handleDelete = () => {
@@ -62,9 +58,7 @@ export default function Order({
             btnText: 'Delete',
             ok: choice => {
                 if (choice)
-                    deleteOrder(order.id, token)
-                        .then(handleDeleteSuccess)
-                        .catch(handleDeleteFailure)
+                    deleteOrder(order.id, token).catch(handleDeleteFailure)
             },
         })
     }

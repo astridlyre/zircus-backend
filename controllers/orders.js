@@ -241,7 +241,7 @@ ordersRouter.delete('/:id', async (req, res) => {
 
     // Re-add order items to inv stock
     for await (const item of order.items) {
-        const itemToUpdate = Underwear.findOne({ type: item.type })
+        const itemToUpdate = await Underwear.findOne({ type: item.type })
         itemToUpdate.quantity += item.quantity
         try {
             await itemToUpdate.save()

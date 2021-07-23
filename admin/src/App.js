@@ -16,15 +16,15 @@ function App() {
     const [websocketId, setWebsocketId] = useState(-1)
     const { addListener, removeListener } = useContext(WebsocketContext)
 
-    const updateMessages = data => {
-        notify(`New message from ${data.name}`, 'green')
+    const updateMessages = ({ text, color }) => {
+        notify(text, color)
         getMessages(token)
             .then(reply => setMessages(reply.data.messages))
             .catch(() => setMessages(null))
     }
 
-    const updateOrders = (data, { text, color }) => {
-        notify(`${text} ${data.name}`, color)
+    const updateOrders = ({ text, color }) => {
+        notify(text, color)
         getInv()
             .then(reply => setInv(reply.data))
             .catch(() => setInv(null))
@@ -38,16 +38,24 @@ function App() {
             if (!token) return
             switch (msg.type) {
                 case 'message':
-                    return updateMessages(msg.data)
+                    return updateMessages(msg.data, {
+                        text: `New message from ${msg.data.name}`,
+                        color: 'green',
+                    })
                 case 'pending order':
                     return updateOrders(msg.data, {
-                        text: 'Pending order from',
+                        text: `Pending order from ${msg.data.name}`,
                         color: 'gray',
                     })
                 case 'paid order':
                     return updateOrders(msg.data, {
-                        text: 'New paid order from',
+                        text: `Paid order from ${msg.data.name}`,
                         color: 'green',
+                    })
+                case 'deleted order':
+                    return updateOrders(msg.data, {
+                        text: `${msg.data.response}: Inventory updated`,
+                        color: 'red',
                     })
             }
         })
