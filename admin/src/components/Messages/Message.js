@@ -7,8 +7,9 @@ import { deleteMessage } from '../../services/services.js'
 const StyledLi = styled.li`
     margin: 0 auto;
     display: flex;
+    justify-content: flex-start;
     align-items: flex-start;
-    gap: var(--lg-spacing);
+    gap: var(--md-spacing);
     padding: var(--base-spacing);
     width: 100%;
     border-left: 0.5rem solid;
@@ -24,7 +25,8 @@ const StyledLi = styled.li`
 
 const StyledDiv = styled.div`
     display: flex;
-    width: 20vw;
+    max-width: 22vw;
+    width: 100%;
     flex-flow: column nowrap;
 `
 
@@ -36,6 +38,7 @@ const StyledActions = styled.div`
 
 const StyledText = styled.p`
     max-width: 75ch;
+    width: 100%;
 `
 
 const StyledA = styled.a`
