@@ -114,11 +114,11 @@ ordersRouter.post('/', async (req, res) => {
     }
 })
 
-ordersRouter.get('/:id', async (req, res) => {
+/* ordersRouter.get('/:id', async (req, res) => {
     const order = await Order.findById(req.params.id)
     if (!order) return res.status(404).json({ error: 'Order not found' })
     return res.send(orderTemplate(order))
-})
+}) */
 
 ordersRouter.post('/create-payment-intent', async (req, res) => {
     // Make sure have country and state
@@ -226,8 +226,8 @@ ordersRouter.put('/:id', async (req, res) => {
             ...req.body.updatedAttributes,
         },
         (err, doc) => {
-            if (err) res.status(500).json({ error: e.message })
-            res.json(doc)
+            if (err) return res.status(500).json({ error: e.message })
+            return res.json(doc)
         }
     )
 })
@@ -251,8 +251,10 @@ ordersRouter.delete('/:id', async (req, res) => {
     }
 
     try {
-        await order.delete()
-        return res.json({ response: 'Item deleted' })
+        await Order.findByIdAndDelete(req.params.id, err => {
+            if (err) return res.json({ error: err })
+            return res.json({ response: 'Item deleted' })
+        })
     } catch (e) {
         return res.json({ error: e.message })
     }
