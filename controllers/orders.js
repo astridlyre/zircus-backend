@@ -253,6 +253,12 @@ ordersRouter.delete('/:id', async (req, res) => {
     try {
         await Order.findByIdAndDelete(req.params.id, err => {
             if (err) return res.json({ error: err })
+            broadcast(
+                JSON.stringify({
+                    type: 'deleted order',
+                    data: { response: 'Item deleted' },
+                })
+            )
             return res.json({ response: 'Item deleted' })
         })
     } catch (e) {
