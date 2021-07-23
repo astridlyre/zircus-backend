@@ -38,22 +38,22 @@ function App() {
             if (!token) return
             switch (msg.type) {
                 case 'message':
-                    return updateMessages(msg.data, {
+                    return updateMessages({
                         text: `New message from ${msg.data.name}`,
                         color: 'green',
                     })
                 case 'pending order':
-                    return updateOrders(msg.data, {
+                    return updateOrders({
                         text: `Pending order from ${msg.data.name}`,
                         color: 'gray',
                     })
                 case 'paid order':
-                    return updateOrders(msg.data, {
+                    return updateOrders({
                         text: `Paid order from ${msg.data.name}`,
                         color: 'green',
                     })
                 case 'deleted order':
-                    return updateOrders(msg.data, {
+                    return updateOrders({
                         text: `${msg.data.response}: Inventory updated`,
                         color: 'red',
                     })
