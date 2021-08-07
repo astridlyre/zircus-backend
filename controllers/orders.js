@@ -29,25 +29,34 @@ const transporter = nodemailer.createTransport({
     },
 })
 
+const updateInventoryItems = async items => {
+    for await (const item of items) {
+        const itemToUpdate = await Underwear.findOne({ type: item.type })
+        const newQuantity = itemToUpdate.quantity - Number(item.quantity)
+        itemToUpdate.quantity = newQuantity || 0
+
+        try {
+            await itemToUpdate.save()
+            return { error: null }
+        } catch (e) {
+            return { error: e.message }
+        }
+    }
+}
+
 const calculateOrderAmount = async (items, country, state) => {
     // Update new inventory items and tally up price
     let total = 0
 
     for await (const item of items) {
         const itemToUpdate = await Underwear.findOne({ type: item.type })
+        if (!itemToUpdate) return { error: `Invalid type ${item.type}` }
         const newQuantity = itemToUpdate.quantity - Number(item.quantity)
         if (newQuantity < 0)
             return { error: `Insufficient stock of ${item.type}` }
-        itemToUpdate.quantity = newQuantity
 
         // update total
         total += Number(item.quantity) * Number(itemToUpdate.price)
-
-        try {
-            await itemToUpdate.save()
-        } catch (e) {
-            return res.status(400).json({ error: e.message })
-        }
     }
 
     let taxRate = 0
@@ -93,6 +102,11 @@ ordersRouter.post('/', async (req, res) => {
     // Set paid to true
     orderToUpdate.hasPaid = true
 
+    // Update inventory
+    const { inventoryUpdateError } = await updateInventoryItems(
+        orderToUpdate.items
+    )
+
     try {
         await orderToUpdate.save()
         broadcast(
@@ -108,6 +122,8 @@ ordersRouter.post('/', async (req, res) => {
             text: orderTemplateText(orderToUpdate),
             html: orderTemplate(orderToUpdate),
         })
+        if (inventoryUpdateError)
+            return res.status(400).json({ error: inventoryUpdateError })
         return res.json({ order: orderToUpdate, info })
     } catch (e) {
         return res.status(400).json({ error: e.message })

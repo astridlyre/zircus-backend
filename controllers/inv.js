@@ -66,6 +66,7 @@ async function initDB(inv) {
                 sm_a: `/assets/img/products/masked/${prefix}-${color}-a-400.png`,
                 sm_b: `/assets/img/products/masked/${prefix}-${color}-b-400.png`,
                 lg_a: `/assets/img/products/masked/${prefix}-${color}-a-1920.jpg`,
+                lg_b: `/assets/img/products/masked/${prefix}-${color}-b-1920.jpg`,
             },
             description: getDesc(prefix),
         })
