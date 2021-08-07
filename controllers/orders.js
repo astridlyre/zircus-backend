@@ -33,7 +33,7 @@ const updateInventoryItems = async items => {
     for await (const item of items) {
         const itemToUpdate = await Underwear.findOne({ type: item.type })
         const newQuantity = itemToUpdate.quantity - Number(item.quantity)
-        itemToUpdate.quantity = newQuantity || 0
+        itemToUpdate.quantity = newQuantity > 0 ? newQuantity : 0
 
         try {
             await itemToUpdate.save()
