@@ -44,7 +44,7 @@ const updateInventoryItems = async items => {
     }
 }
 
-const calculateOrderAmount = async (items, country, state) => {
+const calculateOrderAmount = async (items, country, state, shippingMethod) => {
     // Update new inventory items and tally up price
     let total = 0
 
@@ -57,6 +57,17 @@ const calculateOrderAmount = async (items, country, state) => {
 
         // update total
         total += Number(item.quantity) * Number(itemToUpdate.price)
+    }
+
+    switch (shippingMethod) {
+        case 'overnight':
+            total += 29.99
+            break
+        case 'standard':
+            total += 9.99
+            break
+        default:
+            total += 5.99
     }
 
     let taxRate = 0
@@ -149,7 +160,8 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
     const calculatedTotal = await calculateOrderAmount(
         req.body.items,
         req.body.country,
-        req.body.state
+        req.body.state,
+        req.body.shippingMethod
     )
     if (calculatedTotal.error)
         return res.status(400).json({ error: calculatedTotal.error })
