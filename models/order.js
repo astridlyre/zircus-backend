@@ -20,7 +20,7 @@ const orderSchema = new mongoose.Schema({
     address: {
         line1: {
             type: String,
-            require: true,
+            required: true,
         },
         line2: String,
         city: {
@@ -39,7 +39,6 @@ const orderSchema = new mongoose.Schema({
             type: String,
             required: true,
         },
-        required: true,
     },
     hasPaid: {
         type: Boolean,
@@ -68,6 +67,7 @@ const orderSchema = new mongoose.Schema({
     },
     name: {
         type: String,
+        required: true,
     },
     email: {
         type: String,
