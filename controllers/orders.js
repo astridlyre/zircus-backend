@@ -53,7 +53,7 @@ const calculateOrderAmount = async (items, country, state, shippingMethod) => {
         if (!itemToUpdate) return { error: `Invalid type ${item.type}` }
         const newQuantity = itemToUpdate.quantity - Number(item.quantity)
         if (newQuantity < 0)
-            return { error: `Insufficient stock of ${item.type}` }
+            return { calculateTotalError: `Insufficient stock of ${item.type}` }
 
         // update total
         total += Number(item.quantity) * Number(itemToUpdate.price)
@@ -97,6 +97,7 @@ const calculateOrderAmount = async (items, country, state, shippingMethod) => {
             method: shippingMethod,
             total: shipping,
         },
+        calculateTotalError: null,
     }
 }
 
@@ -156,59 +157,48 @@ ordersRouter.post('/', async (req, res) => {
 }) */
 
 ordersRouter.post('/create-payment-intent', async (req, res) => {
+    const { address, items, shippingMethod, name, email, update } = req.body
     // Make sure have country and state
-    if (!req.body.country || !req.body.state)
+    if (!address.country || !address.state)
         return res.status(400).json({ error: 'Missing country or state' })
 
     // Make sure items are an array
-    if (!Array.isArray(req.body.items))
+    if (!Array.isArray(items))
         return res.status(400).json({ error: 'Items are malformed' })
 
     // Calculate the total for the order
-    const calculatedTotal = await calculateOrderAmount(
-        req.body.items,
-        req.body.country,
-        req.body.state,
-        req.body.shippingMethod
+    const { calculateTotalError, shipping, total } = await calculateOrderAmount(
+        items,
+        shippingMethod
     )
-    if (calculatedTotal.error)
-        return res.status(400).json({ error: calculatedTotal.error })
+    if (calculateTotalError)
+        return res.status(400).json({ error: calculateTotalError })
 
     // paymentDetails for creating a paymentIntent
     const paymentDetails = {
-        amount: calculatedTotal.total, // stripe expects a total they can divide by 100
-        currency: req.body.country === 'Canada' ? 'cad' : 'usd',
-        receipt_email: req.body.email,
-        shipping: calculatedTotal.shipping,
-        billing_details: {
-            address: {
-                city: req.body.city,
-                state: req.body.state,
-                country: req.body.country,
-                line1: req.body.streetAddress,
-            },
-            email: req.body.email,
-            name: req.body.name,
+        amount: total, // stripe expects a total they can divide by 100
+        currency: address.country === 'Canada' ? 'cad' : 'usd',
+        receipt_email: email,
+        shipping: {
+            name,
+            address,
+            carrier: shipping.method,
         },
     }
 
     // orderDetails for creating a pending order
     const orderDetails = {
-        streetAddress: req.body.streetAddress,
-        city: req.body.city,
-        state: req.body.state,
-        country: req.body.country,
-        zip: req.body.zip,
-        name: req.body.name,
-        email: req.body.email,
-        items: req.body.items,
-        total: calculatedTotal.total / 100,
-        shipping: calculatedTotal.shipping,
+        address,
+        name,
+        email,
+        items,
+        total: total / 100,
+        shipping,
     }
 
     // If updating a paymentIntent
-    if (req.body.update !== null) {
-        const clientSecret = req.body.update
+    if (update) {
+        const clientSecret = update
         const orderToUpdate = await Order.findOneAndUpdate(
             { clientSecret },
             orderDetails,
@@ -222,7 +212,7 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
                 orderToUpdate.orderId,
                 paymentDetails
             )
-            return res.json({ clientSecret, total: orderDetails.total })
+            return res.json({ clientSecret, total })
         } catch (e) {
             return res.status(400).json({ error: e.message })
         }
@@ -245,7 +235,7 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
         broadcast(
             JSON.stringify({
                 type: 'pending order',
-                data: { name: orderDetails.name },
+                data: { name },
             })
         )
         return res.json(newOrder)

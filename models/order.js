@@ -17,29 +17,13 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    streetAddress: {
-        type: String,
-        required: true,
-    },
-    city: {
-        type: String,
-        required: true,
-    },
-    state: {
-        type: String,
-        required: true,
-    },
-    country: {
-        type: String,
-        required: true,
-    },
-    name: {
-        type: String,
-        required: true,
-    },
-    zip: {
-        type: String,
-        required: true,
+    address: {
+        line1: String,
+        line2: String,
+        city: String,
+        state: String,
+        country: String,
+        postal_code: String,
     },
     hasPaid: {
         type: Boolean,
@@ -54,11 +38,23 @@ const orderSchema = new mongoose.Schema({
     shipping: {
         method: String,
         price: Number,
+        address: {
+            name: String,
+            line1: String,
+            line2: String,
+            city: String,
+            state: String,
+            country: String,
+            postal_code: String,
+        },
     },
     createdOn: {
         type: Date,
         required: true,
         default: new Date(),
+    },
+    name: {
+        type: String,
     },
     email: {
         type: String,
