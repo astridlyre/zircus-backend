@@ -5,7 +5,7 @@ mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
 
 const orderSchema = new mongoose.Schema({
-    lang: {
+    preferredLanguage: {
         type: String,
         default: 'en',
     },
@@ -18,12 +18,28 @@ const orderSchema = new mongoose.Schema({
         required: true,
     },
     address: {
-        line1: String,
+        line1: {
+            type: String,
+            require: true,
+        },
         line2: String,
-        city: String,
-        state: String,
-        country: String,
-        postal_code: String,
+        city: {
+            type: String,
+            required: true,
+        },
+        state: {
+            type: String,
+            required: true,
+        },
+        country: {
+            type: String,
+            required: true,
+        },
+        postal_code: {
+            type: String,
+            required: true,
+        },
+        required: true,
     },
     hasPaid: {
         type: Boolean,
@@ -36,16 +52,13 @@ const orderSchema = new mongoose.Schema({
         default: false,
     },
     shipping: {
-        method: String,
-        price: Number,
-        address: {
-            name: String,
-            line1: String,
-            line2: String,
-            city: String,
-            state: String,
-            country: String,
-            postal_code: String,
+        method: {
+            type: String,
+            required: true,
+        },
+        price: {
+            type: Number,
+            required: true,
         },
     },
     createdOn: {

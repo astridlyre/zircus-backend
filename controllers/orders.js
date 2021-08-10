@@ -11,7 +11,7 @@ const {
 const stripe = require('stripe')(STRIPE_SECRET)
 const Order = require('../models/order')
 const Underwear = require('../models/underwear')
-const { orderTemplate, orderTemplateText } = require('../templates/order')
+// const { orderTemplate, orderTemplateText } = require('../templates/order')
 const { broadcast } = require('../controllers/subscribe')
 const nodemailer = require('nodemailer')
 
@@ -157,7 +157,8 @@ ordersRouter.post('/', async (req, res) => {
 }) */
 
 ordersRouter.post('/create-payment-intent', async (req, res) => {
-    const { address, items, shippingMethod, name, email, update } = req.body
+    const { address, items, shippingMethod, name, email, update, lang } =
+        req.body
     // Make sure have country and state
     if (!address.country || !address.state)
         return res.status(400).json({ error: 'Missing country or state' })
@@ -188,6 +189,7 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
 
     // orderDetails for creating a pending order
     const orderDetails = {
+        preferredLanguage: lang,
         address,
         name,
         email,
