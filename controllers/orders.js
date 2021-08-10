@@ -59,15 +59,17 @@ const calculateOrderAmount = async (items, country, state, shippingMethod) => {
         total += Number(item.quantity) * Number(itemToUpdate.price)
     }
 
+    let shipping = 0
     switch (shippingMethod) {
         case 'overnight':
-            total += 29.99
+            shipping = 29.99
             break
         case 'standard':
-            total += 9.99
+            shipping = 9.99
             break
         default:
-            total += 5.99
+            shippingMethod = 'economy'
+            shipping = 5.99
     }
 
     let taxRate = 0
@@ -89,7 +91,13 @@ const calculateOrderAmount = async (items, country, state, shippingMethod) => {
         taxRate = 0.07 // US Tax rate?
     }
 
-    return { total: Math.round((total + total * taxRate) * 100) }
+    return {
+        total: Math.round((total + (total + shipping) * taxRate) * 100),
+        shipping: {
+            method: shippingMethod,
+            total: shipping,
+        },
+    }
 }
 
 ordersRouter.get('/', async (req, res) => {
@@ -126,13 +134,13 @@ ordersRouter.post('/', async (req, res) => {
                 data: { name: orderToUpdate.name },
             })
         )
-        const info = await transporter.sendMail({
+        /* const info = await transporter.sendMail({
             from: 'Zircus <erin.danger.burton@gmail.com>',
             to: orderToUpdate.email,
             subject: orderToUpdate.lang === 'fr' ? 'Votre order' : 'Your order',
             text: orderTemplateText(orderToUpdate),
             html: orderTemplate(orderToUpdate),
-        })
+        }) */
         if (inventoryUpdateError)
             return res.status(400).json({ error: inventoryUpdateError })
         return res.json({ order: orderToUpdate, info })
@@ -171,6 +179,17 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
         amount: calculatedTotal.total, // stripe expects a total they can divide by 100
         currency: req.body.country === 'Canada' ? 'cad' : 'usd',
         receipt_email: req.body.email,
+        shipping: calculatedTotal.shipping,
+        billing_details: {
+            address: {
+                city: req.body.city,
+                state: req.body.state,
+                country: req.body.country,
+                line1: req.body.streetAddress,
+            },
+            email: req.body.email,
+            name: req.body.name,
+        },
     }
 
     // orderDetails for creating a pending order
@@ -184,6 +203,7 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
         email: req.body.email,
         items: req.body.items,
         total: calculatedTotal.total / 100,
+        shipping: calculatedTotal.shipping,
     }
 
     // If updating a paymentIntent
@@ -198,13 +218,10 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
             return res.status(400).json({ error: 'Payment intent not found' })
 
         try {
-            await stripe.paymentIntents.update(orderToUpdate.orderId, {
-                ...paymentDetails,
-                metadata: {
-                    name: orderDetails.name,
-                    email: orderDetails.email,
-                },
-            })
+            await stripe.paymentIntents.update(
+                orderToUpdate.orderId,
+                paymentDetails
+            )
             return res.send({ clientSecret, total: orderDetails.total })
         } catch (e) {
             return res.status(400).json({ error: e.message })
@@ -212,13 +229,7 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
     }
 
     // Else create a new paymentIntent
-    const paymentIntent = await stripe.paymentIntents.create({
-        ...paymentDetails,
-        metadata: {
-            name: orderDetails.name,
-            email: orderDetails.email,
-        },
-    })
+    const paymentIntent = await stripe.paymentIntents.create(paymentDetails)
 
     // Create a new pending order
     const newOrder = new Order({
