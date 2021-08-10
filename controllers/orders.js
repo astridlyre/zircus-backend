@@ -47,7 +47,6 @@ const updateInventoryItems = async items => {
 const calculateOrderAmount = async (items, country, state, shippingMethod) => {
     // Update new inventory items and tally up price
     let total = 0
-
     for await (const item of items) {
         const itemToUpdate = await Underwear.findOne({ type: item.type })
         if (!itemToUpdate) return { error: `Invalid type ${item.type}` }
@@ -93,7 +92,7 @@ const calculateOrderAmount = async (items, country, state, shippingMethod) => {
 
     return {
         total: Math.round(
-            total + (total + shipping) * taxRate + shipping * 100
+            (total + shipping + (total + shipping) * taxRate) * 100
         ),
         shipping: {
             method: shippingMethod,
