@@ -222,7 +222,7 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
                 orderToUpdate.orderId,
                 paymentDetails
             )
-            return res.send({ clientSecret, total: orderDetails.total })
+            return res.json({ clientSecret, total: orderDetails.total })
         } catch (e) {
             return res.status(400).json({ error: e.message })
         }
