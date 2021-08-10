@@ -44,7 +44,7 @@ const updateInventoryItems = async items => {
     }
 }
 
-const calculateOrderAmount = async (items, country, state, shippingMethod) => {
+const calculateOrderAmount = async ({ items, address, shippingMethod }) => {
     // Update new inventory items and tally up price
     let total = 0
     for await (const item of items) {
@@ -72,8 +72,8 @@ const calculateOrderAmount = async (items, country, state, shippingMethod) => {
     }
 
     let taxRate = 0
-    if (country === 'Canada') {
-        switch (state) {
+    if (address.country === 'Canada') {
+        switch (address.state) {
             case 'New Brunswick':
             case 'Newfoundland and Labrador':
             case 'Nova Scotia':
@@ -170,8 +170,7 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
 
     // Calculate the total for the order
     const { calculateTotalError, shipping, total } = await calculateOrderAmount(
-        items,
-        shippingMethod
+        { items, address, shippingMethod }
     )
     if (calculateTotalError)
         return res.status(400).json({ error: calculateTotalError })
