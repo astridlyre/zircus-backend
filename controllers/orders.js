@@ -92,7 +92,9 @@ const calculateOrderAmount = async (items, country, state, shippingMethod) => {
     }
 
     return {
-        total: Math.round((total + (total + shipping) * taxRate) * 100),
+        total: Math.round(
+            total + (total + shipping) * taxRate + shipping * 100
+        ),
         shipping: {
             method: shippingMethod,
             total: shipping,
