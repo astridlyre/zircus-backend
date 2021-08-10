@@ -143,7 +143,7 @@ ordersRouter.post('/', async (req, res) => {
         }) */
         if (inventoryUpdateError)
             return res.status(400).json({ error: inventoryUpdateError })
-        return res.json({ order: orderToUpdate, info })
+        return res.json({ order: orderToUpdate })
     } catch (e) {
         return res.status(400).json({ error: e.message })
     }
