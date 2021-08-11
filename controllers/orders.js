@@ -1,5 +1,5 @@
 const ordersRouter = require('express').Router()
-const { hasValidToken, isValidType } = require('../utils/middleware')
+const { hasValidToken } = require('../utils/middleware')
 const {
     STRIPE_SECRET,
     MAIL_USERNAME,
@@ -102,6 +102,126 @@ const calculateOrderAmount = async ({ items, address, shippingMethod }) => {
     }
 }
 
+async function handlePaypalPayment({ clientSecret, orderDetails, res }) {
+    // paymentDetails for creating a paymentIntent
+    const paymentDetails = {
+        amount: orderDetails.total, // stripe expects a total they can divide by 100
+        currency: orderDetails.address.country === 'Canada' ? 'cad' : 'usd',
+        receipt_email: orderDetails.email,
+        shipping: {
+            name: orderDetails.name,
+            address: orderDetails.address,
+            carrier: orderDetails.shipping.method,
+        },
+    }
+
+    // If updating a paymentIntent
+    if (clientSecret) {
+        const orderToUpdate = await Order.findOneAndUpdate(
+            { clientSecret },
+            orderDetails,
+            e => e && res.status(400).json({ error: e.message })
+        )
+        if (!orderToUpdate)
+            return res.status(400).json({ error: 'Payment intent not found' })
+
+        try {
+            await stripe.paymentIntents.update(
+                orderToUpdate.orderId,
+                paymentDetails
+            )
+            return res.json({ clientSecret, total: total / 100 })
+        } catch (e) {
+            return res.status(400).json({ error: e.message })
+        }
+    }
+
+    // Else create a new paymentIntent
+    const paymentIntent = await stripe.paymentIntents.create(paymentDetails)
+
+    // Create a new pending order
+    const newOrder = new Order({
+        ...orderDetails,
+        clientSecret: paymentIntent.client_secret,
+        orderId: paymentIntent.id,
+    })
+
+    try {
+        // Save new order
+        await newOrder.save()
+        // Notify dashboard of pending order
+        broadcast(
+            JSON.stringify({
+                type: 'pending order',
+                data: { name: orderDetails.name },
+            })
+        )
+        return res.json(newOrder)
+    } catch (e) {
+        return res.status(400).json({ error: e.message })
+    }
+}
+
+async function handleStripePayment({ clientSecret, orderDetails, res }) {
+    // paymentDetails for creating a paymentIntent
+    const paymentDetails = {
+        amount: orderDetails.total, // stripe expects a total they can divide by 100
+        currency: orderDetails.address.country === 'Canada' ? 'cad' : 'usd',
+        receipt_email: orderDetails.email,
+        shipping: {
+            name: orderDetails.name,
+            address: orderDetails.address,
+            carrier: orderDetails.shipping.method,
+        },
+    }
+
+    // If updating a paymentIntent
+    if (clientSecret) {
+        const orderToUpdate = await Order.findOneAndUpdate(
+            { clientSecret },
+            orderDetails,
+            e => e && res.status(400).json({ error: e.message })
+        )
+        if (!orderToUpdate)
+            return res.status(400).json({ error: 'Payment intent not found' })
+
+        try {
+            await stripe.paymentIntents.update(
+                orderToUpdate.orderId,
+                paymentDetails
+            )
+            return res.json(orderToUpdate)
+        } catch (e) {
+            return res.status(400).json({ error: e.message })
+        }
+    }
+
+    // Else create a new paymentIntent
+    const paymentIntent = await stripe.paymentIntents.create(paymentDetails)
+
+    // Create a new pending order
+    const newOrder = new Order({
+        ...orderDetails,
+        clientSecret: paymentIntent.client_secret,
+        orderId: paymentIntent.id,
+    })
+
+    try {
+        // Save new order
+        await newOrder.save()
+        // Notify dashboard of pending order
+        broadcast(
+            JSON.stringify({
+                type: 'pending order',
+                data: { name: orderDetails.name },
+            })
+        )
+        return res.json(newOrder)
+    } catch (e) {
+        return res.status(400).json({ error: e.message })
+    }
+}
+
 ordersRouter.get('/', async (req, res) => {
     if (!hasValidToken(req.token))
         return res.status(401).json({ error: 'Token missing or invalid' })
@@ -145,7 +265,7 @@ ordersRouter.post('/', async (req, res) => {
         }) */
         if (inventoryUpdateError)
             return res.status(400).json({ error: inventoryUpdateError })
-        return res.json({ order: orderToUpdate })
+        return res.json({ order: orderToUpdate, status: 'COMPLETED' })
     } catch (e) {
         return res.status(400).json({ error: e.message })
     }
@@ -158,8 +278,17 @@ ordersRouter.post('/', async (req, res) => {
 }) */
 
 ordersRouter.post('/create-payment-intent', async (req, res) => {
-    const { address, items, shippingMethod, name, email, update, lang } =
-        req.body
+    const {
+        address,
+        items,
+        shippingMethod,
+        name,
+        email,
+        orderId,
+        lang,
+        paymentMethod,
+    } = req.body
+
     // Make sure have country and state
     if (!address.country || !address.state)
         return res.status(400).json({ error: 'Missing country or state' })
@@ -175,18 +304,6 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
     if (calculateTotalError)
         return res.status(400).json({ error: calculateTotalError })
 
-    // paymentDetails for creating a paymentIntent
-    const paymentDetails = {
-        amount: total, // stripe expects a total they can divide by 100
-        currency: address.country === 'Canada' ? 'cad' : 'usd',
-        receipt_email: email,
-        shipping: {
-            name,
-            address,
-            carrier: shipping.method,
-        },
-    }
-
     // orderDetails for creating a pending order
     const orderDetails = {
         preferredLanguage: lang,
@@ -198,51 +315,15 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
         shipping,
     }
 
-    // If updating a paymentIntent
-    if (update) {
-        const clientSecret = update
-        const orderToUpdate = await Order.findOneAndUpdate(
-            { clientSecret },
-            orderDetails,
-            e => e && res.status(400).json({ error: e.message })
-        )
-        if (!orderToUpdate)
-            return res.status(400).json({ error: 'Payment intent not found' })
-
-        try {
-            await stripe.paymentIntents.update(
-                orderToUpdate.orderId,
-                paymentDetails
-            )
-            return res.json({ clientSecret, total: total / 100 })
-        } catch (e) {
-            return res.status(400).json({ error: e.message })
-        }
-    }
-
-    // Else create a new paymentIntent
-    const paymentIntent = await stripe.paymentIntents.create(paymentDetails)
-
-    // Create a new pending order
-    const newOrder = new Order({
-        ...orderDetails,
-        clientSecret: paymentIntent.client_secret,
-        orderId: paymentIntent.id,
-    })
-
-    try {
-        // Save new order
-        await newOrder.save()
-        // Notify dashboard of pending order
-        broadcast(
-            JSON.stringify({
-                type: 'pending order',
-                data: { name },
-            })
-        )
-        return res.json(newOrder)
-    } catch (e) {
-        return res.status(400).json({ error: e.message })
+    switch (paymentMethod) {
+        case 'stripe':
+            return handleStripePayment({ orderId, orderDetails, res })
+        case 'paypal':
+            return handlePaypalPayment({ orderId, orderDetails, res })
+        default:
+            return res
+                .status(400)
+                .json({ error: `Invalid payment method ${paymentMethod}` })
     }
 })
 
