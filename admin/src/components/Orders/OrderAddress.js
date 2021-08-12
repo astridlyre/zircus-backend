@@ -11,11 +11,13 @@ export default function OrderAddress({ order }) {
             <MediumHeader>{order.name}</MediumHeader>
             <a href={`mailto:${order.email}`}>{order.email}</a>
             <br />
-            {order.streetAddress}
+            {order.address.line1}
             <br />
-            {order.city} {order.state}
+            {order.address.line2}
             <br />
-            {order.zip.toUpperCase()} {order.country}
+            {order.address.city} {order.address.state}
+            <br />
+            {order.address.postal_code.toUpperCase()} {order.address.country}
             <br />
         </StyledAddress>
     )
