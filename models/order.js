@@ -82,11 +82,6 @@ const orderSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    clientSecret: {
-        type: String,
-        unique: true,
-        required: true,
-    },
 })
 
 orderSchema.plugin(uniqueValidator)
