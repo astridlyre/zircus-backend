@@ -40,6 +40,10 @@ const orderSchema = new mongoose.Schema({
             required: true,
         },
     },
+    paymentMethod: {
+        type: String,
+        required: true,
+    },
     hasPaid: {
         type: Boolean,
         required: true,
@@ -80,8 +84,8 @@ const orderSchema = new mongoose.Schema({
     },
     clientSecret: {
         type: String,
-        required: true,
         unique: true,
+        required: true,
     },
 })
 

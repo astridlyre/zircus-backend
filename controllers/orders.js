@@ -91,9 +91,10 @@ const calculateOrderAmount = async ({ items, address, shippingMethod }) => {
     }
 
     return {
-        total: Math.round(
-            (total + shipping + (total + shipping) * taxRate) * 100
-        ),
+        total:
+            Math.round(
+                (total + shipping + (total + shipping) * taxRate) * 100
+            ) / 100,
         shipping: {
             method: shippingMethod,
             total: shipping,
@@ -102,50 +103,18 @@ const calculateOrderAmount = async ({ items, address, shippingMethod }) => {
     }
 }
 
-async function handlePaypalPayment({ clientSecret, orderDetails, res }) {
-    // paymentDetails for creating a paymentIntent
-    const paymentDetails = {
-        amount: orderDetails.total, // stripe expects a total they can divide by 100
-        currency: orderDetails.address.country === 'Canada' ? 'cad' : 'usd',
-        receipt_email: orderDetails.email,
-        shipping: {
-            name: orderDetails.name,
-            address: orderDetails.address,
-            carrier: orderDetails.shipping.method,
-        },
-    }
-
-    // If updating a paymentIntent
-    if (clientSecret) {
-        const orderToUpdate = await Order.findOneAndUpdate(
-            { clientSecret },
-            orderDetails,
-            e => e && res.status(400).json({ error: e.message })
-        )
-        if (!orderToUpdate)
-            return res.status(400).json({ error: 'Payment intent not found' })
-
-        try {
-            await stripe.paymentIntents.update(
-                orderToUpdate.orderId,
-                paymentDetails
-            )
-            return res.json({ clientSecret, total: total / 100 })
-        } catch (e) {
-            return res.status(400).json({ error: e.message })
-        }
-    }
-
-    // Else create a new paymentIntent
-    const paymentIntent = await stripe.paymentIntents.create(paymentDetails)
+async function handlePaypalPayment({ orderId, orderDetails, amount, res }) {
+    if (orderDetails.total !== Number(amount.value))
+        return res.status(400).json({
+            error: `Totals do not match: ${orderDetails.total} vs ${amount.value}`,
+        })
 
     // Create a new pending order
     const newOrder = new Order({
         ...orderDetails,
-        clientSecret: paymentIntent.client_secret,
-        orderId: paymentIntent.id,
+        orderId,
+        clientSecret: orderId,
     })
-
     try {
         // Save new order
         await newOrder.save()
@@ -165,7 +134,7 @@ async function handlePaypalPayment({ clientSecret, orderDetails, res }) {
 async function handleStripePayment({ clientSecret, orderDetails, res }) {
     // paymentDetails for creating a paymentIntent
     const paymentDetails = {
-        amount: orderDetails.total, // stripe expects a total they can divide by 100
+        amount: orderDetails.total * 100, // stripe expects a total they can divide by 100
         currency: orderDetails.address.country === 'Canada' ? 'cad' : 'usd',
         receipt_email: orderDetails.email,
         shipping: {
@@ -177,7 +146,7 @@ async function handleStripePayment({ clientSecret, orderDetails, res }) {
 
     // If updating a paymentIntent
     if (clientSecret) {
-        const orderToUpdate = await Order.findOneAndUpdate(
+        const orderToUpdate = await Order.findOne(
             { clientSecret },
             orderDetails,
             e => e && res.status(400).json({ error: e.message })
@@ -230,6 +199,28 @@ ordersRouter.get('/', async (req, res) => {
     return orders.length > 0
         ? res.json(orders)
         : res.status(404).json({ error: 'No orders found' })
+})
+
+ordersRouter.post('/price', async (req, res) => {
+    const { items, address, shippingMethod } = req.body
+    console.log(items, address, shippingMethod)
+
+    if (!Array.isArray(items))
+        return res.status(400).json({ error: `Items are malformed` })
+
+    // Make sure have country and state
+    if (!address.country || !address.state)
+        return res.status(400).json({ error: 'Missing country or state' })
+
+    const { total, calculateTotalError } = await calculateOrderAmount({
+        items,
+        address,
+        shippingMethod,
+    })
+
+    if (calculateTotalError)
+        return res.status(400).json({ error: calculateTotalError })
+    return res.json({ amount: { value: total.toFixed(2) } })
 })
 
 // Update order post-payment
@@ -287,6 +278,8 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
         orderId,
         lang,
         paymentMethod,
+        amount,
+        clientSecret,
     } = req.body
 
     // Make sure have country and state
@@ -307,23 +300,24 @@ ordersRouter.post('/create-payment-intent', async (req, res) => {
     // orderDetails for creating a pending order
     const orderDetails = {
         preferredLanguage: lang,
+        paymentMethod,
         address,
         name,
         email,
         items,
-        total: total / 100,
+        total,
         shipping,
     }
 
     switch (paymentMethod) {
         case 'stripe':
-            return handleStripePayment({ orderId, orderDetails, res })
+            return handleStripePayment({ clientSecret, orderDetails, res })
         case 'paypal':
-            return handlePaypalPayment({ orderId, orderDetails, res })
+            return handlePaypalPayment({ orderId, orderDetails, res, amount })
         default:
             return res
                 .status(400)
-                .json({ error: `Invalid payment method ${paymentMethod}` })
+                .json({ error: `Invalid paymentMethod: ${paymentMethod}` })
     }
 })
 
