@@ -135,7 +135,7 @@ paypalRouter.post("/post-payment-webhook", async (req, res) => {
 
   console.log({
     id,
-    stats,
+    status,
     purchase_units,
     supplementary_data,
   });
