@@ -78,6 +78,10 @@ const orderSchema = new mongoose.Schema({
       required: true,
     },
   },
+  capture: {
+    status: String,
+    id: String,
+  },
   createdOn: {
     type: Date,
     required: true,

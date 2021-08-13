@@ -130,19 +130,38 @@ paypalRouter.post("/post-payment-wehook", async (req, res) => {
     return res.status(400).json({ error: "Expected completed payment" });
   }
 
-  const id = event.resource.supplementary_data.related_ids.order_id;
-  const orderToUpdate = await Order.findOne({ orderId: id });
+  const { id, status, purchase_units, supplementary_data } = event.resource;
+  const orderId = supplementary_data.related_ids.order_id;
+
+  console.log({
+    id,
+    stats,
+    purchase_units,
+    supplementary_data,
+  });
+
+  if (status !== "COMPLETED") {
+    return res.json({ error: "Expected completed payment" });
+  }
+
+  const orderToUpdate = await Order.findOne({ orderId });
   if (!orderToUpdate) {
     return res.status(400).json({ error: "Invalid order id" });
   }
 
   // Set paid to true
   orderToUpdate.hasPaid = true;
+  orderToUpdate.capture = {
+    status,
+    id,
+  };
 
   // Update inventory
   const { inventoryUpdateError } = await updateInventoryItems(
     orderToUpdate.items,
   );
+
+  console.log(orderToUpdate);
 
   try {
     await orderToUpdate.save();
