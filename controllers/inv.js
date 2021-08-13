@@ -18,10 +18,10 @@ async function initDB(inv) {
     await item.delete();
   }
   const validTypes = [];
-  for (let type of ["ff", "pf", "cf"]) {
-    for (let color of ["yellow", "purple", "teal", "black", "stripe"]) {
+  for (const type of ["ff", "pf", "cf"]) {
+    for (const color of ["yellow", "purple", "teal", "black", "stripe"]) {
       for (
-        let size of [
+        const size of [
           "xs",
           "sm",
           "md",
@@ -72,11 +72,10 @@ async function initDB(inv) {
       },
       description: getDesc(prefix),
     });
-    console.log(newItem);
     try {
       await newItem.save();
     } catch (e) {
-      console.log(e.message);
+      console.error(e.message);
     }
   }
 }
@@ -150,7 +149,6 @@ invRouter.post("/", async (req, res) => {
 });
 
 invRouter.put("/", async (req, res) => {
-  console.log(req.token);
   if (!hasValidToken(req.token)) {
     return res.status(401).json({ error: "Token missing or invalid" });
   }
@@ -160,7 +158,7 @@ invRouter.put("/", async (req, res) => {
   }
 
   // Requires a json object { type: req.body.type, updatedAttributes: { ... } }
-  Underwear.findOneAndUpdate(
+  await Underwear.findOneAndUpdate(
     { type: req.body.type },
     {
       quantity: req.body.quantity,
@@ -186,7 +184,7 @@ invRouter.delete("/:type", async (req, res) => {
       .json({ error: `Invalid type ${req.params.type}` });
   }
 
-  Underwear.findOneAndDelete({ type: req.params.type }, (err) => {
+  await Underwear.findOneAndDelete({ type: req.params.type }, (err) => {
     if (err) res.status(500).json({ error: e.message });
     res.json({ response: "Item deleted" });
   });

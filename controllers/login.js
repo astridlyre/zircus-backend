@@ -19,7 +19,6 @@ loginRouter.all("/", (req, res, next) => {
 });
 
 loginRouter.post("/", async (req, res) => {
-  console.log(req);
   const user = await User.findOne({ username: req.body.username });
   const passwordCorrect = user === null
     ? false

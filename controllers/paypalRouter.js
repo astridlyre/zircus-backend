@@ -130,15 +130,8 @@ paypalRouter.post("/post-payment-webhook", async (req, res) => {
     return res.status(400).json({ error: "Expected completed payment" });
   }
 
-  const { id, status, purchase_units, supplementary_data } = event.resource;
+  const { id, status, supplementary_data } = event.resource;
   const orderId = supplementary_data.related_ids.order_id;
-
-  console.log({
-    id,
-    status,
-    purchase_units,
-    supplementary_data,
-  });
 
   if (status !== "COMPLETED") {
     return res.json({ error: "Expected completed payment" });
@@ -160,8 +153,6 @@ paypalRouter.post("/post-payment-webhook", async (req, res) => {
   const { inventoryUpdateError } = await updateInventoryItems(
     orderToUpdate.items,
   );
-
-  console.log(orderToUpdate);
 
   try {
     await orderToUpdate.save();

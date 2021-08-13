@@ -18,7 +18,7 @@ jsonStream.on("end", () => {
   console.log("All done");
 });
 
-countriesRouter.get("/", async (_, res) => {
+countriesRouter.get("/", (_, res) => {
   const reply = {
     ["Canada"]: countriesDB.get("Canada"),
     ["United States"]: countriesDB.get("United States"),
@@ -32,7 +32,7 @@ countriesRouter.get("/", async (_, res) => {
   return res.json(reply);
 });
 
-countriesRouter.get("/:country", async (req, res) => {
+countriesRouter.get("/:country", (req, res) => {
   const country = countriesDB.get(req.params.country);
   if (!country) {
     return res.status(400).json({
