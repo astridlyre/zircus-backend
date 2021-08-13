@@ -149,16 +149,19 @@ stripeRouter.post("/create-payment-intent", async (req, res) => {
   });
 });
 
-stripeRouter.post("/cancel-payment-intent", async (req, res) => {
+stripeRouter.post("/cancel-payment-intent/:id", async (req, res) => {
   const { orderId } = req.body;
 
   try {
-    const orderToDelete = await Order.findOne({ orderId });
-    if (!orderToDelete) {
-      return res
-        .status(400)
-        .json({ error: `Unable to find order for id: ${orderId}` });
-    }
+    await Order.findOneAndDelete(
+      { orderId, id: req.params.id, hasPaid: false },
+      null,
+      (error, _) => {
+        if (error) {
+          return res.status(400).json({ error: error.message });
+        }
+      },
+    );
     const result = await stripe.paymentIntents.cancel(orderId);
     return res.json(result);
   } catch (error) {

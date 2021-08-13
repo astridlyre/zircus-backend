@@ -13,7 +13,7 @@ const { PAYPAL_SECRET, PAYPAL_CLIENTID } = require("../utils/config.js");
 const PAYPAL_TOKEN_URL = "https://api-m.sandbox.paypal.com/v1/oauth2/token";
 const PAYPAL_ORDER_URL = "https://api-m.sandbox.paypal.com/v2/checkout/orders";
 
-let creds = null;
+let creds = {};
 
 async function updateToken() {
   const params = new url.URLSearchParams({ grant_type: "client_credentials" });
@@ -68,7 +68,7 @@ function createPayPalRequest({ address, total }) {
 }
 
 async function handlePaypalPayment({ order, res }) {
-  if (!creds || !creds.token || creds.expires < Date.now()) {
+  if (!creds.token || creds.expires && creds.expires < Date.now()) {
     creds = await updateToken();
   }
 
@@ -172,6 +172,35 @@ paypalRouter.post("/create-payment-intent", async (req, res) => {
 
   // orderDetails for creating a pending order
   return handlePaypalPayment({ order, res });
+});
+
+paypalRouter.post("/cancel-payment-intent/:id", async (req, res) => {
+  const { orderId } = req.body;
+
+  try {
+    await Order.findOneAndDelete(
+      {
+        id: req.params.id,
+        orderId,
+        hasPaid: false,
+      },
+      null,
+      (error, _) => {
+        if (error) {
+          return res.status(400).json({ error });
+        }
+        broadcast(
+          JSON.stringify({
+            type: "deleted order",
+            data: { response: "Canceled pending order" },
+          }),
+        );
+        return res.json({ response: "canceled" });
+      },
+    );
+  } catch (e) {
+    return res.json({ error: e.message });
+  }
 });
 
 module.exports = paypalRouter;
