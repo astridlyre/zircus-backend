@@ -1,8 +1,8 @@
-import styled from 'styled-components'
-import MediumHeader from '../Text/MediumHeader.js'
-import DeleteButton from '../Buttons/DeleteButton.js'
-import { useState } from 'react'
-import { deleteMessage } from '../../services/services.js'
+import styled from "styled-components";
+import MediumHeader from "../Text/MediumHeader.js";
+import DeleteButton from "../Buttons/DeleteButton.js";
+import { useState } from "react";
+import { deleteMessage } from "../../services/services.js";
 
 const StyledLi = styled.li`
     margin: 0 auto;
@@ -21,25 +21,25 @@ const StyledLi = styled.li`
     &:hover {
         background-color: var(--gray-20);
     }
-`
+`;
 
 const StyledDiv = styled.div`
     display: flex;
     max-width: 22vw;
     width: 100%;
     flex-flow: column nowrap;
-`
+`;
 
 const StyledActions = styled.div`
     display: flex;
     justify-content: flex-end;
     flex-grow: 1;
-`
+`;
 
 const StyledText = styled.p`
     max-width: 75ch;
     width: 100%;
-`
+`;
 
 const StyledA = styled.a`
     text-decoration: none;
@@ -51,56 +51,57 @@ const StyledA = styled.a`
         text-decoration: none !important;
         color: var(--link-hover);
     }
-`
+`;
 
 export default function Message({
-    message,
-    setShowModal,
-    setMessages,
-    token,
-    notify,
+  message,
+  setShowModal,
+  setMessages,
+  token,
+  notify,
 }) {
-    const [showFull, setShowFull] = useState(false)
-    const handleDeleteSuccess = ({ data }) => {
-        setMessages(messages => messages.filter(m => m.id !== message.id))
-        notify(`${data.response}: Deleted ${message.name}'s message`, 'red')
-    }
-    const handleDeleteFailure = ({ data }) => notify(`${data.error}`, 'red')
-    const handleDelete = () => {
-        setShowModal({
-            heading: 'Confirm deletion',
-            text: `Delete ${message.name}'s message?'`,
-            color: 'danger',
-            btnText: 'Delete',
-            ok: choice => {
-                if (choice)
-                    deleteMessage(message.id, token)
-                        .then(handleDeleteSuccess)
-                        .catch(handleDeleteFailure)
-            },
-        })
-    }
+  const [showFull, setShowFull] = useState(false);
+  const handleDeleteSuccess = ({ data }) => {
+    setMessages((messages) => messages.filter((m) => m.id !== message.id));
+    notify(`${data.response}: Deleted ${message.name}'s message`, "red");
+  };
+  const handleDeleteFailure = ({ data }) => notify(`${data.error}`, "red");
+  const handleDelete = () => {
+    setShowModal({
+      heading: "Confirm deletion",
+      text: `Delete ${message.name}'s message?'`,
+      color: "danger",
+      btnText: "Delete",
+      ok: (choice) => {
+        if (choice) {
+          deleteMessage(message.id, token)
+            .then(handleDeleteSuccess)
+            .catch(handleDeleteFailure);
+        }
+      },
+    });
+  };
 
-    return (
-        <StyledLi>
-            <StyledDiv>
-                <MediumHeader>{message.name}</MediumHeader>
-                <a href={`mailto:${message.email}`}>{message.email}</a>
-            </StyledDiv>
-            <StyledText>
-                {showFull ? message.message : message.message.substring(0, 140)}
-                {message.message.length > 140 && (
-                    <StyledA
-                        href="#"
-                        onClick={() => setShowFull(state => !state)}
-                    >
-                        {showFull ? '(less)' : '... (more)'}
-                    </StyledA>
-                )}
-            </StyledText>
-            <StyledActions>
-                <DeleteButton onClick={() => handleDelete()} />
-            </StyledActions>
-        </StyledLi>
-    )
+  return (
+    <StyledLi>
+      <StyledDiv>
+        <MediumHeader>{message.name}</MediumHeader>
+        <a href={`mailto:${message.email}`}>{message.email}</a>
+      </StyledDiv>
+      <StyledText>
+        {showFull ? message.message : message.message.substring(0, 140)}
+        {message.message.length > 140 && (
+          <StyledA
+            href="#"
+            onClick={() => setShowFull((state) => !state)}
+          >
+            {showFull ? "(less)" : "... (more)"}
+          </StyledA>
+        )}
+      </StyledText>
+      <StyledActions>
+        <DeleteButton onClick={() => handleDelete()} />
+      </StyledActions>
+    </StyledLi>
+  );
 }

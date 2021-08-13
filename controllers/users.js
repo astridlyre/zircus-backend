@@ -1,11 +1,11 @@
-const bcrypt = require('bcrypt')
-const usersRouter = require('express').Router()
-const User = require('../models/user')
+const bcrypt = require("bcrypt");
+const usersRouter = require("express").Router();
+const User = require("../models/user");
 
-usersRouter.get('/', async (req, res) => {
-    const users = await User.find({})
-    res.json(users)
-})
+usersRouter.get("/", async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
 
 /* usersRouter.post('/', async (req, res) => {
     if (req.body.password.length < 5)
@@ -25,4 +25,4 @@ usersRouter.get('/', async (req, res) => {
     res.json(savedUser)
 }) */
 
-module.exports = usersRouter
+module.exports = usersRouter;

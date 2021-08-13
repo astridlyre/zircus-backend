@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const StyledLabel = styled.label`
     display: flex;
@@ -6,8 +6,8 @@ const StyledLabel = styled.label`
     gap: var(--base-unit);
     user-select: none;
     margin: 0;
-`
+`;
 
 export default function Label({ props, children }) {
-    return <StyledLabel {...props}>{children}</StyledLabel>
+  return <StyledLabel {...props}>{children}</StyledLabel>;
 }

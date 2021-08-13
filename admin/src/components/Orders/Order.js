@@ -1,10 +1,10 @@
-import styled from 'styled-components'
-import { updateOrder, deleteOrder } from '../../services/services.js'
-import OrderAddress from './OrderAddress.js'
-import MediumHeader from '../Text/MediumHeader.js'
-import OrderItems from './OrderItems.js'
-import Label from '../Text/Label.js'
-import DeleteButton from '../Buttons/DeleteButton.js'
+import styled from "styled-components";
+import { deleteOrder, updateOrder } from "../../services/services.js";
+import OrderAddress from "./OrderAddress.js";
+import MediumHeader from "../Text/MediumHeader.js";
+import OrderItems from "./OrderItems.js";
+import Label from "../Text/Label.js";
+import DeleteButton from "../Buttons/DeleteButton.js";
 
 const StyledLi = styled.li`
     margin: 0 auto;
@@ -16,22 +16,22 @@ const StyledLi = styled.li`
     border-right: 0.5rem solid;
     border-bottom: 1px solid;
     border-top: 1px solid;
-    border-color: ${props =>
-        props.hasPaid && props.hasShipped
-            ? 'var(--green)'
-            : props.hasPaid
-            ? 'var(--yellow)'
-            : 'var(--gray-30)'};
+    border-color: ${(props) =>
+  props.hasPaid && props.hasShipped
+    ? "var(--green)"
+    : props.hasPaid
+    ? "var(--yellow)"
+    : "var(--gray-30)"};
 
     &:hover {
         background-color: var(--gray-20);
     }
-`
+`;
 
 const StyledActions = styled.div`
     display: flex;
     flex-flow: column nowrap;
-`
+`;
 
 const StyledBtnContainer = styled.div`
     width: 100%;
@@ -39,92 +39,91 @@ const StyledBtnContainer = styled.div`
     justify-content: flex-end;
     align-items: flex-end;
     flex-grow: 1;
-`
+`;
 
 export default function Order({
-    order,
-    token,
-    setShowModal,
-    setOrders,
-    notify,
+  order,
+  token,
+  setShowModal,
+  setOrders,
+  notify,
 }) {
-    const handleDeleteFailure = ({ data }) =>
-        notify(`Error: ${data?.error}`, 'red') && console.log(data)
-    const handleDelete = () => {
-        setShowModal({
-            heading: 'Confirm deletion',
-            text: `Delete ${order.name}'s order?'`,
-            color: 'danger',
-            btnText: 'Delete',
-            ok: choice => {
-                if (choice)
-                    deleteOrder(order.id, token).catch(handleDeleteFailure)
-            },
-        })
-    }
+  const handleDeleteFailure = ({ data }) =>
+    notify(`Error: ${data?.error}`, "red") && console.log(data);
+  const handleDelete = () => {
+    setShowModal({
+      heading: "Confirm deletion",
+      text: `Delete ${order.name}'s order?'`,
+      color: "danger",
+      btnText: "Delete",
+      ok: (choice) => {
+        if (choice) {
+          deleteOrder(order.id, token).catch(handleDeleteFailure);
+        }
+      },
+    });
+  };
 
-    const updatePaid = () => {
-        setOrders(orders =>
-            orders.map(o =>
-                o.id === order.id ? { ...o, hasPaid: !o.hasPaid } : o
-            )
-        )
-        updateOrder(
-            {
-                id: order.id,
-                updatedAttributes: {
-                    hasPaid: !order.hasPaid,
-                },
-            },
-            token
-        ).catch(e => console.log(e))
-    }
+  const updatePaid = () => {
+    setOrders((orders) =>
+      orders.map((o) => o.id === order.id ? { ...o, hasPaid: !o.hasPaid } : o)
+    );
+    updateOrder(
+      {
+        id: order.id,
+        updatedAttributes: {
+          hasPaid: !order.hasPaid,
+        },
+      },
+      token,
+    ).catch((e) => console.log(e));
+  };
 
-    const updateShipped = () => {
-        setOrders(orders =>
-            orders.map(o =>
-                o.id === order.id ? { ...o, hasShipped: !o.hasShipped } : o
-            )
-        )
-        updateOrder(
-            {
-                id: order.id,
-                updatedAttributes: {
-                    hasShipped: !order.hasShipped,
-                },
-            },
-            token
-        ).catch(e => console.log(e))
-    }
+  const updateShipped = () => {
+    setOrders((orders) =>
+      orders.map((o) =>
+        o.id === order.id ? { ...o, hasShipped: !o.hasShipped } : o
+      )
+    );
+    updateOrder(
+      {
+        id: order.id,
+        updatedAttributes: {
+          hasShipped: !order.hasShipped,
+        },
+      },
+      token,
+    ).catch((e) => console.log(e));
+  };
 
-    return (
-        <StyledLi hasPaid={order.hasPaid} hasShipped={order.hasShipped}>
-            <OrderItems order={order} />
-            <OrderAddress order={order} />
-            <StyledActions>
-                <MediumHeader>
-                    {new Date(order.createdOn).toLocaleString('en-US')}
-                </MediumHeader>
-                <Label>
-                    paid:
-                    <input
-                        type="checkbox"
-                        checked={order.hasPaid}
-                        onChange={updatePaid}
-                    />
-                </Label>
-                <Label>
-                    shipped:
-                    <input
-                        type="checkbox"
-                        checked={order.hasShipped}
-                        onChange={updateShipped}
-                    />
-                </Label>
-                <StyledBtnContainer>
-                    <DeleteButton onClick={handleDelete} />
-                </StyledBtnContainer>
-            </StyledActions>
-        </StyledLi>
-    )
+  return (
+    <StyledLi hasPaid={order.hasPaid} hasShipped={order.hasShipped}>
+      <OrderItems order={order} />
+      <OrderAddress order={order} />
+      <StyledActions>
+        <MediumHeader>
+          {new Date(order.createdOn).toLocaleString("en-US")}
+        </MediumHeader>
+        <Label>
+          paid:
+          <input
+            type="checkbox"
+            checked={order.hasPaid}
+            onChange={updatePaid}
+          />
+        </Label>
+        <Label>
+          shipped:
+          <input
+            type="checkbox"
+            checked={order.hasShipped}
+            onChange={updateShipped}
+          />
+        </Label>
+        <StyledBtnContainer>
+          <DeleteButton onClick={handleDelete} />
+        </StyledBtnContainer>
+      </StyledActions>
+    </StyledLi>
+  );
 }

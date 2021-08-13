@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const StyledPage = styled.main`
     overflow-y: scroll;
@@ -6,16 +6,16 @@ const StyledPage = styled.main`
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
-    ${props => props.padTop && 'padding-top: var(--base-spacing);'}
-    ${props => props.pad && `padding-left: var(--base-spacing);`}
-    ${props => props.pad && `padding-right: var(--base-spacing);`}
+    ${(props) => props.padTop && "padding-top: var(--base-spacing);"}
+    ${(props) => props.pad && `padding-left: var(--base-spacing);`}
+    ${(props) => props.pad && `padding-right: var(--base-spacing);`}
     padding-bottom: var(--lg-spacing);
-`
+`;
 
 export default function Page({ children, padTop, pad }) {
-    return (
-        <StyledPage padTop={padTop} pad={pad}>
-            {children}
-        </StyledPage>
-    )
+  return (
+    <StyledPage padTop={padTop} pad={pad}>
+      {children}
+    </StyledPage>
+  );
 }

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const StyledText = styled.h3`
     font-size: 1.125rem;
@@ -6,8 +6,8 @@ const StyledText = styled.h3`
     display: block;
     margin-bottom: var(--base-unit);
     font-style: normal;
-`
+`;
 
 export default function OrderHeader({ children }) {
-    return <StyledText>{children}</StyledText>
+  return <StyledText>{children}</StyledText>;
 }
