@@ -17,8 +17,7 @@ let creds = {};
 
 async function updateToken() {
   const params = new url.URLSearchParams({ grant_type: "client_credentials" });
-  console.log(PAYPAL_CLIENTID, PAYPAL_SECRET);
-  return await axios.post(PAYPAL_TOKEN_URL, params.toString(), {
+  creds = await axios.post(PAYPAL_TOKEN_URL, params.toString(), {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       "Accept": "application/json",
@@ -40,7 +39,11 @@ async function updateToken() {
         expires: -1,
       };
     });
+  console.log(creds);
+  return creds;
 }
+
+updateToken();
 
 const opts = {
   points: 6,
