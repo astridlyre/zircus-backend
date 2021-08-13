@@ -68,7 +68,7 @@ function createPayPalRequest({ address, total }) {
 }
 
 async function handlePaypalPayment({ order, res }) {
-  if (!creds || creds.expires < Date.now()) {
+  if (!creds || !creds.token || creds.expires < Date.now()) {
     creds = await updateToken();
   }
 
