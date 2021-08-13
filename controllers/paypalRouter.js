@@ -124,7 +124,7 @@ async function handlePaypalPayment({ order, res }) {
 }
 
 // Update order post-payment
-paypalRouter.post("/post-payment-wehook", async (req, res) => {
+paypalRouter.post("/post-payment-webhook", async (req, res) => {
   const event = req.body;
   if (event.event_type !== "PAYMENT.CAPTURE.COMPLETED") {
     return res.status(400).json({ error: "Expected completed payment" });
