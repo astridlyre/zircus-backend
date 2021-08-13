@@ -14,10 +14,6 @@ function validateEmail({ email }) {
   return EMAIL_REGEXP.test(email);
 }
 
-function validateName({ name }) {
-  return /^[a-zA-Z ]+$/.test(name);
-}
-
 function validateCountry({ country }) {
   return country === "Canada" || country === "United States";
 }
@@ -47,7 +43,6 @@ function validateItems({ items }) {
 }
 
 const validators = {
-  name: validateName,
   email: validateEmail,
   phone: validatePhoneNumber,
   country: validateCountry,
