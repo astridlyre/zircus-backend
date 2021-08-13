@@ -27,13 +27,18 @@ async function updateToken() {
       password: PAYPAL_SECRET,
     },
   }).then((res) => {
-    console.log(res.access_token);
     return {
       token: res.data.access_token,
       expires: res.data.expires_in * 1000 + Date.now(),
     };
   })
-    .catch((error) => console.error(`${error.message}`));
+    .catch((error) => {
+      console.error(`${error.message}`);
+      return {
+        token: null,
+        expires: -1,
+      };
+    });
 }
 
 const opts = {
@@ -74,6 +79,9 @@ async function handlePaypalPayment({ order, res }) {
   if (!creds.token || creds.expires && creds.expires < Date.now()) {
     creds = await updateToken();
     console.log("updated cred: ", creds);
+    if (!creds) {
+      return res.status(400).json({ error: `Unable to authenticate` });
+    }
   }
 
   const reply = await axios.post(
