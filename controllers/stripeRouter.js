@@ -26,18 +26,18 @@ stripeRouter.all("/", (req, res, next) => {
     .catch(() => res.status(400).json({ error: "Too many requests" }));
 });
 
-async function handleStripePayment({ orderDetails, res }) {
+async function handleStripePayment({ order, res }) {
   const paymentDetails = {
-    amount: orderDetails.total * 100, // stripe expects a total they can divide by 100
-    currency: orderDetails.address.country === "Canada" ? "cad" : "usd",
+    amount: order.total * 100, // stripe expects a total they can divide by 100
+    currency: order.address.country === "Canada" ? "cad" : "usd",
   };
 
   // If updating a paymentIntent
-  if (orderDetails.orderId) {
+  if (order.orderId) {
     const orderToUpdate = await Order.findOneAndUpdate(
-      { orderId: orderDetails.orderId },
-      orderDetails,
-      (e) => e && res.status(400).json({ error: e.message }),
+      { orderId: order.orderId },
+      order,
+      (error) => error && res.status(400).json({ error: error.message }),
     );
     if (!orderToUpdate) {
       return res.status(400).json({ error: "Payment intent not found" });
@@ -46,8 +46,8 @@ async function handleStripePayment({ orderDetails, res }) {
     try {
       await stripe.paymentIntents.update(orderDetails.orderId, paymentDetails);
       return res.json(orderToUpdate);
-    } catch (e) {
-      return res.status(400).json({ error: e.message });
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
   }
 
@@ -56,7 +56,7 @@ async function handleStripePayment({ orderDetails, res }) {
 
   // Create a new pending order
   const newOrder = new Order({
-    ...orderDetails,
+    ...order,
     orderId: paymentIntent.id,
   });
 
@@ -67,7 +67,7 @@ async function handleStripePayment({ orderDetails, res }) {
     broadcast(
       JSON.stringify({
         type: "pending order",
-        data: { name: orderDetails.name },
+        data: { name: newOrder.name, orderId: newOrder.orderId },
       }),
     );
     return res.json({
@@ -135,22 +135,16 @@ stripeRouter.post("/create-payment-intent", async (req, res) => {
   }
 
   // Calculate the total for the order
-  const { calculateTotalError, shipping, total } = await calculateOrderAmount(
+  const { error, order } = await calculateOrderAmount(
     formData,
   );
-  if (calculateTotalError) {
-    return res.status(400).json({ error: calculateTotalError });
+  if (error) {
+    return res.status(400).json({ error });
   }
 
   // orderDetails for creating a pending order
-  const orderDetails = {
-    ...formData,
-    total,
-    shipping,
-  };
-
   return handleStripePayment({
-    orderDetails,
+    order,
     res,
   });
 });

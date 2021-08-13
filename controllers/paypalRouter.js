@@ -6,6 +6,32 @@ const Order = require("../models/order");
 const { broadcast } = require("../controllers/subscribe");
 const formValidator = require("../utils/formValidator.js");
 const { RateLimiterMemory } = require("rate-limiter-flexible");
+const url = require("url");
+const axios = require("axios");
+const { PAYPAL_SECRET, PAYPAL_CLIENTID } = require("../utils/config.js");
+
+const PAYPAL_TOKEN_URL = "https://api-m.sandbox.paypal.com/v1/oauth2/token";
+const PAYPAL_ORDER_URL = "https://api-m.sandbox.paypal.com/v2/checkout/orders";
+
+let creds = null;
+
+async function updateToken() {
+  const params = new url.URLSearchParams({ grant_type: "client_credentials" });
+  return await axios.post(PAYPAL_TOKEN_URL, params.toString(), {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Accept": "application/json",
+    },
+    auth: {
+      username: PAYPAL_CLIENTID,
+      password: PAYPAL_SECRET,
+    },
+  }).then((res) => ({
+    token: res.data.access_token,
+    expires: res.data.expires_in * 1000 + Date.now(),
+  }))
+    .catch((error) => console.error(`${error.message}`));
+}
 
 const opts = {
   points: 6,
@@ -21,16 +47,52 @@ paypalRouter.all("/", (req, res, next) => {
     .catch(() => res.status(400).json({ error: "Too many requests" }));
 });
 
-async function handlePaypalPayment({ orderDetails, res }) {
-  if (orderDetails.total !== Number(orderDetails.amount.value)) {
-    return res.status(400).json({
-      error:
-        `Totals do not match: ${orderDetails.total} vs ${orderDetails.amount.value}`,
-    });
+function createPayPalRequest({ address, total }) {
+  const currency_code = address.country === "Canada" ? "CAD" : "USD";
+  const value = total.toFixed(2);
+  return {
+    intent: "CAPTURE",
+    purchase_units: [
+      {
+        amount: {
+          currency_code,
+          value,
+        },
+        description: "Zircus Underwear - Handmade on Vancouver Island",
+      },
+    ],
+    application_context: {
+      brand_name: "Zircus · Underwear",
+    },
+  };
+}
+
+async function handlePaypalPayment({ order, res }) {
+  if (!creds || creds.expires < Date.now()) {
+    creds = await updateToken();
   }
 
+  const reply = await axios.post(
+    PAYPAL_ORDER_URL,
+    createPayPalRequest(order),
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${creds.token}`,
+      },
+    },
+  ).catch((error) => console.log(error));
+
+  if (!reply || !reply.data) {
+    return res.status(400).json({ error: `Error creating orderId` });
+  }
+  const orderId = reply.data.id;
+
   // Create a new pending order
-  const newOrder = new Order(orderDetails);
+  const newOrder = new Order({
+    ...order,
+    orderId,
+  });
   try {
     // Save new order
     await newOrder.save();
@@ -38,41 +100,23 @@ async function handlePaypalPayment({ orderDetails, res }) {
     broadcast(
       JSON.stringify({
         type: "pending order",
-        data: { name: orderDetails.name },
+        data: { name: newOrder.name, orderId },
       }),
     );
     return res.json(newOrder);
-  } catch (e) {
-    return res.status(400).json({ error: e.message });
-  }
-}
-
-paypalRouter.post("/validate-price", async (req, res) => {
-  let formData;
-  try {
-    formData = formValidator(req.body);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-
-  const { items, address, shippingMethod } = formData;
-
-  const { total, calculateTotalError } = await calculateOrderAmount({
-    items,
-    address,
-    shippingMethod,
-  });
-
-  if (calculateTotalError) {
-    return res.status(400).json({ error: calculateTotalError });
-  }
-  return res.json({ amount: { value: total.toFixed(2) } });
-});
+}
 
 // Update order post-payment
-paypalRouter.post("/", async (req, res) => {
+paypalRouter.post("/post-payment-wehook", async (req, res) => {
   const event = req.body;
-  const id = event.data.object.id;
+  if (event.event_type !== "PAYMENT.CAPTURE.COMPLETED") {
+    return res.status(400).json({ error: "Expected completed payment" });
+  }
+
+  const id = event.resource.supplementary_data.related_ids.order_id;
   const orderToUpdate = await Order.findOne({ orderId: id });
   if (!orderToUpdate) {
     return res.status(400).json({ error: "Invalid order id" });
@@ -119,21 +163,15 @@ paypalRouter.post("/create-payment-intent", async (req, res) => {
   }
 
   // Calculate the total for the order
-  const { calculateTotalError, shipping, total } = await calculateOrderAmount(
+  const { error, order } = await calculateOrderAmount(
     formData,
   );
-  if (calculateTotalError) {
-    return res.status(400).json({ error: calculateTotalError });
+  if (error) {
+    return res.status(400).json({ error });
   }
 
   // orderDetails for creating a pending order
-  const orderDetails = {
-    ...formData,
-    total,
-    shipping,
-  };
-
-  return handlePaypalPayment({ orderDetails, res });
+  return handlePaypalPayment({ order, res });
 });
 
 module.exports = paypalRouter;

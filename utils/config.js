@@ -1,23 +1,16 @@
-require('dotenv').config()
-
-const PORT = process.env.PORT
-const MONGODB_URI = process.env.MONGODB_URI
-const STRIPE_PUBLIC = process.env.STRIPE_PUBLIC
-const STRIPE_SECRET = process.env.STRIPE_SECRET
-const MAIL_USERNAME = process.env.MAIL_USERNAME
-const MAIL_PASSWORD = process.env.MAIL_PASSWORD
-const MAIL_ID = process.env.OAUTH_CLIENTID
-const MAIL_SECRET = process.env.OAUTH_CLIENT_SECRET
-const MAIL_REFRESH_TOKEN = process.env.OAUTH_REFRESH_TOKEN
+require("dotenv").config();
 
 module.exports = {
-    PORT,
-    MONGODB_URI,
-    STRIPE_PUBLIC,
-    STRIPE_SECRET,
-    MAIL_USERNAME,
-    MAIL_PASSWORD,
-    MAIL_ID,
-    MAIL_SECRET,
-    MAIL_REFRESH_TOKEN,
-}
+  PORT: process.env.PORT,
+  MONGODB_URI: process.env.MONGODB_URI,
+  STRIPE_PUBLIC: process.env.STRIPE_PUBLIC,
+  STRIPE_SECRET: process.env.STRIPE_SECRET,
+  MAIL_USERNAME: process.env.MAIL_USERNAME,
+  MAIL_PASSWORD: process.env.MAIL_PASSWORD,
+  MAIL_ID: process.env.MAIL_ID,
+  MAIL_SECRET: process.env.MAIL_SECRET,
+  MAIL_REFRESH_TOKEN: process.env.MAIL_REFRESH_TOKEN,
+  PAYPAL_CLIENTID: process.env.PAYPAL_CLIENTID,
+  PAYPAL_SECRET: process.env.PAYPAL_SECRET,
+  PAYPAL_ACCOUNT: process.env.PAYPAL_ACCOUNT,
+};

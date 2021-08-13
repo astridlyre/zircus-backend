@@ -1,6 +1,8 @@
 const { hasValidToken } = require("../utils/middleware");
 const Underwear = require("../models/underwear");
 
+const twoDecimals = (n) => Math.round(n * 100) / 100;
+
 const updateInventoryItems = async (items) => {
   for await (const item of items) {
     const itemToUpdate = await Underwear.findOne({ type: item.type });
@@ -16,37 +18,15 @@ const updateInventoryItems = async (items) => {
   }
 };
 
-const calculateOrderAmount = async ({ items, address, shippingMethod }) => {
+const calculateOrderAmount = async (
+  orderDetails,
+) => {
   // Update new inventory items and tally up price
   let total = 0;
-  for await (const item of items) {
-    const itemToUpdate = await Underwear.findOne({ type: item.type });
-    if (!itemToUpdate) return { error: `Invalid type ${item.type}` };
-    const newQuantity = itemToUpdate.quantity - Number(item.quantity);
-    if (newQuantity < 0) {
-      return { calculateTotalError: `Insufficient stock of ${item.type}` };
-    }
-
-    // update total
-    total += Number(item.quantity) * Number(itemToUpdate.price);
-  }
-
-  let shipping = 0;
-  switch (shippingMethod) {
-    case "overnight":
-      shipping = 29.99;
-      break;
-    case "standard":
-      shipping = 9.99;
-      break;
-    default:
-      shippingMethod = "economy";
-      shipping = 5.99;
-  }
-
   let taxRate = 0;
-  if (address.country === "Canada") {
-    switch (address.state) {
+
+  if (orderDetails.address.country === "Canada") {
+    switch (orderDetails.address.state) {
       case "New Brunswick":
       case "Newfoundland and Labrador":
       case "Nova Scotia":
@@ -63,15 +43,61 @@ const calculateOrderAmount = async ({ items, address, shippingMethod }) => {
     taxRate = 0.07; // US Tax rate?
   }
 
+  const updatedItems = [];
+  for await (const item of orderDetails.items) {
+    const itemToUpdate = await Underwear.findOne({ type: item.type });
+    if (!itemToUpdate) return { error: `Invalid type ${item.type}` };
+    const newQuantity = itemToUpdate.quantity - Number(item.quantity);
+    if (newQuantity < 0) {
+      return { calculateTotalError: `Insufficient stock of ${item.type}` };
+    }
+
+    updatedItems.push({
+      name: `${
+        itemToUpdate.name[orderDetails.preferredLanguage]
+      } - ${itemToUpdate.color} - ${itemToUpdate.size}`,
+      type: item.type,
+      image: itemToUpdate.images.sm_a,
+      price: itemToUpdate.price,
+      quantity: item.quantity,
+      tax: twoDecimals(itemToUpdate.price * taxRate),
+      description: itemToUpdate.description,
+    });
+
+    // update total
+    total += item.quantity * itemToUpdate.price;
+  }
+
+  const shipping = orderDetails.shippingMethod === "overnight"
+    ? { method: "overnight", total: twoDecimals(29.99 + 29.99 * taxRate) }
+    : orderDetails.shippingMethod === "standard"
+    ? { method: "standard", total: twoDecimals(9.99 + 9.99 * taxRate) }
+    : { method: "economy", total: twoDecimals(5.99 + 5.99 * taxRate) };
+
+  const subtotal = twoDecimals(
+    updatedItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0,
+    ),
+  );
+  const tax = twoDecimals(
+    updatedItems.reduce((acc, item) => acc + item.quantity * item.tax, 0),
+  );
+  total = twoDecimals(subtotal + tax + shipping.total);
+
   return {
-    total: Math.round(
-      (total + shipping + (total + shipping) * taxRate) * 100,
-    ) / 100,
-    shipping: {
-      method: shippingMethod,
-      total: shipping,
+    error: null,
+    order: {
+      ...orderDetails,
+      total,
+      shipping,
+      items: updatedItems,
+      breakdown: {
+        subtotal,
+        tax,
+        shipping: shipping.total,
+      },
     },
-    calculateTotalError: null,
   };
 };
 

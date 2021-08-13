@@ -64,6 +64,20 @@ const orderSchema = new mongoose.Schema({
       required: true,
     },
   },
+  breakdown: {
+    subtotal: {
+      type: Number,
+      required: true,
+    },
+    tax: {
+      type: Number,
+      required: true,
+    },
+    shipping: {
+      type: Number,
+      required: true,
+    },
+  },
   createdOn: {
     type: Date,
     required: true,
