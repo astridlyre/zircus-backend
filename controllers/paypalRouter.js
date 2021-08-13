@@ -17,11 +17,6 @@ let creds = {};
 
 async function updateToken() {
   const params = new url.URLSearchParams({ grant_type: "client_credentials" });
-  console.log("REQUEST: ", {
-    username: PAYPAL_CLIENTID,
-    password: PAYPAL_SECRET,
-    data: params.toString(),
-  });
   creds = await axios.post(PAYPAL_TOKEN_URL, params.toString(), {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -44,7 +39,6 @@ async function updateToken() {
         expires: -1,
       };
     });
-  console.log(creds);
   return creds;
 }
 
@@ -87,7 +81,6 @@ function createPayPalRequest({ address, total }) {
 async function handlePaypalPayment({ order, res }) {
   if (!creds.token || creds.expires && creds.expires < Date.now()) {
     creds = await updateToken();
-    console.log("updated cred: ", creds);
     if (!creds.token) {
       return res.status(400).json({ error: `Unable to authenticate` });
     }
