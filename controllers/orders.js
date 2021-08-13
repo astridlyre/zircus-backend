@@ -15,6 +15,21 @@ const Underwear = require("../models/underwear");
 const { broadcast } = require("../controllers/subscribe");
 const nodemailer = require("nodemailer");
 const formValidator = require("../utils/formValidator.js");
+const { RateLimiterMemory } = require("rate-limiter-flexible");
+
+const opts = {
+  points: 6,
+  duration: 5,
+};
+
+const rateLimiter = new RateLimiterMemory(opts);
+
+ordersRouter.all("/", (req, res, next) => {
+  rateLimiter
+    .consume(req.ip)
+    .then(() => next())
+    .catch(() => res.status(400).json({ error: "Too many requests" }));
+});
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -194,16 +209,14 @@ ordersRouter.get("/", async (req, res) => {
 });
 
 ordersRouter.post("/price", async (req, res) => {
-  const { items, address, shippingMethod } = req.body;
-
-  if (!Array.isArray(items)) {
-    return res.status(400).json({ error: `Items are malformed` });
+  let formData;
+  try {
+    formData = formValidator(req.body);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
   }
 
-  // Make sure have country and state
-  if (!address.country || !address.state) {
-    return res.status(400).json({ error: "Missing country or state" });
-  }
+  const { items, address, shippingMethod } = formData;
 
   const { total, calculateTotalError } = await calculateOrderAmount({
     items,

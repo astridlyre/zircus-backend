@@ -11,7 +11,7 @@ function validatePhoneNumber({ phone }) {
 }
 
 function validateEmail({ email }) {
-  return EMAIL_REGEXP.test(email);
+  return EMAIL_REGEXP.test(email) && email.length < 254;
 }
 
 function validateCountry({ country }) {
@@ -55,10 +55,8 @@ const validators = {
 
 module.exports = (formData) => {
   Object.entries(formData).forEach(([key, entry]) => {
-    console.log(`KEY: ${key} ENTRY: ${entry}`);
     if (key === "address") {
       Object.entries(entry).forEach(([addressKey, addressEntry]) => {
-        console.log(`KEY: ${addressKey} ENTRY: ${addressEntry}`);
         if (
           validators[addressKey] && !validators[addressKey](formData.address)
         ) {
