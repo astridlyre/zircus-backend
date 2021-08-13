@@ -17,6 +17,11 @@ let creds = {};
 
 async function updateToken() {
   const params = new url.URLSearchParams({ grant_type: "client_credentials" });
+  console.log("REQUEST: ", {
+    username: PAYPAL_CLIENTID,
+    password: PAYPAL_SECRET,
+    data: params.toString(),
+  });
   creds = await axios.post(PAYPAL_TOKEN_URL, params.toString(), {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -33,7 +38,7 @@ async function updateToken() {
     };
   })
     .catch((error) => {
-      console.error(`${error.message}`);
+      console.error(`${error}`);
       return {
         token: null,
         expires: -1,
