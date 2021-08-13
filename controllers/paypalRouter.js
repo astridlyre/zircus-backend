@@ -21,10 +21,11 @@ paypalRouter.all("/", (req, res, next) => {
     .catch(() => res.status(400).json({ error: "Too many requests" }));
 });
 
-async function handlePaypalPayment({ orderDetails, amount, res }) {
-  if (orderDetails.total !== Number(amount.value)) {
+async function handlePaypalPayment({ orderDetails, res }) {
+  if (orderDetails.total !== Number(orderDetails.amount.value)) {
     return res.status(400).json({
-      error: `Totals do not match: ${orderDetails.total} vs ${amount.value}`,
+      error:
+        `Totals do not match: ${orderDetails.total} vs ${orderDetails.amount.value}`,
     });
   }
 
@@ -132,7 +133,7 @@ paypalRouter.post("/create-payment-intent", async (req, res) => {
     shipping,
   };
 
-  return handlePaypalPayment({ orderDetails, res, amount });
+  return handlePaypalPayment({ orderDetails, res });
 });
 
 module.exports = paypalRouter;
