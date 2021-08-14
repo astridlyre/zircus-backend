@@ -9,6 +9,7 @@ const { RateLimiterMemory } = require("rate-limiter-flexible");
 const url = require("url");
 const axios = require("axios");
 const { PAYPAL_SECRET, PAYPAL_CLIENTID } = require("../utils/config.js");
+const getWords = require("../utils/words.js");
 
 const PAYPAL_TOKEN_URL = "https://api-m.sandbox.paypal.com/v1/oauth2/token";
 const PAYPAL_ORDER_URL = "https://api-m.sandbox.paypal.com/v2/checkout/orders";
@@ -102,11 +103,22 @@ async function handlePaypalPayment({ order, res }) {
   }
   const orderId = reply.data.id;
 
+  let identifier = null;
+  while (identifier === null) {
+    const words = getWords();
+    const foundWord = await Order.findOne({ identifier: words });
+    if (!foundWord) {
+      identifier = words;
+    }
+  }
+
   // Create a new pending order
   const newOrder = new Order({
     ...order,
     orderId,
+    identifier,
   });
+
   try {
     // Save new order
     await newOrder.save();

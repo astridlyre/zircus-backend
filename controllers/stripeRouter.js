@@ -8,6 +8,7 @@ const Order = require("../models/order");
 const { broadcast } = require("../controllers/subscribe");
 const formValidator = require("../utils/formValidator.js");
 const { RateLimiterMemory } = require("rate-limiter-flexible");
+const getWords = require("../utils/words.js");
 const { updateInventoryItems, calculateOrderAmount } = require(
   "./ordersUtils.js",
 );
@@ -54,10 +55,21 @@ async function handleStripePayment({ order, res }) {
   // Else create a new paymentIntent
   const paymentIntent = await stripe.paymentIntents.create(paymentDetails);
 
+  let identifier = null;
+  while (identifier === null) {
+    const words = getWords();
+    const foundWord = await Order.findOne({ identifier: words });
+    if (!foundWord) {
+      identifier = words;
+    }
+  }
+  console.log(identifier);
+
   // Create a new pending order
   const newOrder = new Order({
     ...order,
     orderId: paymentIntent.id,
+    identifier,
   });
 
   try {

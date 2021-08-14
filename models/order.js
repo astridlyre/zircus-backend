@@ -104,6 +104,11 @@ const orderSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  identifier: {
+    type: String,
+    required: true,
+    unique: true,
+  },
 });
 
 orderSchema.plugin(uniqueValidator);

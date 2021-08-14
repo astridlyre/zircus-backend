@@ -18,6 +18,7 @@ const tagLinesRouter = require("./controllers/tagline");
 const adminRouter = require("./controllers/admin");
 const messageRouter = require("./controllers/message");
 const order = require("./templates/order");
+const words = require("./utils/words.js");
 
 // Start logging and connect to Database
 logger.info("connecting to ", config.MONGODB_URI);
