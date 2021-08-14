@@ -29,7 +29,7 @@ stripeRouter.all("/", (req, res, next) => {
 
 async function handleStripePayment({ order, res }) {
   const paymentDetails = {
-    amount: order.total * 100, // stripe expects a total they can divide by 100
+    amount: Math.round(order.total * 100), // stripe expects a total they can divide by 100
     currency: order.address.country === "Canada" ? "cad" : "usd",
   };
 
