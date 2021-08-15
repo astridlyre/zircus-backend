@@ -3,7 +3,7 @@ const fs = require("fs");
 
 const NUM_WORDS = 58110;
 const getRandomWord = () => Math.round(Math.random() * NUM_WORDS);
-const wordsDB = new Array(58110);
+const wordsDB = new Array(58109);
 let wordCount = 0;
 const jsonStream = StreamArray.withParser();
 
@@ -15,7 +15,6 @@ jsonStream.on("end", () => {
 
 function getWords() {
   return [
-    wordsDB[getRandomWord()],
     wordsDB[getRandomWord()],
     wordsDB[getRandomWord()],
     wordsDB[getRandomWord()],

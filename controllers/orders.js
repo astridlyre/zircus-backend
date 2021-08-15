@@ -20,14 +20,32 @@ ordersRouter.all("/", (req, res, next) => {
     .catch(() => res.status(400).json({ error: "Too many requests" }));
 });
 
-ordersRouter.get("/", async (req, res) => {
-  if (!hasValidToken(req.token)) {
+ordersRouter.post("/:orderId", async (req, res) => {
+  /* if (!hasValidToken(req.token)) {
     return res.status(401).json({ error: "Token missing or invalid" });
-  }
+  } */
+  const { identifier, email } = req.body;
 
-  const orders = await Order.find({});
-  return orders.length > 0
-    ? res.json(orders)
+  try {
+    const order = await Order.findOne({ orderId: req.params.orderId });
+    if (order.identifier === identifier && order.email === email) {
+      return res.json(order);
+    } else {
+      return res.status(404).json({ error: "No orders found" });
+    }
+  } catch (_) {
+    return res.status(404).json({ error: "No orders found" });
+  }
+});
+
+ordersRouter.get("/", async (req, res) => {
+  /* if (!hasValidToken(req.token)) {
+    return res.status(401).json({ error: "Token missing or invalid" });
+  } */
+
+  const order = await Order.find({});
+  return order.length > 0
+    ? res.json(order)
     : res.status(404).json({ error: "No orders found" });
 });
 
