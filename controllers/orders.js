@@ -21,9 +21,6 @@ ordersRouter.all("/", (req, res, next) => {
 });
 
 ordersRouter.post("/:orderId", async (req, res) => {
-  /* if (!hasValidToken(req.token)) {
-    return res.status(401).json({ error: "Token missing or invalid" });
-  } */
   const { identifier, email } = req.body;
 
   try {
@@ -39,9 +36,9 @@ ordersRouter.post("/:orderId", async (req, res) => {
 });
 
 ordersRouter.get("/", async (req, res) => {
-  /* if (!hasValidToken(req.token)) {
+  if (!hasValidToken(req.token)) {
     return res.status(401).json({ error: "Token missing or invalid" });
-  } */
+  }
 
   const order = await Order.find({});
   return order.length > 0
