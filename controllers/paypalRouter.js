@@ -1,5 +1,5 @@
 const paypalRouter = require("express").Router();
-const { updateInventoryItems, calculateOrderAmount } = require(
+const { updateInventoryItems, enrichOrder } = require(
   "./ordersUtils.js",
 );
 const Order = require("../models/order");
@@ -199,13 +199,10 @@ paypalRouter.post("/create-payment-intent", async (req, res) => {
   }
 
   // Calculate the total for the order
-  const { error, order } = await calculateOrderAmount(
-    formData,
-  );
+  const { error, order } = await enrichOrder(formData);
   if (error) {
     return res.status(400).json({ error });
   }
-  console.log(order);
 
   // orderDetails for creating a pending order
   return handlePaypalPayment({ order, res });

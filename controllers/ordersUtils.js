@@ -18,72 +18,85 @@ const updateInventoryItems = async (items) => {
   }
 };
 
-const calculateOrderAmount = async (
-  orderDetails,
-) => {
-  // Update new inventory items and tally up price
-  let total = 0;
-  let taxRate = 0;
-
-  if (orderDetails.address.country === "Canada") {
-    switch (orderDetails.address.state) {
+function calculateTaxRate({ country, state }) {
+  if (country === "Canada") {
+    switch (state) {
       case "New Brunswick":
       case "Newfoundland and Labrador":
       case "Nova Scotia":
       case "Prince Edward Island":
-        taxrate = 0.15;
-        break;
+        return 0.15;
       case "Ontario":
-        taxRate = 0.13;
-        break;
+        return 0.13;
       default:
-        taxRate = 0.05;
+        return 0.05;
     }
   } else {
-    taxRate = 0.07; // US Tax rate?
+    return 0.07; // US Tax rate?
   }
+}
 
-  const updatedItems = [];
+function calculateShipping({ method, taxRate }) {
+  switch (method) {
+    case "overnight":
+      return 29.99 + (29.99 * taxRate);
+    case "standard":
+      return 9.99 + (9.99 * taxRate);
+    default:
+      return 5.99 + (5.99 * taxRate);
+  }
+}
+
+function enrichedItem({ reference, item, preferredLanguage, taxRate }) {
+  return {
+    name: `${
+      reference.name[preferredLanguage]
+    } - ${reference.color} - ${reference.size}`,
+    type: item.type,
+    image: reference.images.sm_a,
+    price: reference.price,
+    quantity: item.quantity,
+    tax: twoDecimals(reference.price * taxRate),
+    description: reference.description,
+  };
+}
+
+const enrichOrder = async (
+  orderDetails,
+) => {
+  // Update new inventory items and tally up price
+  const taxRate = calculateTaxRate(orderDetails.address);
+  const enrichedItems = [];
   for await (const item of orderDetails.items) {
     const itemToUpdate = await Underwear.findOne({ type: item.type });
     if (!itemToUpdate) return { error: `Invalid type ${item.type}` };
-    const newQuantity = itemToUpdate.quantity - Number(item.quantity);
-    if (newQuantity < 0) {
+    if (itemToUpdate.quantity - Number(item.quantity) < 0) {
       return { error: `Insufficient stock of ${item.type}` };
     }
-
-    updatedItems.push({
-      name: `${
-        itemToUpdate.name[orderDetails.preferredLanguage]
-      } - ${itemToUpdate.color} - ${itemToUpdate.size}`,
-      type: item.type,
-      image: itemToUpdate.images.sm_a,
-      price: itemToUpdate.price,
-      quantity: item.quantity,
-      tax: twoDecimals(itemToUpdate.price * taxRate),
-      description: itemToUpdate.description,
-    });
-
-    // update total
-    total += item.quantity * itemToUpdate.price;
+    enrichedItems.push(enrichedItem({
+      reference: itemToUpdate,
+      preferredLanguage: orderDetails.preferredLanguage,
+      item,
+      taxRate,
+    }));
   }
-
-  const shipping = orderDetails.shipping.method === "overnight"
-    ? { method: "overnight", total: twoDecimals(29.99 + 29.99 * taxRate) }
-    : orderDetails.shipping.method === "standard"
-    ? { method: "standard", total: twoDecimals(9.99 + 9.99 * taxRate) }
-    : { method: "economy", total: twoDecimals(5.99 + 5.99 * taxRate) };
-
+  const shipping = {
+    method: orderDetails.shipping.method,
+    total: calculateShipping({
+      method: orderDetails.shipping.method,
+      taxRate,
+    }),
+  };
   const subtotal = twoDecimals(
-    updatedItems.reduce(
+    enrichedItems.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0,
     ),
   );
   const tax = twoDecimals(
-    updatedItems.reduce((acc, item) => acc + item.quantity * item.tax, 0),
+    enrichedItems.reduce((acc, item) => acc + item.quantity * item.tax, 0),
   );
-  total = twoDecimals(subtotal + tax + shipping.total);
+  const total = twoDecimals(subtotal + tax + shipping.total);
 
   return {
     error: null,
@@ -91,7 +104,7 @@ const calculateOrderAmount = async (
       ...orderDetails,
       total,
       shipping,
-      items: updatedItems,
+      items: enrichedItems,
       createdOn: new Date(),
       hasPaid: false,
       hasShipped: false,
@@ -106,5 +119,5 @@ const calculateOrderAmount = async (
 
 module.exports = {
   updateInventoryItems,
-  calculateOrderAmount,
+  enrichOrder,
 };

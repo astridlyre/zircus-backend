@@ -9,7 +9,7 @@ const { broadcast } = require("../controllers/subscribe");
 const formValidator = require("../utils/formValidator.js");
 const { RateLimiterMemory } = require("rate-limiter-flexible");
 const getWords = require("../utils/words.js");
-const { updateInventoryItems, calculateOrderAmount } = require(
+const { updateInventoryItems, enrichOrder } = require(
   "./ordersUtils.js",
 );
 
@@ -146,7 +146,7 @@ stripeRouter.post("/create-payment-intent", async (req, res) => {
   }
 
   // Calculate the total for the order
-  const { error, order } = await calculateOrderAmount(
+  const { error, order } = await enrichOrder(
     formData,
   );
   if (error) {
