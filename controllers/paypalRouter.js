@@ -214,7 +214,7 @@ paypalRouter.post("/cancel-payment-intent/:id", async (req, res) => {
   try {
     await Order.findOneAndDelete(
       {
-        id: req.params.id,
+        _id: req.params.id,
         orderId,
         hasPaid: false,
       },
