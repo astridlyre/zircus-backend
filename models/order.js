@@ -47,12 +47,10 @@ const orderSchema = new mongoose.Schema({
   hasPaid: {
     type: Boolean,
     required: true,
-    default: false,
   },
   hasShipped: {
     type: Boolean,
     required: true,
-    default: false,
   },
   shipping: {
     method: {
@@ -88,7 +86,6 @@ const orderSchema = new mongoose.Schema({
   createdOn: {
     type: Date,
     required: true,
-    default: new Date(),
   },
   name: {
     type: String,

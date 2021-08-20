@@ -92,6 +92,9 @@ const calculateOrderAmount = async (
       total,
       shipping,
       items: updatedItems,
+      createdOn: new Date(),
+      hasPaid: false,
+      hasShipped: false,
       breakdown: {
         subtotal,
         tax,
