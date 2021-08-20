@@ -226,7 +226,7 @@ paypalRouter.post("/cancel-payment-intent/:id", async (req, res) => {
         broadcast(
           JSON.stringify({
             type: "deleted order",
-            data: { response: "Canceled pending order" },
+            data: { response: `Canceled pending order ${orderId}` },
           }),
         );
         return res.json({ response: "canceled" });

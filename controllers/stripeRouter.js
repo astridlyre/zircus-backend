@@ -165,7 +165,7 @@ stripeRouter.post("/cancel-payment-intent/:id", async (req, res) => {
 
   try {
     await Order.findOneAndDelete(
-      { orderId, id: req.params.id, hasPaid: false },
+      { orderId, _id: req.params.id, hasPaid: false },
       null,
       (error, _) => {
         if (error) {
@@ -174,6 +174,12 @@ stripeRouter.post("/cancel-payment-intent/:id", async (req, res) => {
       },
     );
     const result = await stripe.paymentIntents.cancel(orderId);
+    broadcast(
+      JSON.stringify({
+        type: "deleted order",
+        data: { response: `Canceled pending order ${orderId}` },
+      }),
+    );
     return res.json(result);
   } catch (error) {
     return res.status(400).json({ error: error.message });
