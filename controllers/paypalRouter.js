@@ -205,6 +205,7 @@ paypalRouter.post("/create-payment-intent", async (req, res) => {
   if (error) {
     return res.status(400).json({ error });
   }
+  console.log(order);
 
   // orderDetails for creating a pending order
   return handlePaypalPayment({ order, res });

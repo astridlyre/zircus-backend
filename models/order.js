@@ -78,6 +78,9 @@ const orderSchema = new mongoose.Schema({
       required: true,
     },
   },
+  clientSecret: {
+    type: String,
+  },
   capture: {
     status: String,
     id: String,

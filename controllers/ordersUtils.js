@@ -49,7 +49,7 @@ const calculateOrderAmount = async (
     if (!itemToUpdate) return { error: `Invalid type ${item.type}` };
     const newQuantity = itemToUpdate.quantity - Number(item.quantity);
     if (newQuantity < 0) {
-      return { calculateTotalError: `Insufficient stock of ${item.type}` };
+      return { error: `Insufficient stock of ${item.type}` };
     }
 
     updatedItems.push({
@@ -68,9 +68,9 @@ const calculateOrderAmount = async (
     total += item.quantity * itemToUpdate.price;
   }
 
-  const shipping = orderDetails.shippingMethod === "overnight"
+  const shipping = orderDetails.shipping.method === "overnight"
     ? { method: "overnight", total: twoDecimals(29.99 + 29.99 * taxRate) }
-    : orderDetails.shippingMethod === "standard"
+    : orderDetails.shipping.method === "standard"
     ? { method: "standard", total: twoDecimals(9.99 + 9.99 * taxRate) }
     : { method: "economy", total: twoDecimals(5.99 + 5.99 * taxRate) };
 

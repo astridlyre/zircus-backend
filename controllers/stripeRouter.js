@@ -63,7 +63,6 @@ async function handleStripePayment({ order, res }) {
       identifier = words;
     }
   }
-  console.log(identifier);
 
   // Create a new pending order
   const newOrder = new Order({
@@ -83,7 +82,7 @@ async function handleStripePayment({ order, res }) {
       }),
     );
     return res.json({
-      order: newOrder,
+      orderData: newOrder,
       clientSecret: paymentIntent.client_secret,
     });
   } catch (e) {

@@ -33,9 +33,9 @@ function validatePostalCode({ country, postalCode }) {
     : US_ZIP_CODE.test(postalCode);
 }
 
-function validateShippingMethod({ shippingMethod }) {
-  return shippingMethod === "economy" || shippingMethod === "standard" ||
-    shippingMethod === "overnight";
+function validateShippingMethod({ shipping }) {
+  return shipping.method === "economy" || shipping.method === "standard" ||
+    shipping.method === "overnight";
 }
 
 function validateItems({ items }) {
@@ -48,7 +48,7 @@ const validators = {
   country: validateCountry,
   state: validateState,
   postalCode: validatePostalCode,
-  shippingMethod: validateShippingMethod,
+  shipping: validateShippingMethod,
   paymentMethod: validatePaymentMethod,
   items: validateItems,
 };
