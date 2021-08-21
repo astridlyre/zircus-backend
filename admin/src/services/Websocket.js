@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 
-const WS_ENDPOINT = "wss://zircus.herokuapp.com";
-// const WS_ENDPOINT = 'ws://localhost:3000'
+// const WS_ENDPOINT = "wss://zircus.herokuapp.com";
+const WS_ENDPOINT = "ws://localhost:3000";
 
 let listeners = [];
 
@@ -67,8 +67,9 @@ const WebsocketProvider = ({ children }) => {
     return id;
   };
 
-  const removeListener =
-    (id) => (listeners = listeners.filter((l) => l.id !== id));
+  const removeListener = (
+    id,
+  ) => (listeners = listeners.filter((l) => l.id !== id));
 
   return (
     <WebsocketContext.Provider

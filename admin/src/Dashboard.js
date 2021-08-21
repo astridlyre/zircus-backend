@@ -37,16 +37,7 @@ export default function Dashboard({
   const numMessages = messages ? messages.length : 0;
   const reduceFn = (inv, fn) => inv.reduce((acc, item) => acc + fn(item), 0);
   const qty = (item) => item.quantity;
-  const numInv = inv
-    ? reduceFn(
-      [
-        reduceFn(inv.ff, qty),
-        reduceFn(inv.pf, qty),
-        reduceFn(inv.cf, qty),
-      ],
-      (x) => x,
-    )
-    : 0;
+  const numInv = inv ? reduceFn(inv, qty) : 0;
 
   return (
     <StyledDashboard showFull={showFull}>

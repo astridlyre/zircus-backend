@@ -8,7 +8,7 @@ import { WebsocketContext } from "./services/Websocket.js";
 function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [inv, setInv] = useState(null);
+  const [inv, setInv] = useState([]);
   const [messages, setMessages] = useState(null);
   const [orders, setOrders] = useState(null);
   const [showModal, setShowModal] = useState(null);
@@ -26,8 +26,10 @@ function App() {
   const updateOrders = ({ text, color }) => {
     notify(text, color);
     getInv()
-      .then((reply) => setInv(reply.data))
-      .catch(() => setInv(null));
+      .then((reply) =>
+        setInv([...reply.data.ff, ...reply.data.pf, ...reply.data.cf])
+      )
+      .catch(() => setInv([]));
     getOrders(token)
       .then((reply) => setOrders(reply.data))
       .catch(() => setOrders(null));
@@ -82,8 +84,10 @@ function App() {
 
   useEffect(() => {
     getInv()
-      .then((reply) => setInv(reply.data))
-      .catch(() => setInv(null));
+      .then((reply) =>
+        setInv([...reply.data.ff, ...reply.data.pf, ...reply.data.cf])
+      )
+      .catch(() => setInv([]));
     if (token !== null) {
       getOrders(token)
         .then((reply) => setOrders(reply.data))

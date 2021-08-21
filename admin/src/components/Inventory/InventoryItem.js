@@ -37,12 +37,10 @@ const StyledAttr = styled.p`
 export default function InventoryItem({ item, token, setInv }) {
   const handler = (key, fn) =>
     (event) => {
-      setInv((inv) => ({
-        ...inv,
-        [item.prefix]: inv[item.prefix].map((i) =>
-          i.id === item.id ? { ...i, [key]: fn(event.target) } : i
-        ),
-      }));
+      setInv((inv) =>
+        inv.map((i) => i.id === item.id ? { ...i, [key]: fn(event.target) } : i)
+      );
+      console.log("setting");
       updateItem({ ...item, [key]: fn(event.target) }, token).catch((e) =>
         console.log(e)
       );
