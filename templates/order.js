@@ -154,7 +154,7 @@ module.exports = {
                 alt="${item.name}"
                 style="object-fit: contain; height: 48px; margin-right: 8px"
                 />
-                <p><span>${item.name}</span></p>
+                <p><span>${item.name}</span> - <span>x${item.quantity}</span></p>
             </a>`;
       })
       .join("\n")
