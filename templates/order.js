@@ -9,7 +9,7 @@ const props = {
       `${props.siteUrl}/fr/votre-ordre/?email=${email}&orderId=${orderId}`,
   },
   homeLink: {
-    en: "Go to Zircus Home Page",
+    en: "Go to the Zircus Home Page",
     fr: "Page d'accueil Zircus",
   },
   orderId: {
@@ -17,8 +17,8 @@ const props = {
     fr: "Id de commande",
   },
   heading: {
-    en: "Thanks for your order",
-    fr: "Merci pour votre commande",
+    en: "Thanks for your order!",
+    fr: "Merci pour votre commande!",
   },
   total: {
     en: "Total",
