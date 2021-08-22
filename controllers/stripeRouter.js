@@ -12,6 +12,9 @@ const getWords = require("../utils/words.js");
 const { updateInventoryItems, enrichOrder } = require(
   "./ordersUtils.js",
 );
+const { orderTemplate, orderTemplateText } = require("../templates/order.js");
+
+const transporter = require("./mailer.js");
 
 const opts = {
   points: 6,
@@ -115,13 +118,13 @@ stripeRouter.post("/post-payment-webhook", async (req, res) => {
         data: { name: orderToUpdate.name },
       }),
     );
-    /* const info = await transporter.sendMail({
-            from: 'Zircus <erin.danger.burton@gmail.com>',
-            to: orderToUpdate.email,
-            subject: orderToUpdate.lang === 'fr' ? 'Votre order' : 'Your order',
-            text: orderTemplateText(orderToUpdate),
-            html: orderTemplate(orderToUpdate),
-        }) */
+    await transporter.sendMail({
+      from: "Zircus <no.reply@zircus.ca>",
+      to: orderToUpdate.email,
+      subject: orderToUpdate.lang === "fr" ? "Votre order" : "Your order",
+      text: orderTemplateText(orderToUpdate),
+      html: orderTemplate(orderToUpdate),
+    });
     if (inventoryUpdateError) {
       return res.status(400).json({ error: inventoryUpdateError });
     }

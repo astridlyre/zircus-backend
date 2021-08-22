@@ -10,6 +10,8 @@ const url = require("url");
 const axios = require("axios");
 const { PAYPAL_SECRET, PAYPAL_CLIENTID } = require("../utils/config.js");
 const getWords = require("../utils/words.js");
+const { orderTemplate, orderTemplateText } = require("../templates/order.js");
+const transporter = require("./mailer.js");
 
 const PAYPAL_TOKEN_URL = "https://api-m.sandbox.paypal.com/v1/oauth2/token";
 const PAYPAL_ORDER_URL = "https://api-m.sandbox.paypal.com/v2/checkout/orders";
@@ -168,19 +170,19 @@ paypalRouter.post("/post-payment-webhook", async (req, res) => {
 
   try {
     await orderToUpdate.save();
+    await transporter.sendMail({
+      from: "Zircus <no.reply@zircus.ca>",
+      to: orderToUpdate.email,
+      subject: orderToUpdate.lang === "fr" ? "Votre order" : "Your order",
+      text: orderTemplateText(orderToUpdate),
+      html: orderTemplate(orderToUpdate),
+    });
     broadcast(
       JSON.stringify({
         type: "paid order",
         data: { name: orderToUpdate.name },
       }),
     );
-    /* const info = await transporter.sendMail({
-            from: 'Zircus <erin.danger.burton@gmail.com>',
-            to: orderToUpdate.email,
-            subject: orderToUpdate.lang === 'fr' ? 'Votre order' : 'Your order',
-            text: orderTemplateText(orderToUpdate),
-            html: orderTemplate(orderToUpdate),
-        }) */
     if (inventoryUpdateError) {
       return res.status(400).json({ error: inventoryUpdateError });
     }
