@@ -52,6 +52,11 @@ function enrichedItem({ reference, item, preferredLanguage, taxRate }) {
     name: `${
       reference.name[preferredLanguage]
     } - ${reference.color} - ${reference.size}`,
+    url: `${
+      reference.name.en.toLowerCase()
+        .split(" ")
+        .join("-")
+    }${preferredLanguage === "en" ? "" : `-${preferredLanguage}`}.html`,
     type: item.type,
     image: reference.images.sm_a,
     price: reference.price,
