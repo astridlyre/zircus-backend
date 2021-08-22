@@ -13,7 +13,6 @@ const { updateInventoryItems, enrichOrder } = require(
   "./ordersUtils.js",
 );
 const { orderTemplate, orderTemplateText } = require("../templates/order.js");
-
 const transporter = require("./mailer.js");
 
 const opts = {

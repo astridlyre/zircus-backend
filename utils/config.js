@@ -9,4 +9,12 @@ module.exports = {
   MAIL_PASSWORD: process.env.MAIL_PASSWORD,
   PAYPAL_CLIENTID: process.env.PAYPAL_CLIENTID,
   PAYPAL_SECRET: process.env.PAYPAL_SECRET,
+  CP_USERNAME: process.env.CP_USERNAME,
+  CP_PASSWORD: process.env.CP_PASSWORD,
+  CP_CUSTOMER: process.env.CP_CUSTOMER,
+  CP_ORIGIN_PHONE: process.env.CP_ORIGIN_PHONE,
+  CP_ORIGIN_ADDRESS: process.env.CP_ORIGIN_ADDRESS,
+  CP_ORIGIN_CITY: process.env.CP_ORIGIN_CITY,
+  CP_ORIGIN_STATE: process.env.CP_ORIGIN_STATE,
+  CP_ORIGIN_PC: process.env.CP_ORIGIN_PC,
 };

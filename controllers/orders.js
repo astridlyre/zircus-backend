@@ -5,6 +5,7 @@ const Underwear = require("../models/underwear");
 // const { orderTemplate, orderTemplateText } = require('../templates/order')
 const { broadcast } = require("../controllers/subscribe");
 const { RateLimiterMemory } = require("rate-limiter-flexible");
+const { getRate, getShipment } = require("../xml/cp.js");
 
 const opts = {
   points: 6,
@@ -18,6 +19,16 @@ ordersRouter.all("/", (req, res, next) => {
     .consume(req.ip)
     .then(() => next())
     .catch(() => res.status(400).json({ error: "Too many requests" }));
+});
+
+ordersRouter.post("/shipping", async (req, res) => {
+  try {
+    const quotes = await getRate(req.body);
+    console.log(quotes);
+    return res.json(quotes);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
 });
 
 ordersRouter.post("/:orderId", async (req, res) => {
