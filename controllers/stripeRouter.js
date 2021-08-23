@@ -14,6 +14,7 @@ const { updateInventoryItems, enrichOrder } = require(
 );
 const { orderTemplate, orderTemplateText } = require("../templates/order.js");
 const transporter = require("./mailer.js");
+const { createShipment } = require("../xml/cp.js");
 
 const opts = {
   points: 6,
@@ -99,6 +100,13 @@ stripeRouter.post("/post-payment-webhook", async (req, res) => {
   const orderToUpdate = await Order.findOne({ orderId: id });
   if (!orderToUpdate) {
     return res.status(400).json({ error: "Invalid order id" });
+  }
+
+  try {
+    const shipment = await createShipment(orderToUpdate);
+    orderToUpdate.shipping.shipment = shipment;
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
   }
 
   // Set paid to true

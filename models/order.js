@@ -61,6 +61,10 @@ const orderSchema = new mongoose.Schema({
       type: Number,
       required: true,
     },
+    shipment: {
+      type: Object,
+      default: null,
+    },
   },
   breakdown: {
     subtotal: {

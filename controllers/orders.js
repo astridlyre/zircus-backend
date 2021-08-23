@@ -24,7 +24,6 @@ ordersRouter.all("/", (req, res, next) => {
 ordersRouter.post("/shipping", async (req, res) => {
   try {
     const quotes = await getRate(req.body);
-    console.log(quotes);
     return res.json(quotes);
   } catch (error) {
     return res.status(400).json({ error: error.message });

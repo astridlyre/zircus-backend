@@ -1,5 +1,6 @@
 const countries = require("./countries.js");
 const { isValidType } = require("./middleware.js");
+const { USA_CODES, DOMESTIC_CODES } = require("../xml/cp.js");
 
 const CANADA_POSTAL_CODE = /^[A-Za-z][0-9][A-Za-z] ?[0-9][A-Za-z][0-9]$/;
 const US_ZIP_CODE = /^[0-9]{5}(-[0-9]{4})?$/;
@@ -33,9 +34,10 @@ function validatePostalCode({ country, postalCode }) {
     : US_ZIP_CODE.test(postalCode);
 }
 
-function validateShippingMethod({ shipping }) {
-  return shipping.method === "economy" || shipping.method === "standard" ||
-    shipping.method === "overnight";
+function validateShippingMethod({ shipping, address }) {
+  return address.country === "Canada"
+    ? DOMESTIC_CODES.has(shipping.method)
+    : USA_CODES.has(shipping.method);
 }
 
 function validateItems({ items }) {

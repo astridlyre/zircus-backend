@@ -1,5 +1,12 @@
 require("dotenv").config();
 
+const AVERAGE_UNDERWEAR_WEIGHT = 0.056; // kgs
+const DEFAULT_DIMENSIONS = {
+  width: 8.00,
+  height: 6.00,
+  length: 12.00,
+};
+
 module.exports = {
   PORT: process.env.PORT,
   MONGODB_URI: process.env.MONGODB_URI,
@@ -17,4 +24,6 @@ module.exports = {
   CP_ORIGIN_CITY: process.env.CP_ORIGIN_CITY,
   CP_ORIGIN_STATE: process.env.CP_ORIGIN_STATE,
   CP_ORIGIN_PC: process.env.CP_ORIGIN_PC,
+  AVERAGE_UNDERWEAR_WEIGHT,
+  DEFAULT_DIMENSIONS,
 };

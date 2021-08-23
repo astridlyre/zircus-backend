@@ -12,6 +12,7 @@ const { PAYPAL_SECRET, PAYPAL_CLIENTID } = require("../utils/config.js");
 const getWords = require("../utils/words.js");
 const { orderTemplate, orderTemplateText } = require("../templates/order.js");
 const transporter = require("./mailer.js");
+const { createShipment } = require("../xml/cp.js");
 
 const PAYPAL_TOKEN_URL = "https://api-m.sandbox.paypal.com/v1/oauth2/token";
 const PAYPAL_ORDER_URL = "https://api-m.sandbox.paypal.com/v2/checkout/orders";
@@ -154,6 +155,13 @@ paypalRouter.post("/post-payment-webhook", async (req, res) => {
   const orderToUpdate = await Order.findOne({ orderId });
   if (!orderToUpdate) {
     return res.status(400).json({ error: "Invalid order id" });
+  }
+
+  try {
+    const shipment = await createShipment(orderToUpdate);
+    orderToUpdate.shipping.shipment = shipment;
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
   }
 
   // Set paid to true

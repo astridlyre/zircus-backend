@@ -5,27 +5,11 @@ const {
   CP_ORIGIN_CITY,
   CP_ORIGIN_STATE,
   CP_ORIGIN_PC,
+  DEFAULT_DIMENSIONS,
+  AVERAGE_UNDERWEAR_WEIGHT,
 } = require("../utils/config.js");
-const TERMINAL_PO = 6485;
-const AVERAGE_UNDERWEAR_WEIGHT = 0.056; // kgs
-const dimensions = {
-  width: 8.00,
-  height: 6.00,
-  length: 12.00,
-};
-
-const shippingCodes = {
-  "Canada": {
-    overnight: "DOM.PC",
-    standard: "DOM.XP",
-    economy: "DOM.EP",
-  },
-  "United States": {
-    overnight: "USA.PW.PAK",
-    standard: "USA.XP",
-    economy: "USA.EP",
-  },
-};
+const TERMINAL_PO = "V9R5H0";
+const countries = require("./countries.js");
 
 const company = {
   name: "Zircus",
@@ -38,20 +22,18 @@ const company = {
   },
 };
 
-const headers = {
+const headers = (lang) => ({
   Accept: "application/vnd.cpc.ncshipment-v4+xml",
   "Content-Type": "application/vnd.cpc.ncshipment-v4+xml",
-  "Accept-Language": "en-CA",
-};
+  "Accept-Language": `${lang === "en" ? "en-CA" : "fr-CA"}`,
+});
 
 const xml = ({ name, email, items, shipping, address, orderId }) =>
   `<?xml version='1.0' encoding='utf-8'?>
 <non-contract-shipment xmlns="http://www.canadapost.ca/ws/ncshipment-v4">
-  <shipping-point-id>${TERMINAL_PO}</shipping-point-id>
+  <requested-shipping-point>${TERMINAL_PO}</requested-shipping-point>
   <delivery-spec>
-    <service-code>${
-    shippingCodes[address.country][shipping.method]
-  }</service-code>
+    <service-code>${shipping.method}</service-code>
     <sender>
       <company>${company.name}</company>
       <contact-phone>${company.phone}</contact-phone>
@@ -59,7 +41,7 @@ const xml = ({ name, email, items, shipping, address, orderId }) =>
         <address-line-1>${company.address.line1}</address-line-1>
         <city>${company.address.city}</city>
         <prov-state>${company.address.state}</prov-state>
-        <postal-zip-code>${company.postalCode}</postal-zip-code>
+        <postal-zip-code>${company.address.postalCode}</postal-zip-code>
       </address-details>
     </sender>
     <destination>
@@ -70,43 +52,39 @@ const xml = ({ name, email, items, shipping, address, orderId }) =>
     address.line2 ? `<address-line-2>${address.line2}</address-line-2>` : ""
   }
         <city>${address.city}</city>
-        <prov-state>${address.state}</prov-state>
-        <country-code>${
-    address.country === "Canada" ? "CA" : "US"
-  }</country-code>
-        <postal-zip-code>${address.postalCode}</postal-zip-code>
+        <prov-state>${
+    countries[address.country].states.find((state) =>
+      state.name === address.state
+    ).code
+  }</prov-state>
+        <country-code>${countries[address.country].code}</country-code>
+        <postal-zip-code>${
+    address.postalCode.replace(" ", "")
+  }</postal-zip-code>
       </address-details>
     </destination>
-    <options>
-      <option>
-        <option-code>SO</option-code>
-      </option>
-    </options>
     <parcel-characteristics>
       <weight>${items.reduce((acc, item) => acc + item.quantity, 0) *
     AVERAGE_UNDERWEAR_WEIGHT}</weight>
       <dimensions>
-        <length>${dimensions.length}</length>
-        <width>${dimensions.width}</width>
-        <height>${dimensions.height}</height>
+        <length>${DEFAULT_DIMENSIONS.length}</length>
+        <width>${DEFAULT_DIMENSIONS.width}</width>
+        <height>${DEFAULT_DIMENSIONS.height}</height>
       </dimensions>
     </parcel-characteristics>
     <notification>
       <email>${email}</email>
       <on-shipment>true</on-shipment>
       <on-delivery>true</on-delivery>
+      <on-exception>false</on-exception>
     </notification>
-    <print-preferences>
-      <output-format>4x6</output-format>
-      <encoding>PDF</encoding>
-    </print-preferences>
     <preferences>
-      <show-packing-instructions>true</show-packing-instructions>
+      <show-packing-instructions>false</show-packing-instructions>
       <show-postage-rate>true</show-postage-rate>
       <show-insured-value>true</show-insured-value>
     </preferences>
     <references>
-      <order-id>${orderId}</order-id>
+      <customer-ref-1>${orderId}</customer-ref-1>
     </references>
   </delivery-spec>
 </non-contract-shipment>`;

@@ -1,5 +1,6 @@
 const { hasValidToken } = require("../utils/middleware");
 const Underwear = require("../models/underwear");
+const { getRate } = require("../xml/cp.js");
 
 const twoDecimals = (n) => Math.round(n * 100) / 100;
 
@@ -36,14 +37,26 @@ function calculateTaxRate({ country, state }) {
   }
 }
 
-function calculateShipping({ method, taxRate }) {
-  switch (method) {
-    case "overnight":
-      return 29.99 + (29.99 * taxRate);
-    case "standard":
-      return 9.99 + (9.99 * taxRate);
-    default:
-      return 5.99 + (5.99 * taxRate);
+async function calculateShipping(orderData) {
+  try {
+    const res = await getRate(orderData);
+    const quote = res.find((quote) =>
+      quote.serviceCode === orderData.shipping.method
+    );
+    if (!quote) {
+      return {
+        error:
+          `Unable to calculate shipping with method ${orderData.shipping.method}`,
+      };
+    }
+    return {
+      method: orderData.shipping.method,
+      total: Number(quote.priceDetails.due),
+    };
+  } catch (error) {
+    return {
+      error: error.message,
+    };
   }
 }
 
@@ -85,13 +98,14 @@ const enrichOrder = async (
       taxRate,
     }));
   }
-  const shipping = {
-    method: orderDetails.shipping.method,
-    total: calculateShipping({
-      method: orderDetails.shipping.method,
-      taxRate,
-    }),
-  };
+
+  const shipping = await calculateShipping(orderDetails);
+  if (shipping.error) {
+    return {
+      error: shipping.error,
+    };
+  }
+
   const subtotal = twoDecimals(
     enrichedItems.reduce(
       (acc, item) => acc + item.price * item.quantity,
