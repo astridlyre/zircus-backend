@@ -10,6 +10,7 @@ const StyledPage = styled.main`
     ${(props) => props.pad && `padding-left: var(--base-spacing);`}
     ${(props) => props.pad && `padding-right: var(--base-spacing);`}
     padding-bottom: var(--lg-spacing);
+    background-color: var(--gray-20);
 `;
 
 export default function Page({ children, padTop, pad }) {

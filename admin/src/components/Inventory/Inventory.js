@@ -10,12 +10,12 @@ const StyledLabel = styled.label`
   gap: var(--base-spacing);
   align-items: center;
   padding: var(--base-unit);
-  background-color: var(--gray-20);
-  border: 2px solid var(--gray-30);
+  background-color: var(--dgray-80);
   border-radius: var(--radius);
   right: var(--base-spacing);
   bottom: var(--base-unit);
   position: fixed;
+  box-shadow: var(--box-shadow-sm);
 `;
 
 export default function Inventory({ inv, token, setInv }) {

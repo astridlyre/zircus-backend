@@ -16,7 +16,7 @@ const StyledItems = styled.div`
     flex-flow: column nowrap;
     justify-content: space-between;
     width: 14rem;
-    border-right: 2px solid var(--gray-30);
+    border-right: 2px solid var(--gray-20);
     padding-right: var(--base-spacing);
 `;
 

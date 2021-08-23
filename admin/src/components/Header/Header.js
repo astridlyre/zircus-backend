@@ -12,6 +12,9 @@ const StyledHeader = styled.header`
     height: 4rem;
     background: var(--dgray-80);
     padding: var(--base-spacing);
+    z-index: 10;
+    box-shadow: 0px 6px 12px 4px rgba(23, 23, 22, 0.075),
+      0px 3px 6px 1px rgba(22, 22, 21, 0.15);
 `;
 
 const StyledH3 = styled.h3`

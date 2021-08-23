@@ -14,9 +14,10 @@ const StyledLi = styled.li`
     border-left: 2px solid var(--gray-20);
     border-right: 2px solid var(--gray-20);
     padding: 1rem;
+    background-color: var(--gray-10);
 
     &:hover {
-        background-color: var(--gray-20);
+        background-color: var(--gray-05);
     }
 `;
 

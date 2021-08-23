@@ -1,25 +1,9 @@
 import { useState } from "react";
-import styled from "styled-components";
 import Order from "./Order.js";
 import Filter from "../Filter/Filter.js";
 import Page from "../Containers/Page.js";
 import List from "../Containers/List.js";
 import { useField } from "../../hooks/hooks.js";
-
-const StyledLabel = styled.label`
-  display: flex;
-  gap: var(--base-unit);
-  align-items: center;
-`;
-
-const StyledLabelContainer = styled.div`
-  display: flex;
-  gap: var(--base-spacing);
-  margin-bottom: var(--base-unit);
-  position: absolute;
-  background-color: var(--gray-10);
-  bottom: 0;
-`;
 
 export default function Orders({
   orders,
@@ -72,17 +56,7 @@ export default function Orders({
 
   return (
     <Page padTop={true}>
-      <StyledLabelContainer>
-        <StyledLabel htmlFor="dateStart">
-          <span>Date Start</span>
-          <input {...dateStart} id="dateStart" />
-        </StyledLabel>
-        <StyledLabel htmlFor="dateEnd">
-          <span>Date End</span>
-          <input {...dateEnd} id="dateEnd" />
-        </StyledLabel>
-      </StyledLabelContainer>
-      <Filter filters={filters} />
+      <Filter filters={filters} dateStart={dateStart} dateEnd={dateEnd} />
       <List gap={true}>
         {orders &&
           ordersToShow.map((order) => (

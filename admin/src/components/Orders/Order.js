@@ -13,11 +13,12 @@ const StyledLi = styled.li`
     gap: var(--base-spacing);
     padding: var(--base-spacing);
     width: 100%;
-    border-left: 0.5rem solid;
-    border-right: 0.5rem solid;
-    border-bottom: 1px solid;
-    border-top: 1px solid;
-    border-color: ${(props) =>
+    background-color: var(--gray-10);
+    border-right: var(--base-unit) solid;
+    border-top: 2px solid var(--gray-30);
+    border-left: 2px solid var(--gray-30);
+    border-bottom: 2px solid var(--gray-30);
+    border-right-color: ${(props) =>
   props.hasPaid && props.hasShipped
     ? "var(--green)"
     : props.hasPaid
@@ -25,7 +26,7 @@ const StyledLi = styled.li`
     : "var(--gray-30)"};
 
     &:hover {
-        background-color: var(--gray-20);
+        background-color: var(--gray-05);
     }
 `;
 

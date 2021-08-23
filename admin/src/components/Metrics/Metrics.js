@@ -14,7 +14,7 @@ const StyledContainer = styled.div`
 `;
 
 const StyledBubble = styled.div`
-    background-color: var(--gray-20);
+    background-color: var(--gray-10);
     border-radius: var(--radius);
     flex-basis: 12rem;
     flex-grow: 1;
@@ -24,6 +24,10 @@ const StyledBubble = styled.div`
     overflow: hidden;
     margin-bottom: var(--lg-spacing);
     padding-bottom: var(--base-spacing);
+
+    :hover {
+      background-color: var(--gray-05);
+    }
 
     h3 {
         background-color: var(--dgray-80);
@@ -50,10 +54,6 @@ const StyledItems = styled.ul`
         justify-content: space-between;
         border-bottom: 1px solid var(--gray-30);
         padding: var(--base-unit);
-
-        &:hover {
-            background-color: var(--gray-30);
-        }
     }
 `;
 

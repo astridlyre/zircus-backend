@@ -12,8 +12,12 @@ const StyledNav = styled.nav`
     top: 4rem;
     left: 0;
     bottom: 0;
+    z-index: 5;
     width: ${(props) => (props.showFull ? "14rem" : "4rem")};
-    border-right: 2px solid var(--gray-20);
+    border-right: 2px solid var(--gray-30);
+    background-color: var(--gray-10);
+    box-shadow: 3px 0px 6px 0 rgba(23, 23, 22, 0.05), 
+      5px 0px 10px 2px rgba(23, 23, 21, 0.087);
 `;
 
 const StyledUl = styled.ul`
@@ -39,9 +43,8 @@ const StyledNavButton = styled.button`
     border: none;
     outline: none;
 
-    &:hover,
-    &:focus {
-        background-color: var(--gray-20);
+    &:hover {
+        background-color: var(--gray-30);
         cursor: pointer;
     }
 
