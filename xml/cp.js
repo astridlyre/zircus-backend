@@ -7,7 +7,6 @@ const shipment = require("./createShipment.js");
 const xml2js = require("xml2js");
 const PriceQuote = require("./PriceQuote.js");
 const Shipment = require("./Shipment.js");
-const testData = require("./test.js");
 
 const DOMESTIC_CODES = new Set([
   "DOM.XP",
@@ -65,16 +64,7 @@ async function getArtifact(url) {
     },
     auth,
     responseType: "arraybuffer",
-  });
-}
-
-async function testShipment() {
-  const res = await createShipment(testData);
-  const file = await getArtifact(res.label);
-  fs.writeFile(`${res.shipmentId}.pdf`, file.data, (err) => {
-    if (err) throw err;
-    console.log("File has been saved");
-  });
+  }).then((res) => res.data);
 }
 
 module.exports = {
