@@ -20,39 +20,23 @@ const StyledLabel = styled.label`
 
 export default function Inventory({ inv, token, setInv }) {
   const [searchValue, setSearchValue] = useState("");
-  const [invToShow, setInvToShow] = useState(inv);
-
-  const invIncludes = (str) => {
-    setInvToShow(inv.filter((item) => {
-      const testStrings = [
-        item.name["en"].toLowerCase(),
-        item.prefix,
-        item.size,
-        item.color,
-      ];
-      for (const testStr of testStrings) {
-        if (testStr.includes(str)) {
-          return true;
-        }
+  const invToShow = inv.filter((item) => {
+    if (!searchValue) return true;
+    const testStrings = [
+      item.name["en"].toLowerCase(),
+      item.prefix,
+      item.size,
+      item.color,
+    ];
+    for (const testStr of testStrings) {
+      if (testStr.includes(searchValue.toLowerCase())) {
+        return true;
       }
-      return false;
-    }));
-  };
-
-  const handleSearch = (event) => {
-    setSearchValue(event.target.value);
-    if (event.target.value === "") {
-      setInvToShow(inv);
-    } else {
-      invIncludes(event.target.value.toLowerCase());
     }
-  };
+    return false;
+  });
 
-  useEffect(() => {
-    if (searchValue.length) {
-      invIncludes(searchValue.toLowerCase());
-    } else setInvToShow(inv);
-  }, [searchValue]);
+  const handleSearch = (event) => setSearchValue(event.target.value);
 
   return (
     <Page>
@@ -60,7 +44,7 @@ export default function Inventory({ inv, token, setInv }) {
         <input type="search" value={searchValue} onChange={handleSearch} />
       </StyledLabel>
       <List>
-        {invToShow &&
+        {inv &&
           invToShow.map((item) => (
             <InventoryItem
               item={item}

@@ -32,7 +32,9 @@ const StyledDiv = styled.div`
 
 const StyledActions = styled.div`
     display: flex;
+    flex-flow: column nowrap;
     justify-content: flex-end;
+    align-items: flex-end;
     flex-grow: 1;
 `;
 

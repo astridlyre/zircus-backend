@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import Label from "../Text/Label.js";
-import DeleteButton from "../Buttons/DeleteButton.js";
 import { updateItem } from "../../services/services.js";
 
 const StyledLi = styled.li`
@@ -40,7 +39,6 @@ export default function InventoryItem({ item, token, setInv }) {
       setInv((inv) =>
         inv.map((i) => i.id === item.id ? { ...i, [key]: fn(event.target) } : i)
       );
-      console.log("setting");
       updateItem({ ...item, [key]: fn(event.target) }, token).catch((e) =>
         console.log(e)
       );

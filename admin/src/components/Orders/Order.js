@@ -67,35 +67,61 @@ export default function Order({
   };
 
   const updatePaid = () => {
-    setOrders((orders) =>
-      orders.map((o) => o.id === order.id ? { ...o, hasPaid: !o.hasPaid } : o)
-    );
-    updateOrder(
-      {
-        id: order.id,
-        updatedAttributes: {
-          hasPaid: !order.hasPaid,
-        },
+    setShowModal({
+      heading: "Confirm status change",
+      text: `Change ${order.name}'s order status to ${
+        order.hasPaid ? "not paid" : "paid"
+      }?'`,
+      color: order.hasPaid ? "danger" : "positive",
+      btnText: "Change",
+      ok: (choice) => {
+        if (choice) {
+          setOrders((orders) =>
+            orders.map((o) =>
+              o.id === order.id ? { ...o, hasPaid: !o.hasPaid } : o
+            )
+          );
+          updateOrder(
+            {
+              id: order.id,
+              updatedAttributes: {
+                hasPaid: !order.hasPaid,
+              },
+            },
+            token,
+          ).catch((e) => console.log(e));
+        }
       },
-      token,
-    ).catch((e) => console.log(e));
+    });
   };
 
   const updateShipped = () => {
-    setOrders((orders) =>
-      orders.map((o) =>
-        o.id === order.id ? { ...o, hasShipped: !o.hasShipped } : o
-      )
-    );
-    updateOrder(
-      {
-        id: order.id,
-        updatedAttributes: {
-          hasShipped: !order.hasShipped,
-        },
+    setShowModal({
+      heading: "Confirm status change",
+      text: `Change ${order.name}'s order status to ${
+        order.hasShipped ? "not shipped" : "shipped"
+      }?'`,
+      color: order.hasShipped ? "danger" : "positive",
+      btnText: "Change",
+      ok: (choice) => {
+        if (choice) {
+          setOrders((orders) =>
+            orders.map((o) =>
+              o.id === order.id ? { ...o, hasShipped: !o.hasShipped } : o
+            )
+          );
+          updateOrder(
+            {
+              id: order.id,
+              updatedAttributes: {
+                hasShipped: !order.hasShipped,
+              },
+            },
+            token,
+          ).catch((e) => console.log(e));
+        }
       },
-      token,
-    ).catch((e) => console.log(e));
+    });
   };
 
   const handleLabel = async (url) => {

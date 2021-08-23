@@ -6,6 +6,11 @@ const StyledTotal = styled.p`
     font-weight: 600;
 `;
 
+const StyledImg = styled.img`
+  width: var(--md-spacing);
+  object-fit: contain;
+`;
+
 const StyledItems = styled.div`
     display: flex;
     flex-flow: column nowrap;
@@ -15,16 +20,27 @@ const StyledItems = styled.div`
     padding-right: var(--base-spacing);
 `;
 
+const StyledLi = styled.li`
+  display: flex;
+  gap: var(--base-spacing);
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const StyledUl = styled.ul`
+`;
+
 export default function OrderItems({ order }) {
   return (
     <StyledItems>
-      <ul>
+      <StyledUl>
         {order.items.map((item) => (
-          <li key={item.type}>
-            {item.type} x {item.quantity}
-          </li>
+          <StyledLi key={item.type}>
+            <StyledImg src={`https://zircus.netlify.app${item.image}`} />
+            <span>{item.type} x{item.quantity}</span>
+          </StyledLi>
         ))}
-      </ul>
+      </StyledUl>
       <StyledTotal>total ${order.total.toFixed(2)}</StyledTotal>
     </StyledItems>
   );

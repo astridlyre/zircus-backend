@@ -9,6 +9,7 @@ const StyledContainer = styled.div`
     gap: var(--base-spacing);
     margin-top: var(--base-spacing);
     width: 100%;
+    align-items: flex-start;
     max-width: var(--screen-md);
 `;
 
@@ -19,26 +20,25 @@ const StyledBubble = styled.div`
     flex-grow: 1;
     display: flex;
     flex-flow: column nowrap;
-    align-items: center;
     justify-content: flex-start;
     overflow: hidden;
     margin-bottom: var(--lg-spacing);
+    padding-bottom: var(--base-spacing);
 
     h3 {
         background-color: var(--dgray-80);
         color: var(--gray-10);
         width: 100%;
-        text-align: center;
         padding: var(--base-unit) var(--base-spacing);
+        margin-bottom: var(--base-spacing);
     }
 `;
 
 const StyledOrdersNum = styled.span`
-    display: flex;
     height: 100%;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--xxl-font-size);
+    font-size: var(--md-font-size);
+    line-height: 1.8;
+    padding: 0 var(--base-spacing);
 `;
 
 const StyledItems = styled.ul`
@@ -64,12 +64,31 @@ export default function Metrics({ orders, inv, messages }) {
       <StyledContainer flow="row wrap">
         <StyledBubble>
           <h3>orders</h3>
-          <StyledOrdersNum>{orders && orders.length}</StyledOrdersNum>
+          <StyledOrdersNum>
+            pending: {orders &&
+              orders.reduce(
+                (acc, order) =>
+                  !order.hasPaid && !order.hasShipped ? acc + 1 : acc,
+                0,
+              )}
+          </StyledOrdersNum>
+          <StyledOrdersNum>
+            paid: {orders &&
+              orders.reduce((acc, order) => order.hasPaid ? acc + 1 : acc, 0)}
+          </StyledOrdersNum>
+          <StyledOrdersNum>
+            shipped: {orders &&
+              orders.reduce(
+                (acc, order) =>
+                  order.hasPaid && order.hasShipped ? acc + 1 : acc,
+                0,
+              )}
+          </StyledOrdersNum>
         </StyledBubble>
         <StyledBubble>
           <h3>messages</h3>
           <StyledOrdersNum>
-            {messages && messages.length}
+            total: {messages && messages.length}
           </StyledOrdersNum>
         </StyledBubble>
         <StyledBubble>

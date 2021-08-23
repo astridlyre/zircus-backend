@@ -12,7 +12,7 @@ const StyledNav = styled.nav`
     top: 4rem;
     left: 0;
     bottom: 0;
-    width: ${(props) => (props.showFull ? "12rem" : "4rem")};
+    width: ${(props) => (props.showFull ? "14rem" : "4rem")};
     border-right: 2px solid var(--gray-20);
 `;
 

@@ -12,7 +12,7 @@ const StyledDashboard = styled.div`
     display: flex;
     flex-flow: column nowrap;
     padding-top: 4rem;
-    padding-left: ${(props) => (props.showFull ? "12rem" : "4rem")};
+    padding-left: ${(props) => (props.showFull ? "14rem" : "4rem")};
     height: 100vh;
     overflow: hidden;
 `;

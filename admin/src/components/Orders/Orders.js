@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import Order from "./Order.js";
 import Filter from "../Filter/Filter.js";
@@ -15,7 +15,10 @@ const StyledLabel = styled.label`
 const StyledLabelContainer = styled.div`
   display: flex;
   gap: var(--base-spacing);
-  margin-bottom: var(--base-spacing);
+  margin-bottom: var(--base-unit);
+  position: absolute;
+  background-color: var(--gray-10);
+  bottom: 0;
 `;
 
 export default function Orders({
@@ -33,31 +36,40 @@ export default function Orders({
     "date",
     "",
   );
-  const [filter, setFilter] = useState(["hasPaid"]);
+  const [showShipped, setShowShipped] = useState(false);
+  const [showPaid, setShowPaid] = useState(true);
   const filters = [
     {
-      active: filter.includes("hasShipped"),
+      active: showShipped,
       text: "shipped",
-      setActive: () =>
-        filter.includes("hasShipped")
-          ? setFilter((filter) => filter.filter((f) => f !== "hasShipped"))
-          : setFilter((filter) => filter.concat("hasShipped")),
+      setActive: () => setShowShipped((state) => !state),
     },
     {
-      active: filter.includes("hasPaid"),
+      active: showPaid,
       text: "paid",
-      setActive: () =>
-        filter.includes("hasPaid")
-          ? setFilter((filter) => filter.filter((f) => f !== "hasPaid"))
-          : setFilter((filter) => filter.concat("hasPaid")),
+      setActive: () => setShowPaid((state) => !state),
     },
   ];
-  const filterOrder = (order) => {
-    if (!filter.length) return true;
-    for (const f of filter) if (!order[f]) return false;
-    return true;
+
+  const filterDates = (order) => {
+    const start = dateStart.value;
+    const end = dateEnd.value;
+    if (!start && !end) return true;
+    const orderTime = new Date(order.createdOn).getTime();
+    if (!start) {
+      return orderTime <= new Date(end).getTime();
+    }
+    if (!end) {
+      return orderTime >= new Date(start).getTime();
+    }
+    return orderTime >= new Date(start).getTime() &&
+      orderTime <= new Date(end).getTime();
   };
-  const ordersToShow = orders && orders.filter(filterOrder);
+  const filterPaid = (order) => order.hasPaid === showPaid;
+  const filterShipped = (order) => order.hasShipped === showShipped;
+  const ordersToShow = orders &&
+    orders.filter(filterPaid).filter(filterShipped).filter(filterDates);
+
   return (
     <Page padTop={true}>
       <StyledLabelContainer>
