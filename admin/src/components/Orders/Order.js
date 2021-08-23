@@ -5,6 +5,7 @@ import MediumHeader from "../Text/MediumHeader.js";
 import OrderItems from "./OrderItems.js";
 import Label from "../Text/Label.js";
 import DeleteButton from "../Buttons/DeleteButton.js";
+import { getLabel } from "../../services/services.js";
 
 const StyledLi = styled.li`
     margin: 0 auto;
@@ -31,6 +32,7 @@ const StyledLi = styled.li`
 const StyledActions = styled.div`
     display: flex;
     flex-flow: column nowrap;
+    gap: var(--base-unit);
 `;
 
 const StyledBtnContainer = styled.div`
@@ -96,6 +98,17 @@ export default function Order({
     ).catch((e) => console.log(e));
   };
 
+  const handleLabel = async (url) => {
+    const result = await getLabel(url, token);
+    const fileURL = window.URL.createObjectURL(new Blob([result.data]));
+    const fURL = document.createElement("a");
+    fURL.href = fileURL;
+    fURL.setAttribute("download", `${order.orderId}.pdf`);
+    document.body.appendChild(fURL);
+    fURL.click();
+    fURL.remove();
+  };
+
   return (
     <StyledLi hasPaid={order.hasPaid} hasShipped={order.hasShipped}>
       <OrderItems order={order} />
@@ -119,6 +132,15 @@ export default function Order({
             checked={order.hasShipped}
             onChange={updateShipped}
           />
+        </Label>
+        <Label>
+          <button
+            type="button"
+            className="button"
+            onClick={() => handleLabel(order.shipping.shipment.label)}
+          >
+            get label
+          </button>
         </Label>
         <StyledBtnContainer>
           <DeleteButton onClick={handleDelete} />

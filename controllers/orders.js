@@ -35,8 +35,8 @@ ordersRouter.post("/label", async (req, res) => {
     return res.status(500).json({ error: "Invalid token" });
   }
   try {
-    const file = await getArtifact(req.href);
-    return res.type("applicaton/pdf").send(file.data);
+    const file = await getArtifact(req.body.url);
+    return res.type("applicaton/pdf").send(Buffer.from(file));
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }

@@ -6,8 +6,8 @@ const authHeader = (token) => ({
   },
 });
 
-const API_ENDPOINT = "https://zircus.herokuapp.com/api";
-// const API_ENDPOINT = 'http://localhost:3000/api'
+// const API_ENDPOINT = "https://zircus.herokuapp.com/api";
+const API_ENDPOINT = "http://localhost:3000/api";
 
 export async function login(username, password) {
   return await axios.post(`${API_ENDPOINT}/login`, {
@@ -48,5 +48,16 @@ export async function deleteMessage(id, token) {
   return await axios.delete(
     `${API_ENDPOINT}/message/${id}`,
     authHeader(token),
+  );
+}
+
+export async function getLabel(url, token) {
+  return await axios.post(
+    `${API_ENDPOINT}/orders/label`,
+    { url },
+    {
+      responseType: "blob",
+      ...authHeader(token),
+    },
   );
 }
