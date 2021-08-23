@@ -6,8 +6,8 @@ const authHeader = (token) => ({
   },
 });
 
-// const API_ENDPOINT = "https://zircus.herokuapp.com/api";
-const API_ENDPOINT = "http://localhost:3000/api";
+const API_ENDPOINT = "https://zircus.herokuapp.com/api";
+// const API_ENDPOINT = "http://localhost:3000/api";
 
 export async function login(username, password) {
   return await axios.post(`${API_ENDPOINT}/login`, {
