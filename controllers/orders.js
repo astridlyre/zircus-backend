@@ -5,7 +5,7 @@ const Underwear = require("../models/underwear");
 // const { orderTemplate, orderTemplateText } = require('../templates/order')
 const { broadcast } = require("../controllers/subscribe");
 const { RateLimiterMemory } = require("rate-limiter-flexible");
-const { getRate, getShipment } = require("../xml/cp.js");
+const { getRate, getArtifact } = require("../xml/cp.js");
 
 const opts = {
   points: 6,
@@ -25,6 +25,18 @@ ordersRouter.post("/shipping", async (req, res) => {
   try {
     const quotes = await getRate(req.body);
     return res.json(quotes);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+});
+
+ordersRouter.post("/label", async (req, res) => {
+  if (!hasValidToken(req.token)) {
+    return res.status(500).json({ error: "Invalid token" });
+  }
+  try {
+    const file = await getArtifact(req.href);
+    return res.type("applicaton/pdf").send(file.data);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
