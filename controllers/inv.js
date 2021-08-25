@@ -80,20 +80,14 @@ async function initDB(inv) {
   }
 }
 
-invRouter.get("/", async (req, res) => {
+invRouter.get("/", async (_, res) => {
   const inv = await Underwear.find({});
   if (inv.length <= 0) {
     return res.status(404).json({ error: "No items found" });
   }
 
-  const reply = {};
-  for (const item of inv) {
-    if (!reply.hasOwnProperty(item.prefix)) reply[item.prefix] = [];
-    reply[item.prefix].push(item);
-  }
-
   // initDB(inv)
-  return res.json(reply);
+  return res.json(inv);
 });
 
 invRouter.get("/:type", async (req, res) => {

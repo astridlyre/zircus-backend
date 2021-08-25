@@ -132,7 +132,7 @@ async function handlePaypalPayment({ order, res }) {
         data: { name: newOrder.name, orderId },
       }),
     );
-    return res.json(newOrder);
+    return res.json({ orderData: newOrder, clientSecret: null });
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }

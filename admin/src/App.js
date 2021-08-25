@@ -19,45 +19,43 @@ function App() {
   const updateMessages = ({ text, color }) => {
     notify(text, color);
     getMessages(token)
-      .then((reply) => setMessages(reply.data.messages))
+      .then((reply) => setMessages(reply.messages))
       .catch(() => setMessages(null));
   };
 
   const updateOrders = ({ text, color }) => {
     notify(text, color);
     getInv()
-      .then((reply) =>
-        setInv([...reply.data.ff, ...reply.data.pf, ...reply.data.cf])
-      )
+      .then((reply) => setInv(reply))
       .catch(() => setInv([]));
     getOrders(token)
-      .then((reply) => setOrders(reply.data))
+      .then((reply) => setOrders(reply))
       .catch(() => setOrders(null));
   };
 
   const initWebsocketListener = () => {
-    const websocketListenerId = addListener((msg) => {
+    const websocketListenerId = addListener((message) => {
       if (!token) return;
-      switch (msg.type) {
+      switch (message.type) {
         case "message":
           return updateMessages({
-            text: `New message from ${msg.data.name}`,
+            text: `New message from ${message.data.name}`,
             color: "green",
           });
         case "pending order":
           return updateOrders({
-            text: `Pending order from ${msg.data.name}`,
+            text: `Pending order from ${message.data.name}`,
             color: "gray",
           });
         case "paid order":
           return updateOrders({
-            text: `Paid order from ${msg.data.name}`,
+            text: `Paid order from ${message.data.name}`,
             color: "green",
           });
         case "deleted order":
           return updateOrders({
-            text: `${msg.data.response}: Inventory updated`,
-            color: "red",
+            text: `${message.data.response}: Inventory updated`,
+            color: "green",
           });
       }
     });
@@ -84,16 +82,17 @@ function App() {
 
   useEffect(() => {
     getInv()
-      .then((reply) =>
-        setInv([...reply.data.ff, ...reply.data.pf, ...reply.data.cf])
-      )
+      .then((reply) => setInv(reply))
       .catch(() => setInv([]));
     if (token !== null) {
       getOrders(token)
-        .then((reply) => setOrders(reply.data))
+        .then((reply) => {
+          console.log(reply);
+          setOrders(reply);
+        })
         .catch(() => setOrders(null));
       getMessages(token)
-        .then((reply) => setMessages(reply.data.messages))
+        .then((reply) => setMessages(reply.messages))
         .catch(() => setMessages(null));
     }
     initWebsocketListener();

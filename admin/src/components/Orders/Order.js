@@ -51,8 +51,8 @@ export default function Order({
   setOrders,
   notify,
 }) {
-  const handleDeleteFailure = ({ data }) =>
-    notify(`Error: ${data?.error}`, "red") && console.log(data);
+  const handleDeleteFailure = ({ error }) =>
+    notify(`Error: ${error}`, "red") && console.log(error);
   const handleDelete = () => {
     setShowModal({
       heading: "Confirm deletion",
@@ -127,7 +127,7 @@ export default function Order({
 
   const handleLabel = async (url) => {
     const result = await getLabel(url, token);
-    const fileURL = window.URL.createObjectURL(new Blob([result.data]));
+    const fileURL = window.URL.createObjectURL(new Blob([result]));
     const fURL = document.createElement("a");
     fURL.href = fileURL;
     fURL.setAttribute("download", `${order.orderId}.pdf`);

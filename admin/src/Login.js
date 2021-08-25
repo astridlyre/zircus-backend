@@ -28,9 +28,9 @@ const StyledLabel = styled.label`
 `;
 
 const StyledMessage = styled.p`
-    color: ${(props) => (props.failedLogin
-  ? "var(--red)"
-  : "var(--text-color)")};
+    color: ${(
+  props,
+) => (props.failedLogin ? "var(--red)" : "var(--text-color)")};
     margin: var(--base-spacing) 0;
     font-weight: 500;
 `;
@@ -52,11 +52,11 @@ export default function Login({ setToken, setUser }) {
     }, 2000);
   };
 
-  const handleSuccessfulLogin = ({ data }) => {
-    setUser(data.name);
-    setToken(data.token);
-    localStorage.setItem("user", data.name);
-    localStorage.setItem("token", data.token);
+  const handleSuccessfulLogin = ({ name, token }) => {
+    setUser(name);
+    setToken(token);
+    localStorage.setItem("user", name);
+    localStorage.setItem("token", token);
     initializeWebSocket();
   };
 

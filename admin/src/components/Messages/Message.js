@@ -60,11 +60,11 @@ export default function Message({
   notify,
 }) {
   const [showFull, setShowFull] = useState(false);
-  const handleDeleteSuccess = ({ data }) => {
+  const handleDeleteSuccess = ({ response }) => {
     setMessages((messages) => messages.filter((m) => m.id !== message.id));
-    notify(`${data.response}: Deleted ${message.name}'s message`, "red");
+    notify(`${response}: Deleted ${message.name}'s message`, "red");
   };
-  const handleDeleteFailure = ({ data }) => notify(`${data.error}`, "red");
+  const handleDeleteFailure = ({ error }) => notify(`${error}`, "red");
   const handleDelete = () => {
     setShowModal({
       heading: "Confirm deletion",

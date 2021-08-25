@@ -39,7 +39,7 @@ const StyledButton = styled.button`
   }
 
   svg {
-    margin-left: 0.45rem;
+    padding: var(--base-unit);
   }
 `;
 
