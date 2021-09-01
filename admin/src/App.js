@@ -18,23 +18,23 @@ function App() {
 
   const updateMessages = ({ text, color }) => {
     notify(text, color);
-    getMessages(token)
-      .then((reply) => setMessages(reply.messages))
+    getMessages()
+      .then(reply => setMessages(reply.messages))
       .catch(() => setMessages(null));
   };
 
   const updateOrders = ({ text, color }) => {
     notify(text, color);
     getInv()
-      .then((reply) => setInv(reply))
+      .then(reply => setInv(reply))
       .catch(() => setInv([]));
-    getOrders(token)
-      .then((reply) => setOrders(reply))
+    getOrders()
+      .then(reply => setOrders(reply))
       .catch(() => setOrders(null));
   };
 
   const initWebsocketListener = () => {
-    const websocketListenerId = addListener((message) => {
+    const websocketListenerId = addListener(message => {
       if (!token) return;
       switch (message.type) {
         case "message":
@@ -57,6 +57,8 @@ function App() {
             text: `${message.data.response}: Inventory updated`,
             color: "green",
           });
+        default:
+          console.error(`Unknown message type: ${message.type}`);
       }
     });
     setWebsocketId(websocketListenerId);
@@ -82,17 +84,16 @@ function App() {
 
   useEffect(() => {
     getInv()
-      .then((reply) => setInv(reply))
+      .then(reply => setInv(reply))
       .catch(() => setInv([]));
     if (token !== null) {
-      getOrders(token)
-        .then((reply) => {
-          console.log(reply);
+      getOrders()
+        .then(reply => {
           setOrders(reply);
         })
         .catch(() => setOrders(null));
-      getMessages(token)
-        .then((reply) => setMessages(reply.messages))
+      getMessages()
+        .then(reply => setMessages(reply.messages))
         .catch(() => setMessages(null));
     }
     initWebsocketListener();
@@ -101,26 +102,23 @@ function App() {
 
   return (
     <Modal showModal={showModal} setShowModal={setShowModal}>
-      {token
-        ? (
-          <Dashboard
-            notification={notification}
-            notify={notify}
-            inv={inv}
-            orders={orders}
-            token={token}
-            logout={logout}
-            setShowModal={setShowModal}
-            setOrders={setOrders}
-            setInv={setInv}
-            user={user}
-            messages={messages}
-            setMessages={setMessages}
-          />
-        )
-        : (
-          <Login setUser={setUser} setToken={setToken} />
-        )}
+      {token ? (
+        <Dashboard
+          notification={notification}
+          notify={notify}
+          inv={inv}
+          orders={orders}
+          logout={logout}
+          setShowModal={setShowModal}
+          setOrders={setOrders}
+          setInv={setInv}
+          user={user}
+          messages={messages}
+          setMessages={setMessages}
+        />
+      ) : (
+        <Login setUser={setUser} setToken={setToken} />
+      )}
     </Modal>
   );
 }

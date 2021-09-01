@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 
-// const WS_ENDPOINT = "wss://zircus.herokuapp.com";
-const WS_ENDPOINT = "ws://localhost:3000";
+const WS_ENDPOINT = "wss://zircus.herokuapp.com";
+// const WS_ENDPOINT = "ws://localhost:3000";
 
 let listeners = [];
 
@@ -17,11 +17,11 @@ const WebsocketProvider = ({ children }) => {
       console.debug("Websocket connection open");
       autoReconnectInterval = 250;
     };
-    websocket.current.onmessage = (msg) => {
+    websocket.current.onmessage = msg => {
       const decodedMessage = JSON.parse(msg.data);
       handleMessage(decodedMessage);
     };
-    websocket.current.onclose = (e) => {
+    websocket.current.onclose = e => {
       switch (e.code) {
         case 1000:
           console.debug("Websocket closed normally");
@@ -31,7 +31,7 @@ const WebsocketProvider = ({ children }) => {
           reconnectToWebSocket(autoReconnectInterval);
       }
     };
-    websocket.current.onerror = (err) => {
+    websocket.current.onerror = err => {
       switch (err.code) {
         case "ECONNREFUSED":
           autoReconnectInterval = autoReconnectInterval +=
@@ -44,32 +44,30 @@ const WebsocketProvider = ({ children }) => {
     };
   };
 
-  const reconnectToWebSocket = (autoReconnectInterval) => {
+  const reconnectToWebSocket = autoReconnectInterval => {
     const maximumConnectionTimeout = 10000;
     setTimeout(
       initializeWebSocket,
-      Math.min(maximumConnectionTimeout, autoReconnectInterval),
+      Math.min(maximumConnectionTimeout, autoReconnectInterval)
     );
   };
 
-  const handleMessage = (msg) => {
+  const handleMessage = msg => {
     console.debug(`[Websocket-IncomingMessage] `, msg);
-    listeners.forEach((x) => x.messageHandler(msg));
+    listeners.forEach(x => x.messageHandler(msg));
   };
 
   const disconnectWebSocket = () => {
     if (!!websocket.current) websocket.current.close(1000);
   };
 
-  const addListener = (messageHandler) => {
+  const addListener = messageHandler => {
     const id = listeners.length;
     listeners.push({ id, messageHandler });
     return id;
   };
 
-  const removeListener = (
-    id,
-  ) => (listeners = listeners.filter((l) => l.id !== id));
+  const removeListener = id => (listeners = listeners.filter(l => l.id !== id));
 
   return (
     <WebsocketContext.Provider

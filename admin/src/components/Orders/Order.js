@@ -8,49 +8,43 @@ import DeleteButton from "../Buttons/DeleteButton.js";
 import { getLabel } from "../../services/services.js";
 
 const StyledLi = styled.li`
-    margin: 0 auto;
-    display: flex;
-    gap: var(--base-spacing);
-    padding: var(--base-spacing);
-    width: 100%;
-    background-color: var(--gray-10);
-    border-right: var(--base-unit) solid;
-    border-top: 2px solid var(--gray-30);
-    border-left: 2px solid var(--gray-30);
-    border-bottom: 2px solid var(--gray-30);
-    border-right-color: ${(props) =>
-  props.hasPaid && props.hasShipped
-    ? "var(--green)"
-    : props.hasPaid
-    ? "var(--yellow)"
-    : "var(--gray-30)"};
+  margin: 0 auto;
+  display: flex;
+  gap: var(--base-spacing);
+  padding: var(--base-spacing);
+  width: 100%;
+  background-color: var(--gray-10);
+  border-right: var(--base-unit) solid;
+  border-top: 2px solid var(--gray-30);
+  border-left: 2px solid var(--gray-30);
+  border-bottom: 2px solid var(--gray-30);
+  border-right-color: ${props =>
+    props.hasPaid && props.hasShipped
+      ? "var(--green)"
+      : props.hasPaid
+      ? "var(--yellow)"
+      : "var(--gray-30)"};
 
-    &:hover {
-        background-color: var(--gray-05);
-    }
+  &:hover {
+    background-color: var(--gray-05);
+  }
 `;
 
 const StyledActions = styled.div`
-    display: flex;
-    flex-flow: column nowrap;
-    gap: var(--base-unit);
+  display: flex;
+  flex-flow: column nowrap;
+  gap: var(--base-unit);
 `;
 
 const StyledBtnContainer = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-    flex-grow: 1;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-grow: 1;
 `;
 
-export default function Order({
-  order,
-  token,
-  setShowModal,
-  setOrders,
-  notify,
-}) {
+export default function Order({ order, setShowModal, setOrders, notify }) {
   const handleDeleteFailure = ({ error }) =>
     notify(`Error: ${error}`, "red") && console.log(error);
   const handleDelete = () => {
@@ -59,9 +53,9 @@ export default function Order({
       text: `Delete ${order.name}'s order?'`,
       color: "danger",
       btnText: "Delete",
-      ok: (choice) => {
+      ok: choice => {
         if (choice) {
-          deleteOrder(order.id, token).catch(handleDeleteFailure);
+          deleteOrder(order.id).catch(handleDeleteFailure);
         }
       },
     });
@@ -75,22 +69,19 @@ export default function Order({
       }?'`,
       color: order.hasPaid ? "danger" : "positive",
       btnText: "Change",
-      ok: (choice) => {
+      ok: choice => {
         if (choice) {
-          setOrders((orders) =>
-            orders.map((o) =>
+          setOrders(orders =>
+            orders.map(o =>
               o.id === order.id ? { ...o, hasPaid: !o.hasPaid } : o
             )
           );
-          updateOrder(
-            {
-              id: order.id,
-              updatedAttributes: {
-                hasPaid: !order.hasPaid,
-              },
+          updateOrder({
+            id: order.id,
+            updatedAttributes: {
+              hasPaid: !order.hasPaid,
             },
-            token,
-          ).catch((e) => console.log(e));
+          }).catch(e => console.log(e));
         }
       },
     });
@@ -104,29 +95,26 @@ export default function Order({
       }?'`,
       color: order.hasShipped ? "danger" : "positive",
       btnText: "Change",
-      ok: (choice) => {
+      ok: choice => {
         if (choice) {
-          setOrders((orders) =>
-            orders.map((o) =>
+          setOrders(orders =>
+            orders.map(o =>
               o.id === order.id ? { ...o, hasShipped: !o.hasShipped } : o
             )
           );
-          updateOrder(
-            {
-              id: order.id,
-              updatedAttributes: {
-                hasShipped: !order.hasShipped,
-              },
+          updateOrder({
+            id: order.id,
+            updatedAttributes: {
+              hasShipped: !order.hasShipped,
             },
-            token,
-          ).catch((e) => console.log(e));
+          }).catch(e => console.log(e));
         }
       },
     });
   };
 
-  const handleLabel = async (url) => {
-    const result = await getLabel(url, token);
+  const handleLabel = async url => {
+    const result = await getLabel(url);
     const fileURL = window.URL.createObjectURL(new Blob([result]));
     const fURL = document.createElement("a");
     fURL.href = fileURL;

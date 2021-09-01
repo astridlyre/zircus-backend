@@ -9,18 +9,17 @@ import Messages from "./components/Messages/Messages.js";
 import Notification from "./components/Notification/Notification.js";
 
 const StyledDashboard = styled.div`
-    display: flex;
-    flex-flow: column nowrap;
-    padding-top: 4rem;
-    padding-left: ${(props) => (props.showFull ? "14rem" : "4rem")};
-    height: 100vh;
-    overflow: hidden;
+  display: flex;
+  flex-flow: column nowrap;
+  padding-top: 4rem;
+  padding-left: ${props => (props.showFull ? "14rem" : "4rem")};
+  height: 100vh;
+  overflow: hidden;
 `;
 
 export default function Dashboard({
   inv,
   orders,
-  token,
   setShowModal,
   logout,
   setOrders,
@@ -36,7 +35,7 @@ export default function Dashboard({
   const numOrders = orders ? orders.length : 0;
   const numMessages = messages ? messages.length : 0;
   const reduceFn = (inv, fn) => inv.reduce((acc, item) => acc + fn(item), 0);
-  const qty = (item) => item.quantity;
+  const qty = item => item.quantity;
   const numInv = inv ? reduceFn(inv, qty) : 0;
 
   return (
@@ -53,17 +52,11 @@ export default function Dashboard({
       />
       {notification && <Notification notification={notification} />}
       {page === "inventory" && (
-        <Inventory
-          inv={inv}
-          token={token}
-          setShowModal={setShowModal}
-          setInv={setInv}
-        />
+        <Inventory inv={inv} setShowModal={setShowModal} setInv={setInv} />
       )}
       {page === "orders" && (
         <Orders
           orders={orders}
-          token={token}
           setShowModal={setShowModal}
           setOrders={setOrders}
           notify={notify}
@@ -82,7 +75,6 @@ export default function Dashboard({
           messages={messages}
           setMessages={setMessages}
           setShowModal={setShowModal}
-          token={token}
           notify={notify}
         />
       )}

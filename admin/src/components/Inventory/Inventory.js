@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import InventoryItem from "./InventoryItem.js";
 import Spinner from "../Icons/Spinner.js";
 import Page from "../Containers/Page.js";
@@ -18,9 +18,9 @@ const StyledLabel = styled.label`
   box-shadow: var(--box-shadow-sm);
 `;
 
-export default function Inventory({ inv, token, setInv }) {
+export default function Inventory({ inv, setInv }) {
   const [searchValue, setSearchValue] = useState("");
-  const invToShow = inv.filter((item) => {
+  const invToShow = inv.filter(item => {
     if (!searchValue) return true;
     const testStrings = [
       item.name["en"].toLowerCase(),
@@ -36,7 +36,7 @@ export default function Inventory({ inv, token, setInv }) {
     return false;
   });
 
-  const handleSearch = (event) => setSearchValue(event.target.value);
+  const handleSearch = event => setSearchValue(event.target.value);
 
   return (
     <Page>
@@ -45,13 +45,8 @@ export default function Inventory({ inv, token, setInv }) {
       </StyledLabel>
       <List>
         {inv &&
-          invToShow.map((item) => (
-            <InventoryItem
-              item={item}
-              key={item.id}
-              token={token}
-              setInv={setInv}
-            />
+          invToShow.map(item => (
+            <InventoryItem item={item} key={item.id} setInv={setInv} />
           ))}
         {!inv && (
           <li id="spinner" className="spinner">

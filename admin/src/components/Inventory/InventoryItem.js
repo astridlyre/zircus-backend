@@ -3,51 +3,48 @@ import Label from "../Text/Label.js";
 import { updateItem } from "../../services/services.js";
 
 const StyledLi = styled.li`
-    display: flex;
-    width: 100%;
-    align-items: center;
-    gap: 2rem;
-    @media screen and (min-width: 1281px) {
-        gap: 3rem;
-    }
-    border-top: 2px solid var(--gray-20);
-    border-left: 2px solid var(--gray-20);
-    border-right: 2px solid var(--gray-20);
-    padding: 1rem;
-    background-color: var(--gray-10);
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 2rem;
+  @media screen and (min-width: 1281px) {
+    gap: 3rem;
+  }
+  border-top: 2px solid var(--gray-20);
+  border-left: 2px solid var(--gray-20);
+  border-right: 2px solid var(--gray-20);
+  padding: 1rem;
+  background-color: var(--gray-10);
 
-    &:hover {
-        background-color: var(--gray-05);
-    }
+  &:hover {
+    background-color: var(--gray-05);
+  }
 `;
 
 const StyledImg = styled.img`
-    max-height: 2rem;
+  max-height: 2rem;
 `;
 
 const StyledName = styled.p`
-    font-size: 1rem;
+  font-size: 1rem;
 `;
 
 const StyledAttr = styled.p`
-    font-weight: 500;
-    ${(props) => props.grow && "flex-grow: 1;"}
+  font-weight: 500;
+  ${props => props.grow && "flex-grow: 1;"}
 `;
 
-export default function InventoryItem({ item, token, setInv }) {
-  const handler = (key, fn) =>
-    (event) => {
-      setInv((inv) =>
-        inv.map((i) => i.id === item.id ? { ...i, [key]: fn(event.target) } : i)
-      );
-      updateItem({ ...item, [key]: fn(event.target) }, token).catch((e) =>
-        console.log(e)
-      );
-    };
+export default function InventoryItem({ item, setInv }) {
+  const handler = (key, fn) => event => {
+    setInv(inv =>
+      inv.map(i => (i.id === item.id ? { ...i, [key]: fn(event.target) } : i))
+    );
+    updateItem({ ...item, [key]: fn(event.target) }).catch(e => console.log(e));
+  };
 
-  const handleQuantity = handler("quantity", (t) => Number(t.value));
-  const handleActive = handler("active", (t) => t.checked);
-  const handlePrice = handler("price", (t) => Number(t.value));
+  const handleQuantity = handler("quantity", t => Number(t.value));
+  const handleActive = handler("active", t => t.checked);
+  const handlePrice = handler("price", t => Number(t.value));
 
   return (
     <StyledLi>
@@ -85,11 +82,7 @@ export default function InventoryItem({ item, token, setInv }) {
       </Label>
       <Label htmlFor="active">
         <StyledAttr>active</StyledAttr>
-        <input
-          type="checkbox"
-          checked={item.active}
-          onChange={handleActive}
-        />
+        <input type="checkbox" checked={item.active} onChange={handleActive} />
       </Label>
     </StyledLi>
   );

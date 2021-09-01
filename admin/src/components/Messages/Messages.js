@@ -6,17 +6,15 @@ export default function Messages({
   messages,
   setShowModal,
   setMessages,
-  token,
   notify,
 }) {
   return (
     <Page>
       <List gap={true}>
         {messages &&
-          messages.map((message) => (
+          messages.map(message => (
             <Message
               notify={notify}
-              token={token}
               setMessages={setMessages}
               key={message.id}
               message={message}

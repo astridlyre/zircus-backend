@@ -17,8 +17,6 @@ const paypalRouter = require("./controllers/paypalRouter.js");
 const tagLinesRouter = require("./controllers/tagline");
 const adminRouter = require("./controllers/admin");
 const messageRouter = require("./controllers/message");
-const order = require("./templates/order");
-const words = require("./utils/words.js");
 
 // Start logging and connect to Database
 logger.info("connecting to ", config.MONGODB_URI);
@@ -31,7 +29,7 @@ const connect = async () =>
     .then(() => {
       logger.info("connected to Database");
     })
-    .catch((e) => logger.error("error connecting to Database: ", e.message));
+    .catch(e => logger.error("error connecting to Database: ", e.message));
 connect();
 
 // Use cors and json
@@ -53,9 +51,6 @@ app.use("/api/stripe", stripeRouter);
 app.use("/api/paypal", paypalRouter);
 app.use("/api/taglines", tagLinesRouter);
 app.use("/api/message", messageRouter);
-app.use("/test", (req, res) => {
-  return res.send(order());
-});
 
 // Finally unknownEndpoint middleware and errorHandler
 app.use(middleware.unknownEndpoint);

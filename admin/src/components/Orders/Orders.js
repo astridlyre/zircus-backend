@@ -5,37 +5,25 @@ import Page from "../Containers/Page.js";
 import List from "../Containers/List.js";
 import { useField } from "../../hooks/hooks.js";
 
-export default function Orders({
-  orders,
-  token,
-  setShowModal,
-  setOrders,
-  notify,
-}) {
-  const [dateStart, clearDateStart] = useField(
-    "date",
-    "",
-  );
-  const [dateEnd, clearDateEnd] = useField(
-    "date",
-    "",
-  );
+export default function Orders({ orders, setShowModal, setOrders, notify }) {
+  const [dateStart] = useField("date", "");
+  const [dateEnd] = useField("date", "");
   const [showShipped, setShowShipped] = useState(false);
   const [showPaid, setShowPaid] = useState(true);
   const filters = [
     {
       active: showShipped,
       text: "shipped",
-      setActive: () => setShowShipped((state) => !state),
+      setActive: () => setShowShipped(state => !state),
     },
     {
       active: showPaid,
       text: "paid",
-      setActive: () => setShowPaid((state) => !state),
+      setActive: () => setShowPaid(state => !state),
     },
   ];
 
-  const filterDates = (order) => {
+  const filterDates = order => {
     const start = dateStart.value;
     const end = dateEnd.value;
     if (!start && !end) return true;
@@ -46,12 +34,15 @@ export default function Orders({
     if (!end) {
       return orderTime >= new Date(start).getTime();
     }
-    return orderTime >= new Date(start).getTime() &&
-      orderTime <= new Date(end).getTime();
+    return (
+      orderTime >= new Date(start).getTime() &&
+      orderTime <= new Date(end).getTime()
+    );
   };
-  const filterPaid = (order) => order.hasPaid === showPaid;
-  const filterShipped = (order) => order.hasShipped === showShipped;
-  const ordersToShow = orders &&
+  const filterPaid = order => order.hasPaid === showPaid;
+  const filterShipped = order => order.hasShipped === showShipped;
+  const ordersToShow =
+    orders &&
     orders.filter(filterPaid).filter(filterShipped).filter(filterDates);
 
   return (
@@ -59,10 +50,9 @@ export default function Orders({
       <Filter filters={filters} dateStart={dateStart} dateEnd={dateEnd} />
       <List gap={true}>
         {orders &&
-          ordersToShow.map((order) => (
+          ordersToShow.map(order => (
             <Order
               notify={notify}
-              token={token}
               order={order}
               key={order.id}
               setShowModal={setShowModal}
