@@ -3,8 +3,6 @@ const chai = require("chai");
 const { assert } = chai;
 const { genValidFormData } = require("./testFormData.js");
 
-chai.should();
-
 describe("Test Form Validation", () => {
   let formData;
 
