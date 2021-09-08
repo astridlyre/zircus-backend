@@ -2,9 +2,6 @@ const express = require("express");
 const helmet = require("helmet");
 const app = express();
 const cors = require("cors");
-const mongoose = require("mongoose");
-const config = require("./utils/config");
-const logger = require("./utils/logger");
 const middleware = require("./utils/middleware");
 require("express-async-errors");
 
@@ -17,20 +14,6 @@ const paypalRouter = require("./controllers/paypalRouter.js");
 const tagLinesRouter = require("./controllers/tagline");
 const adminRouter = require("./controllers/admin");
 const messageRouter = require("./controllers/message");
-
-// Start logging and connect to Database
-logger.info("connecting to ", config.MONGODB_URI);
-const connect = async () =>
-  await mongoose
-    .connect(config.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then(() => {
-      logger.info("connected to Database");
-    })
-    .catch(e => logger.error("error connecting to Database: ", e.message));
-connect();
 
 // Use cors and json
 app.use(cors());

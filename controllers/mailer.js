@@ -4,7 +4,7 @@ const { MAIL_USERNAME, MAIL_PASSWORD } = require("../utils/config.js");
 const transporter = nodemailer.createTransport({
   pool: true,
   host: "smtppro.zoho.com",
-  post: 465,
+  port: 465,
   secure: true,
   auth: {
     user: MAIL_USERNAME,

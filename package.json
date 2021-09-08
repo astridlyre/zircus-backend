@@ -6,11 +6,15 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js"
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env NODE_ENV=test mocha --parallel"
   },
   "author": "Erin Burton",
   "license": "MIT",
   "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "mocha": "^9.1.1",
     "nodemon": "^2.0.9"
   },
   "dependencies": {
