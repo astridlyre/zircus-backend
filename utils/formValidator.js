@@ -11,6 +11,10 @@ function validatePhoneNumber({ phone }) {
   return /^[0-9]{3} [0-9]{3} [0-9]{4}$/.test(phone);
 }
 
+function validateName({ name }) {
+  return name.length > 0;
+}
+
 function validateEmail({ email }) {
   return EMAIL_REGEXP.test(email) && email.length < 254;
 }
@@ -20,8 +24,7 @@ function validateCountry({ country }) {
 }
 
 function validateState({ country, state }) {
-  return countries[country].states.find((s) => s.name === state) ??
-    false;
+  return countries[country]?.states.find(s => s.name === state) ?? false;
 }
 
 function validatePaymentMethod({ paymentMethod }) {
@@ -41,10 +44,15 @@ function validateShippingMethod({ shipping, address }) {
 }
 
 function validateItems({ items }) {
-  return Array.isArray(items) && items.every((item) => isValidType(item.type));
+  return (
+    Array.isArray(items) &&
+    items.every(item => isValidType(item.type)) &&
+    items.every(item => item.quantity > 0)
+  );
 }
 
 const validators = {
+  name: validateName,
   email: validateEmail,
   phone: validatePhoneNumber,
   country: validateCountry,
@@ -55,15 +63,16 @@ const validators = {
   items: validateItems,
 };
 
-module.exports = (formData) => {
+module.exports = formData => {
   Object.entries(formData).forEach(([key, entry]) => {
     if (key === "address") {
       Object.entries(entry).forEach(([addressKey, addressEntry]) => {
         if (
-          validators[addressKey] && !validators[addressKey](formData.address)
+          validators[addressKey] &&
+          !validators[addressKey](formData.address)
         ) {
           throw new TypeError(
-            `Invalid entry ${addressKey}: ${addressEntry} in address`,
+            `Invalid entry ${addressKey}: ${addressEntry} in address`
           );
         }
       });
